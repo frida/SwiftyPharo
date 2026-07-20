@@ -18,7 +18,7 @@ if localVMRoot != nil {
     pharoVMTarget = .binaryTarget(
         name: "PharoVM",
         url: "https://github.com/frida/SwiftyPharo/releases/download/vm-\(vmVersion)/PharoVM.xcframework.zip",
-        checksum: "2b3f4a501b1b51f1c6d92d8a4b92512d26de62c0b0cf27b6f8e5d3264017ff2a"
+        checksum: "7d8004aff605b9096e28254794badd5988073c9c0c4f3935ab643957f305c300"
     )
     #else
     pharoVMTarget = .systemLibrary(
