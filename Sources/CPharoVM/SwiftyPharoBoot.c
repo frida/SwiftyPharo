@@ -17,16 +17,12 @@ extern void setProcessArguments(int argc, const char **argv);
 extern void setProcessEnvironmentVector(const char **environment);
 extern void registerCurrentThreadToHandleExceptions(void);
 
-// NULL in the VM; embedders set it.
-extern char **pluginPaths;
-
 typedef struct Worker Worker;
 extern Worker *worker_newSpawning(int spawn);
 extern Worker *mainThreadWorker;
 
 static VMParameters *newInterpreterParameters(const char *imagePath, int argc, const char **argv,
                                               const char **environment);
-static void usePluginDirectory(const char *pluginsPath);
 static void configureProcessContext(int argc, const char **argv, const char **environment);
 static void spawnMainQueueFFIWorker(void);
 static int spawnInterpreterThread(VMParameters *parameters);
@@ -36,12 +32,10 @@ static SwiftyPharoState currentState = SwiftyPharoStateStarting;
 
 // vm_main_with_parameters() would install its own SIGSEGV/SIGBUS handlers.
 SwiftyPharoState
-swifty_pharo_boot(const char *imagePath, const char *pluginsPath, int argc, const char **argv,
-                  const char **environment)
+swifty_pharo_boot(const char *imagePath, int argc, const char **argv, const char **environment)
 {
     VMParameters *parameters = newInterpreterParameters(imagePath, argc, argv, environment);
 
-    usePluginDirectory(pluginsPath);
     configureProcessContext(argc, argv, environment);
     osCogStackPageHeadroom();
     spawnMainQueueFFIWorker();
@@ -84,17 +78,6 @@ newInterpreterParameters(const char *imagePath, int argc, const char **argv, con
     parameters->environmentVector = environment;
 
     return parameters;
-}
-
-// Outlives this call.
-static void
-usePluginDirectory(const char *pluginsPath)
-{
-    static char *searchPaths[2];
-
-    searchPaths[0] = strdup(pluginsPath);
-    searchPaths[1] = NULL;
-    pluginPaths = searchPaths;
 }
 
 static void

@@ -10,15 +10,13 @@ struct Probe {
         setbuf(stdout, nil)
 
         let arguments = CommandLine.arguments
-        guard arguments.count == 3 else {
-            print("usage: swifty-pharo-probe <image> <plugins>")
+        guard arguments.count == 2 else {
+            print("usage: swifty-pharo-probe <image>")
             exit(1)
         }
 
         let runtime = PharoRuntime.shared
-        runtime.boot(
-            image: URL(fileURLWithPath: arguments[1]),
-            plugins: URL(fileURLWithPath: arguments[2]))
+        runtime.boot(image: URL(fileURLWithPath: arguments[1]))
 
         for _ in 0..<200 where !swifty_pharo_bridge_is_ready() {
             usleep(50000)

@@ -24,12 +24,11 @@ public final class PharoRuntime: @unchecked Sendable {
     }
 
     /// Starts the interpreter on its own thread and returns at once; await
-    /// `runningState()` to learn whether the image loaded. `plugins` holds
-    /// libFilePlugin and friends, which the VM resolves as the image asks.
-    public func boot(image: URL, plugins: URL) {
+    /// `runningState()` to learn whether the image loaded. The VM looks for its
+    /// plugins beside libPharoVMCore, so ship the two in one directory.
+    public func boot(image: URL) {
         swifty_pharo_boot(
             image.path,
-            plugins.path,
             CommandLine.argc,
             UnsafeMutableRawPointer(CommandLine.unsafeArgv)
                 .assumingMemoryBound(to: UnsafePointer<CChar>?.self),
