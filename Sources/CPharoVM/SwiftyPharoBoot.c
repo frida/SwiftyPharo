@@ -140,6 +140,11 @@ spawnInterpreterThread(VMParameters *parameters)
     pthread_attr_t attributes;
     pthread_attr_init(&attributes);
     pthread_attr_setstacksize(&attributes, INTERPRETER_STACK_SIZE);
+#ifdef __APPLE__
+    // Callers block on this thread to get their answer, so leaving it at the
+    // default class inverts their priority.
+    pthread_attr_set_qos_class_np(&attributes, QOS_CLASS_USER_INITIATED, 0);
+#endif
 
     pthread_t interpreterThread;
     int result = pthread_create(&interpreterThread, &attributes, interpreterThreadMain, parameters);

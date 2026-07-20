@@ -17,7 +17,7 @@ public enum PharoRuntimeError: Error, Sendable {
 public final class PharoRuntime: @unchecked Sendable {
     public static let shared = PharoRuntime()
 
-    static let requestQueue = DispatchQueue(label: "swiftypharo.requests")
+    static let requestQueue = DispatchQueue(label: "swiftypharo.requests", qos: .userInitiated)
 
     public var state: PharoRuntimeState {
         PharoRuntimeState(swifty_pharo_state())
