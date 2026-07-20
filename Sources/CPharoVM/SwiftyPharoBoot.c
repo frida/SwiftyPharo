@@ -1,5 +1,6 @@
 #include "include/SwiftyPharoBoot.h"
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -29,11 +30,18 @@ static int spawnInterpreterThread(VMParameters *parameters);
 static void runInterpreter(VMParameters *parameters);
 
 static SwiftyPharoState currentState = SwiftyPharoStateStarting;
+static bool booted = false;
 
 // vm_main_with_parameters() would install its own SIGSEGV/SIGBUS handlers.
 SwiftyPharoState
 swifty_pharo_boot(const char *imagePath, int argc, const char **argv, const char **environment)
 {
+    // The VM keeps its state in globals, so a second vm_init() would run over
+    // the interpreter already using them and leave it jumping through null.
+    if (booted)
+        return currentState;
+    booted = true;
+
     VMParameters *parameters = newInterpreterParameters(imagePath, argc, argv, environment);
 
     configureProcessContext(argc, argv, environment);
