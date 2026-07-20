@@ -33,7 +33,7 @@ public final class PharoRuntime: @unchecked Sendable {
         swifty_pharo_boot(
             image.path,
             plugins.path,
-            Int32(arguments.count - 1),
+            Int32(arguments.count),
             arguments.baseAddress,
             environment.baseAddress)
     }

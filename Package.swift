@@ -54,6 +54,11 @@ let package = Package(
             dependencies: ["CPharoVM"]
         ),
 
+        .executableTarget(
+            name: "swifty-pharo-probe",
+            dependencies: ["SwiftyPharo"]
+        ),
+
         .testTarget(
             name: "SwiftyPharoTests",
             dependencies: ["SwiftyPharo"]
