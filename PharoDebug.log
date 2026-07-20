@@ -1,0 +1,5047 @@
+THERE_BE_DRAGONS_HERE
+SymbolNotFoundError: Could not find symbol named: #FT_Init_FreeType searching in module: 'libfreetype.dylib'
+20 July 2026 11:22:04.368486 pm
+
+VM: Mac OS - arm64 - 1000 - CoInterpreter
+StackToRegisterMappingCogit
+23e5a5a76c90fcb95a4aa5e4fccb5f1318ad0ad2+0.23e5a5a - Commit: 23e5a5a - Date: 2026-07-15 14:26:30 +0200
+
+Image: Pharo13.1.0SNAPSHOT [Build information: Pharo-13.1.0+SNAPSHOT.build.744.sha.4c3e4714cc70093d033f85fd333decb87d03001d (64 Bit)]
+
+TFFIBackend>>primLoadSymbol:module:
+	Receiver: a TFFIBackend
+	Arguments and temporary variables: 
+		moduleSymbol: 	#FT_Init_FreeType
+		module: 	'libfreetype.dylib'
+	Receiver's instance variables: 
+a TFFIBackend
+
+TFFIBackend>>loadSymbol:module:
+	Receiver: a TFFIBackend
+	Arguments and temporary variables: 
+		moduleSymbol: 	#FT_Init_FreeType
+		module: 	'libfreetype.dylib'
+		encodedString: 	'libfreetype.dylib'
+	Receiver's instance variables: 
+a TFFIBackend
+
+ExternalAddress class>>loadSymbol:module:
+	Receiver: ExternalAddress
+	Arguments and temporary variables: 
+		moduleSymbol: 	#FT_Init_FreeType
+		module: 	'libfreetype.dylib'
+	Receiver's instance variables: 
+		superclass: 	ByteArray
+		methodDict: 	a MethodDictionary(#+->ExternalAddress>>#+ #=->ExternalAddress>[..]
+		format: 	1048576
+		layout: 	a ByteLayout
+		protocols: 	an Array(Protocol (arithmetic) - 1 selector(s) Protocol (compari[..]
+		subclasses: 	nil
+		name: 	#ExternalAddress
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	17321706
+		packageTag: 	a PackageTag(Uncategorized)
+		wordSize: 	8
+
+
+TFExternalFunction>>validate
+	Receiver: a TFExternalFunction
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+		definition: 	a TFFunctionDefinition(@ 16r102B0CE10)
+		functionName: 	#FT_Init_FreeType
+		moduleName: 	'libfreetype.dylib'
+
+
+TFSameThreadRunner>>invokeFunction:withArguments:
+	Receiver: a TFSameThreadRunner(@ 16r00000000)
+	Arguments and temporary variables: 
+		function: 	a TFExternalFunction
+		aCollection: 	an Array(@ 16r10003729430)
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+		callbackInvocationStack: 	a Stack()
+		stackProtect: 	a Semaphore()
+		exceptionHandler: 	a TFForkCallbackExceptionHandler
+		semaphorePool: 	a TFPool(5 elements)
+		callbackReturnSemaphore: 	a Semaphore()
+
+
+FT2Library>>ffiInitFreeType:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		aPointer: 	an a subclass of FFIExternalValueHolder
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+TFCalloutAPI(FFICalloutAPI)>>function:library:
+	Receiver: a TFCalloutAPI
+	Arguments and temporary variables: 
+		functionSignature: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+		moduleNameOrLibrary: 	a FT2FFILibrary
+		sender: 	FT2Library>>ffiInitFreeType:
+		ffiMethod: 	FT2Library>>#ffiInitFreeType:
+		ffiMethodSelector: 	#ffiCall:
+	Receiver's instance variables: 
+		options: 	#(#+ #optStrict)
+		callingConvention: 	#cdecl
+		senderContext: 	nil
+		uFFIEntryPointContext: 	FT2Library(Object)>>ffiCall:library:options:fixedArg[..]
+		fixedArgumentCount: 	0
+
+
+FT2Library(Object)>>ffiCall:library:options:fixedArgumentCount:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		fnSpec: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+		aLibrary: 	a FT2FFILibrary
+		callOptions: 	#()
+		fixedArgumentsCount: 	0
+		ffiLibrary: 	a FT2FFILibrary
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library(Object)>>ffiCall:library:options:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		fnSpec: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+		aLibrary: 	a FT2FFILibrary
+		callOptions: 	#()
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library(Object)>>ffiCall:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		fnSpec: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library>>ffiInitFreeType:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		aPointer: 	an a subclass of FFIExternalValueHolder
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library>>checkLibrary
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		errorCode: 	nil
+		holder: 	an a subclass of FFIExternalValueHolder
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FreeTypeFace(FT2Face)>>newFaceFromExternalMemory:index:
+	Receiver: a FreeTypeFace(nil)<nil>
+	Arguments and temporary variables: 
+		aFreeTypeExternalMemory: 	a FreeTypeExternalMemory(@ 16r666C00000)<0x66C00000>
+		anInteger: 	0
+		memSize: 	3202372
+		holder: 	an a subclass of FFIExternalValueHolder
+		returnCode: 	nil
+	Receiver's instance variables: 
+		handle: 	nil
+		numFaces: 	nil
+		faceIndex: 	nil
+		faceFlags: 	nil
+		styleFlags: 	nil
+		numGlyphs: 	nil
+		familyName: 	nil
+		styleName: 	nil
+		numFixedSizes: 	nil
+		availableSizes: 	nil
+		numCharmaps: 	nil
+		charmaps: 	nil
+		bbox: 	nil
+		unitsPerEm: 	nil
+		ascender: 	nil
+		descender: 	nil
+		height: 	nil
+		maxAdvanceWidth: 	nil
+		maxAdvanceHeight: 	nil
+		underlinePosition: 	nil
+		underlineThickness: 	nil
+		glyph: 	nil
+		encoding: 	nil
+		platformId: 	nil
+		encodingId: 	nil
+		size: 	nil
+		filename: 	nil
+		index: 	nil
+		fileContentsExternalMemory: 	a FreeTypeExternalMemory(@ 16r666C00000)<0x66C0[..]
+		hasKerning: 	nil
+
+
+[
+	  newFace
+		  newFaceFromExternalMemory: externalMem index: index;
+		  loadFields;
+		  yourself ] in FreeTypeFontFileInstaller>>newFaceFromData:
+	Receiver: a FreeTypeFontFileInstaller
+	Arguments and temporary variables: 
+		externalMem: 	a FreeTypeExternalMemory(@ 16r666C00000)<0x66C00000>
+		newFace: 	a FreeTypeFace(nil)<nil>
+	Receiver's instance variables: 
+		fileInfoProvider: 	an EmbeddedFreeTypeFontInstaller
+		face: 	nil
+		numFaces: 	nil
+		index: 	0
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [
+	  newFace
+		  newFaceFromExternalMemory: externalMem index: index;
+		  loadFields;
+[..]
+	Arguments and temporary variables: 
+		exception: 	an ExceptionSet
+		handlerAction: 	[ :e | nil ]
+	Receiver's instance variables: 
+		outerContext: 	FreeTypeFontFileInstaller>>newFaceFromData:
+		compiledBlock: 	a CompiledBlock: [
+	  newFace
+		  newFaceFromExternalMemory:[..]
+		numArgs: 	0
+		receiver: 	a FreeTypeFontFileInstaller
+
+
+FreeTypeFontFileInstaller>>newFaceFromData:
+	Receiver: a FreeTypeFontFileInstaller
+	Arguments and temporary variables: 
+		externalMem: 	a FreeTypeExternalMemory(@ 16r666C00000)<0x66C00000>
+		newFace: 	a FreeTypeFace(nil)<nil>
+	Receiver's instance variables: 
+		fileInfoProvider: 	an EmbeddedFreeTypeFontInstaller
+		face: 	nil
+		numFaces: 	nil
+		index: 	0
+
+
+FreeTypeFontFileInstaller>>addFromFileContents:baseName:
+	Receiver: a FreeTypeFontFileInstaller
+	Arguments and temporary variables: 
+		bytes: 	#[116 116 99 102 0 2 0 0 0 0 0 4 0 0 0 40 0 0 1 148 0 0 2 240 0 0 4 [..]
+		originalFileBaseName: 	'LucidaGrande.ttc'
+		externalMem: 	a FreeTypeExternalMemory(@ 16r666C00000)<0x66C00000>
+		cachedNumFaces: 	nil
+	Receiver's instance variables: 
+		fileInfoProvider: 	an EmbeddedFreeTypeFontInstaller
+		face: 	nil
+		numFaces: 	nil
+		index: 	0
+
+
+EmbeddedFreeTypeFontInstaller>>addFromFileContents:baseName:
+	Receiver: an EmbeddedFreeTypeFontInstaller
+	Arguments and temporary variables: 
+		bytes: 	#[116 116 99 102 0 2 0 0 0 0 0 4 0 0 0 40 0 0 1 148 0 0 2 240 0 0 4 [..]
+		originalFileBaseName: 	'LucidaGrande.ttc'
+	Receiver's instance variables: 
+		embeddedFileInfoCache: 	a Dictionary(#(197644 0)->a Set({#embedded}(197644 b[..]
+		provider: 	a FreeTypeFontProvider
+		numFaces: 	nil
+		face: 	nil
+
+
+LucidaGrandeRegular class(EmbeddedFreeTypeFontDescription class)>>installFontsIn:
+	Receiver: LucidaGrandeRegular
+	Arguments and temporary variables: 
+		provider: 	an EmbeddedFreeTypeFontInstaller
+	Receiver's instance variables: 
+		superclass: 	EmbeddedFreeTypeFontDescription
+		methodDict: 	a MethodDictionary()
+		format: 	0
+		layout: 	a FixedLayout
+		protocols: 	#()
+		subclasses: 	nil
+		name: 	#LucidaGrandeRegular
+		classPool: 	nil
+		sharedPools: 	nil
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	30995696
+		packageTag: 	a PackageTag(Fonts)
+
+
+[ :each | each installFontsIn: provider ] in EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+	Receiver: EmbeddedFreeTypeFontDescription
+	Arguments and temporary variables: 
+		provider: 	an EmbeddedFreeTypeFontInstaller
+		each: 	LucidaGrandeRegular
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary()
+		format: 	0
+		layout: 	a FixedLayout
+		protocols: 	#()
+		subclasses: 	{LucidaGrandeRegular. SourceCodeProRegular. SourceSansProRegular}
+		name: 	#EmbeddedFreeTypeFontDescription
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	15774212
+		packageTag: 	a PackageTag(Base)
+
+
+OrderedCollection>>do:
+	Receiver: an OrderedCollection(LucidaGrandeRegular SourceCodeProRegular SourceSansProRegular)
+	Arguments and temporary variables: 
+		aBlock: 	[ :each | each installFontsIn: provider ]
+		index: 	1
+	Receiver's instance variables: 
+		array: 	{LucidaGrandeRegular. SourceCodeProRegular. SourceSansProRegular}
+		firstIndex: 	1
+		lastIndex: 	3
+
+
+EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+	Receiver: EmbeddedFreeTypeFontDescription
+	Arguments and temporary variables: 
+		provider: 	an EmbeddedFreeTypeFontInstaller
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary()
+		format: 	0
+		layout: 	a FixedLayout
+		protocols: 	#()
+		subclasses: 	{LucidaGrandeRegular. SourceCodeProRegular. SourceSansProRegular}
+		name: 	#EmbeddedFreeTypeFontDescription
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	15774212
+		packageTag: 	a PackageTag(Base)
+
+
+EmbeddedFreeTypeFontInstaller>>installAllFontsIn:
+	Receiver: an EmbeddedFreeTypeFontInstaller
+	Arguments and temporary variables: 
+		aProvider: 	a FreeTypeFontProvider
+	Receiver's instance variables: 
+		embeddedFileInfoCache: 	a Dictionary(#(197644 0)->a Set({#embedded}(197644 b[..]
+		provider: 	a FreeTypeFontProvider
+		numFaces: 	nil
+		face: 	nil
+
+
+[ :each | each installAllFontsIn: self ] in FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+	Receiver: a FreeTypeFontProvider
+	Arguments and temporary variables: 
+		each: 	an EmbeddedFreeTypeFontInstaller
+	Receiver's instance variables: 
+		fileInfos: 	an OrderedCollection({#embedded}(293956 bytes )[0] 'Source Sans [..]
+		fileInfoCache: 	a Dictionary()
+		tempFileInfos: 	nil
+		families: 	a Dictionary('Source Code Pro'->#FreeTypeFontFamily 'Source Code [..]
+		tempFamilies: 	nil
+		fontInstallers: 	an OrderedCollection(an EmbeddedFreeTypeFontInstaller)
+
+
+OrderedCollection>>do:
+	Receiver: an OrderedCollection(an EmbeddedFreeTypeFontInstaller)
+	Arguments and temporary variables: 
+		aBlock: 	[ :each | each installAllFontsIn: self ]
+		index: 	1
+	Receiver's instance variables: 
+		array: 	an Array(an EmbeddedFreeTypeFontInstaller nil nil nil nil nil nil ni[..]
+		firstIndex: 	1
+		lastIndex: 	1
+
+
+FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+	Receiver: a FreeTypeFontProvider
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		fileInfos: 	an OrderedCollection({#embedded}(293956 bytes )[0] 'Source Sans [..]
+		fileInfoCache: 	a Dictionary()
+		tempFileInfos: 	nil
+		families: 	a Dictionary('Source Code Pro'->#FreeTypeFontFamily 'Source Code [..]
+		tempFamilies: 	nil
+		fontInstallers: 	an OrderedCollection(an EmbeddedFreeTypeFontInstaller)
+
+
+FreeTypeSettings class>>updateFreeType
+	Receiver: FreeTypeSettings
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary(#bitBltSubPixelAvailable->FreeTypeSettings>>[..]
+		format: 	65549
+		layout: 	a FixedLayout
+		protocols: 	an Array(Protocol (*FreeType-Graphics) - 2 selector(s) Protocol [..]
+		subclasses: 	nil
+		name: 	#FreeTypeSettings
+		classPool: 	a Dictionary(#UpdateFontsAtImageStartup->false )
+		sharedPools: 	an OrderedCollection(FT2Constants FreeTypeCacheConstants)
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	23042638
+		packageTag: 	a PackageTag(Settings)
+		current: 	a FreeTypeSettings
+
+
+FreeTypeSettings class>>startUp:
+	Receiver: FreeTypeSettings
+	Arguments and temporary variables: 
+		resuming: 	true
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary(#bitBltSubPixelAvailable->FreeTypeSettings>>[..]
+		format: 	65549
+		layout: 	a FixedLayout
+		protocols: 	an Array(Protocol (*FreeType-Graphics) - 2 selector(s) Protocol [..]
+		subclasses: 	nil
+		name: 	#FreeTypeSettings
+		classPool: 	a Dictionary(#UpdateFontsAtImageStartup->false )
+		sharedPools: 	an OrderedCollection(FT2Constants FreeTypeCacheConstants)
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	23042638
+		packageTag: 	a PackageTag(Settings)
+		current: 	a FreeTypeSettings
+
+
+ClassSessionHandler>>startup:
+	Receiver: a ClassSessionHandler(FreeTypeSettings)
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+	Receiver's instance variables: 
+		registeredClassName: 	#FreeTypeSettings
+
+
+[ :each | each startup: isImageStarting ] in WorkingSession>>runStartup:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+		each: 	a ClassSessionHandler(FreeTypeSettings)
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+[aBlock value: each] in [ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		aList: 	an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(S[..]
+		aBlock: 	[ :each | each startup: isImageStarting ]
+		each: 	a ClassSessionHandler(FreeTypeSettings)
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [aBlock value: each]
+	Arguments and temporary variables: 
+		exception: 	Exception
+		handlerAction: 	[ :error | self errorHandler handleError: error]
+	Receiver's instance variables: 
+		outerContext: 	[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :e[..]
+		compiledBlock: 	a CompiledBlock: [aBlock value: each]
+		numArgs: 	0
+		receiver: 	a WorkingSession
+
+
+[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		aList: 	an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(S[..]
+		aBlock: 	[ :each | each startup: isImageStarting ]
+		each: 	a ClassSessionHandler(FreeTypeSettings)
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+Array(SequenceableCollection)>>do:
+	Receiver: an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(SessionAccessModeRe[..]
+	Arguments and temporary variables: 
+		aBlock: 	[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error |[..]
+		index: 	40
+	Receiver's instance variables: 
+an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(SessionAccessModeRe[..]
+
+WorkingSession>>runList:do:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		aList: 	an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(S[..]
+		aBlock: 	[ :each | each startup: isImageStarting ]
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+WorkingSession>>runStartup:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+WorkingSession>>start:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+[ 
+		isImageStarting ifTrue: [ sessionManager installNewSession ].
+		sessionManager currentSession start: isImageStarting ] in SnapshotOperation>>performSnapshot
+	Receiver: a SnapshotOperation
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		isImageStarting: 	true
+		error: 	nil
+		save: 	true
+		quit: 	true
+		sessionManager: 	a SessionManager
+		imageFormatOption: 	nil
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [ 
+		isImageStarting ifTrue: [ sessionManager installNewSession ].
+		sessionManager cu[..]
+	Arguments and temporary variables: 
+		exception: 	Error
+		handlerAction: 	[:ex | errorHandlerBlock cull: ex]
+	Receiver's instance variables: 
+		outerContext: 	SnapshotOperation>>performSnapshot
+		compiledBlock: 	a CompiledBlock: [ 
+		isImageStarting ifTrue: [ sessionManag[..]
+		numArgs: 	0
+		receiver: 	a SnapshotOperation
+
+
+
+--- The full stack ---
+TFFIBackend>>primLoadSymbol:module:
+TFFIBackend>>loadSymbol:module:
+ExternalAddress class>>loadSymbol:module:
+TFExternalFunction>>validate
+TFSameThreadRunner>>invokeFunction:withArguments:
+FT2Library>>ffiInitFreeType:
+TFCalloutAPI(FFICalloutAPI)>>function:library:
+FT2Library(Object)>>ffiCall:library:options:fixedArgumentCount:
+FT2Library(Object)>>ffiCall:library:options:
+FT2Library(Object)>>ffiCall:
+FT2Library>>ffiInitFreeType:
+FT2Library>>checkLibrary
+FreeTypeFace(FT2Face)>>newFaceFromExternalMemory:index:
+[
+	  newFace
+		  newFaceFromExternalMemory: externalMem index: index;
+		  loadFields;
+		  yourself ] in FreeTypeFontFileInstaller>>newFaceFromData:
+FullBlockClosure(BlockClosure)>>on:do:
+FreeTypeFontFileInstaller>>newFaceFromData:
+FreeTypeFontFileInstaller>>addFromFileContents:baseName:
+EmbeddedFreeTypeFontInstaller>>addFromFileContents:baseName:
+LucidaGrandeRegular class(EmbeddedFreeTypeFontDescription class)>>installFontsIn:
+[ :each | each installFontsIn: provider ] in EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+OrderedCollection>>do:
+EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+EmbeddedFreeTypeFontInstaller>>installAllFontsIn:
+[ :each | each installAllFontsIn: self ] in FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+OrderedCollection>>do:
+FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+FreeTypeSettings class>>updateFreeType
+FreeTypeSettings class>>startUp:
+ClassSessionHandler>>startup:
+[ :each | each startup: isImageStarting ] in WorkingSession>>runStartup:
+[aBlock value: each] in [ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+FullBlockClosure(BlockClosure)>>on:do:
+[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+Array(SequenceableCollection)>>do:
+WorkingSession>>runList:do:
+WorkingSession>>runStartup:
+WorkingSession>>start:
+[ 
+		isImageStarting ifTrue: [ sessionManager installNewSession ].
+		sessionManager currentSession start: isImageStarting ] in SnapshotOperation>>performSnapshot
+FullBlockClosure(BlockClosure)>>on:do:
+ - - - - - - - - - - - - - - -
+			- - - - - - - - - - - - - - - - - -
+FullBlockClosure(BlockClosure)>>onErrorDo:
+SnapshotOperation>>executeStoringError:
+SnapshotOperation>>performSnapshot
+SessionManager>>launchSnapshot:andQuit:
+[  snapshotOperation := self launchSnapshot: save andQuit: quit.
+	   wait signal ] in SessionManager>>snapshot:andQuit:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+-------------------------------------------------------------------------------
+
+Processes and their stacks: 
+Process: a Process in AtomicSharedQueue>>waitForNewItems
+  stack:
+
+AtomicSharedQueue>>waitForNewItems
+AtomicSharedQueue>>next
+TKTWorkerProcess>>privateNextTask
+TKTWorkerProcess>>workerLoop
+MessageSend>>value
+[ aValuable value ] in TKTPharoProcessProvider>>createProcessDoing:named:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in AtomicSharedQueue>>waitForNewItems
+  stack:
+
+AtomicSharedQueue>>waitForNewItems
+AtomicSharedQueue>>next
+TKTWorkerProcess>>privateNextTask
+TKTWorkerProcess>>workerLoop
+MessageSend>>value
+[ aValuable value ] in TKTPharoProcessProvider>>createProcessDoing:named:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in DelayMicrosecondTicker>>waitForUserSignalled:orExpired:
+  stack:
+
+DelayMicrosecondTicker>>waitForUserSignalled:orExpired:
+[  [runTimerEventLoop] whileTrue:
+		[	|nowTick|
+			"Warning! Stepping <Over> the following line may lock the Image. Use <Into> or <Proceed>."
+		 	ticker waitForUserSignalled: timingSemaphore orExpired: activeDelay.
+
+			"Invoke the api back-ends, which set the transfer-variable to nil"
+			suspendSemaphore ifNotNil: [ self suspendAtTimingPriority    ].
+			delayToStart     ifNotNil: [ self scheduleAtTimingPriority   ].
+			delayToStop      ifNotNil: [ self unscheduleAtTimingPriority ].
+
+			"Signal any expired delays"
+			nowTick := ticker nowTick.
+			[ 	activeDelay isNotNil and: [nowTick >= activeDelay resumptionTick] ]
+					whileTrue: [
+						activeDelay timingPrioritySignalExpired.
+						activeDelay := suspendedDelays removeFirstOrNil ].
+		]
+	] in DelaySemaphoreScheduler(DelayBasicScheduler)>>runBackendLoopAtTimingPriority
+FullBlockClosure(BlockClosure)>>ensure:
+DelaySemaphoreScheduler(DelayBasicScheduler)>>runBackendLoopAtTimingPriority
+[ self runBackendLoopAtTimingPriority ] in DelaySemaphoreScheduler(DelayBasicScheduler)>>startTimerEventLoopPriority:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in MorphicRenderLoop>>doOneCycleWhile:
+  stack:
+
+MorphicRenderLoop>>doOneCycleWhile:
+[ MorphicRenderLoop new doOneCycleWhile: [ true ] ] in MorphicUIManager>>spawnNewProcess
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in nil
+  stack:
+
+Array(SequenceableCollection)>>do:
+[:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]] in [ Smalltalk
+		logError: aString
+		inContext: aContext.
+
+	" Print stacks of all current processes "
+
+	Smalltalk logDuring: [:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]].
+	] in NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+[
+		logStream := self openLog.
+		aMonadicBlock value: logStream.
+	] in SmalltalkImage>>logDuring:
+FullBlockClosure(BlockClosure)>>ensure:
+SmalltalkImage>>logDuring:
+[ Smalltalk
+		logError: aString
+		inContext: aContext.
+
+	" Print stacks of all current processes "
+
+	Smalltalk logDuring: [:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]].
+	] in NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+FullBlockClosure(BlockClosure)>>ensure:
+NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+NonInteractiveUIManager(CommandLineUIManager)>>handleError:log:
+[
+				self uiManager handleError: anError log: false ] in StartupUIManager>>handleError:log:
+FullBlockClosure(BlockClosure)>>cull:
+WorkingSession>>executeDeferredStartupActions:
+SessionManager>>snapshot:andQuit:
+[^SessionManager default snapshot: save andQuit: quit] in SmalltalkImage>>snapshot:andQuit:
+CurrentExecutionEnvironment class>>activate:for:
+DefaultExecutionEnvironment(ExecutionEnvironment)>>beActiveDuring:
+DefaultExecutionEnvironment class>>beActiveDuring:
+SmalltalkImage>>snapshot:andQuit:
+EvaluateCommandLineHandler>>activate
+EvaluateCommandLineHandler class(CommandLineHandler class)>>activateWith:
+------------------------------
+
+Process: a Process in SmalltalkImage>>lowSpaceWatcher
+  stack:
+
+SmalltalkImage>>lowSpaceWatcher
+[ self lowSpaceWatcher ] in SmalltalkImage>>installLowSpaceWatcher
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in [self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+  stack:
+
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in FinalizationProcess class>>finalizationProcess
+  stack:
+
+FinalizationProcess class>>finalizationProcess
+[self finalizationProcess] in FinalizationProcess class>>restartFinalizationProcess
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in [
+		[ true ] whileTrue: [
+			semaphore wait.
+			[self executeCallback: self nextPendingCallback]
+				on: Exception fork:  [:ex | ex pass ] ] ] in TFCallbackQueue>>forkCallbackProcess
+  stack:
+
+[
+		[ true ] whileTrue: [
+			semaphore wait.
+			[self executeCallback: self nextPendingCallback]
+				on: Exception fork:  [:ex | ex pass ] ] ] in TFCallbackQueue>>forkCallbackProcess
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Array class(SequenceableCollection class)>>new:streamContents:
+  stack:
+
+Array class(SequenceableCollection class)>>new:streamContents:
+MethodDictionary(Dictionary)>>values
+IceTipRepairPullRemoteBranch class(Behavior)>>methods
+[ :behavior | behavior methods ] in SystemEnvironment>>allMethods
+[ :each | stream nextPutAll: (aBlock value: each) ] in [ :stream | self do: [ :each | stream nextPutAll: (aBlock value: each) ] ] in OrderedCollection(SequenceableCollection)>>flatCollect:
+OrderedCollection>>do:
+[ :stream | self do: [ :each | stream nextPutAll: (aBlock value: each) ] ] in OrderedCollection(SequenceableCollection)>>flatCollect:
+OrderedCollection class(SequenceableCollection class)>>new:streamContents:
+OrderedCollection class>>new:streamContents:
+OrderedCollection(SequenceableCollection)>>flatCollect:
+SystemEnvironment>>allMethods
+SystemNavigation>>allMethods
+Symbol class>>rebuildSelectorTable
+Symbol class>>selectorTable
+Symbol class>>recordSelector:
+BaselineOfSwiftyPharo class(Behavior)>>addSelectorSilently:withMethod:
+BaselineOfSwiftyPharo class(ClassDescription)>>addSelectorSilently:withMethod:
+BaselineOfSwiftyPharo class(ClassDescription)>>addAndClassifySelector:withMethod:inProtocol:
+OpalCompiler>>install
+OpalCompiler>>install:
+------------------------------
+
+THERE_BE_DRAGONS_HERE
+SymbolNotFoundError: Could not find symbol named: #FT_Init_FreeType searching in module: 'libfreetype.dylib'
+20 July 2026 11:22:31.203553 pm
+
+VM: Mac OS - arm64 - 1000 - CoInterpreter
+StackToRegisterMappingCogit
+23e5a5a76c90fcb95a4aa5e4fccb5f1318ad0ad2+0.23e5a5a - Commit: 23e5a5a - Date: 2026-07-15 14:26:30 +0200
+
+Image: Pharo13.1.0SNAPSHOT [Build information: Pharo-13.1.0+SNAPSHOT.build.744.sha.4c3e4714cc70093d033f85fd333decb87d03001d (64 Bit)]
+
+TFFIBackend>>primLoadSymbol:module:
+	Receiver: a TFFIBackend
+	Arguments and temporary variables: 
+		moduleSymbol: 	#FT_Init_FreeType
+		module: 	'libfreetype.dylib'
+	Receiver's instance variables: 
+a TFFIBackend
+
+TFFIBackend>>loadSymbol:module:
+	Receiver: a TFFIBackend
+	Arguments and temporary variables: 
+		moduleSymbol: 	#FT_Init_FreeType
+		module: 	'libfreetype.dylib'
+		encodedString: 	'libfreetype.dylib'
+	Receiver's instance variables: 
+a TFFIBackend
+
+ExternalAddress class>>loadSymbol:module:
+	Receiver: ExternalAddress
+	Arguments and temporary variables: 
+		moduleSymbol: 	#FT_Init_FreeType
+		module: 	'libfreetype.dylib'
+	Receiver's instance variables: 
+		superclass: 	ByteArray
+		methodDict: 	a MethodDictionary(#+->ExternalAddress>>#+ #=->ExternalAddress>[..]
+		format: 	1048576
+		layout: 	a ByteLayout
+		protocols: 	an Array(Protocol (arithmetic) - 1 selector(s) Protocol (compari[..]
+		subclasses: 	nil
+		name: 	#ExternalAddress
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	17321706
+		packageTag: 	a PackageTag(Uncategorized)
+		wordSize: 	8
+
+
+TFExternalFunction>>validate
+	Receiver: a TFExternalFunction
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+		definition: 	a TFFunctionDefinition(@ 16rB5F028990)
+		functionName: 	#FT_Init_FreeType
+		moduleName: 	'libfreetype.dylib'
+
+
+TFSameThreadRunner>>invokeFunction:withArguments:
+	Receiver: a TFSameThreadRunner(@ 16r00000000)
+	Arguments and temporary variables: 
+		function: 	a TFExternalFunction
+		aCollection: 	an Array(@ 16r10003729430)
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+		callbackInvocationStack: 	a Stack()
+		stackProtect: 	a Semaphore()
+		exceptionHandler: 	a TFForkCallbackExceptionHandler
+		semaphorePool: 	a TFPool(5 elements)
+		callbackReturnSemaphore: 	a Semaphore()
+
+
+FT2Library>>ffiInitFreeType:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		aPointer: 	an a subclass of FFIExternalValueHolder
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+TFCalloutAPI(FFICalloutAPI)>>function:library:
+	Receiver: a TFCalloutAPI
+	Arguments and temporary variables: 
+		functionSignature: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+		moduleNameOrLibrary: 	a FT2FFILibrary
+		sender: 	FT2Library>>ffiInitFreeType:
+		ffiMethod: 	FT2Library>>#ffiInitFreeType:
+		ffiMethodSelector: 	#ffiCall:
+	Receiver's instance variables: 
+		options: 	#(#+ #optStrict)
+		callingConvention: 	#cdecl
+		senderContext: 	nil
+		uFFIEntryPointContext: 	FT2Library(Object)>>ffiCall:library:options:fixedArg[..]
+		fixedArgumentCount: 	0
+
+
+FT2Library(Object)>>ffiCall:library:options:fixedArgumentCount:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		fnSpec: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+		aLibrary: 	a FT2FFILibrary
+		callOptions: 	#()
+		fixedArgumentsCount: 	0
+		ffiLibrary: 	a FT2FFILibrary
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library(Object)>>ffiCall:library:options:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		fnSpec: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+		aLibrary: 	a FT2FFILibrary
+		callOptions: 	#()
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library(Object)>>ffiCall:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		fnSpec: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library>>ffiInitFreeType:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		aPointer: 	an a subclass of FFIExternalValueHolder
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library>>checkLibrary
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		errorCode: 	nil
+		holder: 	an a subclass of FFIExternalValueHolder
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FreeTypeFace(FT2Face)>>newFaceFromExternalMemory:index:
+	Receiver: a FreeTypeFace(nil)<nil>
+	Arguments and temporary variables: 
+		aFreeTypeExternalMemory: 	a FreeTypeExternalMemory(@ 16r4CEC00000)<0xCEC00000>
+		anInteger: 	0
+		memSize: 	3202372
+		holder: 	an a subclass of FFIExternalValueHolder
+		returnCode: 	nil
+	Receiver's instance variables: 
+		handle: 	nil
+		numFaces: 	nil
+		faceIndex: 	nil
+		faceFlags: 	nil
+		styleFlags: 	nil
+		numGlyphs: 	nil
+		familyName: 	nil
+		styleName: 	nil
+		numFixedSizes: 	nil
+		availableSizes: 	nil
+		numCharmaps: 	nil
+		charmaps: 	nil
+		bbox: 	nil
+		unitsPerEm: 	nil
+		ascender: 	nil
+		descender: 	nil
+		height: 	nil
+		maxAdvanceWidth: 	nil
+		maxAdvanceHeight: 	nil
+		underlinePosition: 	nil
+		underlineThickness: 	nil
+		glyph: 	nil
+		encoding: 	nil
+		platformId: 	nil
+		encodingId: 	nil
+		size: 	nil
+		filename: 	nil
+		index: 	nil
+		fileContentsExternalMemory: 	a FreeTypeExternalMemory(@ 16r4CEC00000)<0xCEC0[..]
+		hasKerning: 	nil
+
+
+[
+	  newFace
+		  newFaceFromExternalMemory: externalMem index: index;
+		  loadFields;
+		  yourself ] in FreeTypeFontFileInstaller>>newFaceFromData:
+	Receiver: a FreeTypeFontFileInstaller
+	Arguments and temporary variables: 
+		externalMem: 	a FreeTypeExternalMemory(@ 16r4CEC00000)<0xCEC00000>
+		newFace: 	a FreeTypeFace(nil)<nil>
+	Receiver's instance variables: 
+		fileInfoProvider: 	an EmbeddedFreeTypeFontInstaller
+		face: 	nil
+		numFaces: 	nil
+		index: 	0
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [
+	  newFace
+		  newFaceFromExternalMemory: externalMem index: index;
+		  loadFields;
+[..]
+	Arguments and temporary variables: 
+		exception: 	an ExceptionSet
+		handlerAction: 	[ :e | nil ]
+	Receiver's instance variables: 
+		outerContext: 	FreeTypeFontFileInstaller>>newFaceFromData:
+		compiledBlock: 	a CompiledBlock: [
+	  newFace
+		  newFaceFromExternalMemory:[..]
+		numArgs: 	0
+		receiver: 	a FreeTypeFontFileInstaller
+
+
+FreeTypeFontFileInstaller>>newFaceFromData:
+	Receiver: a FreeTypeFontFileInstaller
+	Arguments and temporary variables: 
+		externalMem: 	a FreeTypeExternalMemory(@ 16r4CEC00000)<0xCEC00000>
+		newFace: 	a FreeTypeFace(nil)<nil>
+	Receiver's instance variables: 
+		fileInfoProvider: 	an EmbeddedFreeTypeFontInstaller
+		face: 	nil
+		numFaces: 	nil
+		index: 	0
+
+
+FreeTypeFontFileInstaller>>addFromFileContents:baseName:
+	Receiver: a FreeTypeFontFileInstaller
+	Arguments and temporary variables: 
+		bytes: 	#[116 116 99 102 0 2 0 0 0 0 0 4 0 0 0 40 0 0 1 148 0 0 2 240 0 0 4 [..]
+		originalFileBaseName: 	'LucidaGrande.ttc'
+		externalMem: 	a FreeTypeExternalMemory(@ 16r4CEC00000)<0xCEC00000>
+		cachedNumFaces: 	nil
+	Receiver's instance variables: 
+		fileInfoProvider: 	an EmbeddedFreeTypeFontInstaller
+		face: 	nil
+		numFaces: 	nil
+		index: 	0
+
+
+EmbeddedFreeTypeFontInstaller>>addFromFileContents:baseName:
+	Receiver: an EmbeddedFreeTypeFontInstaller
+	Arguments and temporary variables: 
+		bytes: 	#[116 116 99 102 0 2 0 0 0 0 0 4 0 0 0 40 0 0 1 148 0 0 2 240 0 0 4 [..]
+		originalFileBaseName: 	'LucidaGrande.ttc'
+	Receiver's instance variables: 
+		embeddedFileInfoCache: 	a Dictionary(#(197644 0)->a Set({#embedded}(197644 b[..]
+		provider: 	a FreeTypeFontProvider
+		numFaces: 	nil
+		face: 	nil
+
+
+LucidaGrandeRegular class(EmbeddedFreeTypeFontDescription class)>>installFontsIn:
+	Receiver: LucidaGrandeRegular
+	Arguments and temporary variables: 
+		provider: 	an EmbeddedFreeTypeFontInstaller
+	Receiver's instance variables: 
+		superclass: 	EmbeddedFreeTypeFontDescription
+		methodDict: 	a MethodDictionary()
+		format: 	0
+		layout: 	a FixedLayout
+		protocols: 	#()
+		subclasses: 	nil
+		name: 	#LucidaGrandeRegular
+		classPool: 	nil
+		sharedPools: 	nil
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	30995696
+		packageTag: 	a PackageTag(Fonts)
+
+
+[ :each | each installFontsIn: provider ] in EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+	Receiver: EmbeddedFreeTypeFontDescription
+	Arguments and temporary variables: 
+		provider: 	an EmbeddedFreeTypeFontInstaller
+		each: 	LucidaGrandeRegular
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary()
+		format: 	0
+		layout: 	a FixedLayout
+		protocols: 	#()
+		subclasses: 	{LucidaGrandeRegular. SourceCodeProRegular. SourceSansProRegular}
+		name: 	#EmbeddedFreeTypeFontDescription
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	15774212
+		packageTag: 	a PackageTag(Base)
+
+
+OrderedCollection>>do:
+	Receiver: an OrderedCollection(LucidaGrandeRegular SourceCodeProRegular SourceSansProRegular)
+	Arguments and temporary variables: 
+		aBlock: 	[ :each | each installFontsIn: provider ]
+		index: 	1
+	Receiver's instance variables: 
+		array: 	{LucidaGrandeRegular. SourceCodeProRegular. SourceSansProRegular}
+		firstIndex: 	1
+		lastIndex: 	3
+
+
+EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+	Receiver: EmbeddedFreeTypeFontDescription
+	Arguments and temporary variables: 
+		provider: 	an EmbeddedFreeTypeFontInstaller
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary()
+		format: 	0
+		layout: 	a FixedLayout
+		protocols: 	#()
+		subclasses: 	{LucidaGrandeRegular. SourceCodeProRegular. SourceSansProRegular}
+		name: 	#EmbeddedFreeTypeFontDescription
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	15774212
+		packageTag: 	a PackageTag(Base)
+
+
+EmbeddedFreeTypeFontInstaller>>installAllFontsIn:
+	Receiver: an EmbeddedFreeTypeFontInstaller
+	Arguments and temporary variables: 
+		aProvider: 	a FreeTypeFontProvider
+	Receiver's instance variables: 
+		embeddedFileInfoCache: 	a Dictionary(#(197644 0)->a Set({#embedded}(197644 b[..]
+		provider: 	a FreeTypeFontProvider
+		numFaces: 	nil
+		face: 	nil
+
+
+[ :each | each installAllFontsIn: self ] in FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+	Receiver: a FreeTypeFontProvider
+	Arguments and temporary variables: 
+		each: 	an EmbeddedFreeTypeFontInstaller
+	Receiver's instance variables: 
+		fileInfos: 	an OrderedCollection({#embedded}(293956 bytes )[0] 'Source Sans [..]
+		fileInfoCache: 	a Dictionary()
+		tempFileInfos: 	nil
+		families: 	a Dictionary('Source Code Pro'->#FreeTypeFontFamily 'Source Code [..]
+		tempFamilies: 	nil
+		fontInstallers: 	an OrderedCollection(an EmbeddedFreeTypeFontInstaller)
+
+
+OrderedCollection>>do:
+	Receiver: an OrderedCollection(an EmbeddedFreeTypeFontInstaller)
+	Arguments and temporary variables: 
+		aBlock: 	[ :each | each installAllFontsIn: self ]
+		index: 	1
+	Receiver's instance variables: 
+		array: 	an Array(an EmbeddedFreeTypeFontInstaller nil nil nil nil nil nil ni[..]
+		firstIndex: 	1
+		lastIndex: 	1
+
+
+FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+	Receiver: a FreeTypeFontProvider
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		fileInfos: 	an OrderedCollection({#embedded}(293956 bytes )[0] 'Source Sans [..]
+		fileInfoCache: 	a Dictionary()
+		tempFileInfos: 	nil
+		families: 	a Dictionary('Source Code Pro'->#FreeTypeFontFamily 'Source Code [..]
+		tempFamilies: 	nil
+		fontInstallers: 	an OrderedCollection(an EmbeddedFreeTypeFontInstaller)
+
+
+FreeTypeSettings class>>updateFreeType
+	Receiver: FreeTypeSettings
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary(#bitBltSubPixelAvailable->FreeTypeSettings>>[..]
+		format: 	65549
+		layout: 	a FixedLayout
+		protocols: 	an Array(Protocol (*FreeType-Graphics) - 2 selector(s) Protocol [..]
+		subclasses: 	nil
+		name: 	#FreeTypeSettings
+		classPool: 	a Dictionary(#UpdateFontsAtImageStartup->false )
+		sharedPools: 	an OrderedCollection(FT2Constants FreeTypeCacheConstants)
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	23042638
+		packageTag: 	a PackageTag(Settings)
+		current: 	a FreeTypeSettings
+
+
+FreeTypeSettings class>>startUp:
+	Receiver: FreeTypeSettings
+	Arguments and temporary variables: 
+		resuming: 	true
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary(#bitBltSubPixelAvailable->FreeTypeSettings>>[..]
+		format: 	65549
+		layout: 	a FixedLayout
+		protocols: 	an Array(Protocol (*FreeType-Graphics) - 2 selector(s) Protocol [..]
+		subclasses: 	nil
+		name: 	#FreeTypeSettings
+		classPool: 	a Dictionary(#UpdateFontsAtImageStartup->false )
+		sharedPools: 	an OrderedCollection(FT2Constants FreeTypeCacheConstants)
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	23042638
+		packageTag: 	a PackageTag(Settings)
+		current: 	a FreeTypeSettings
+
+
+ClassSessionHandler>>startup:
+	Receiver: a ClassSessionHandler(FreeTypeSettings)
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+	Receiver's instance variables: 
+		registeredClassName: 	#FreeTypeSettings
+
+
+[ :each | each startup: isImageStarting ] in WorkingSession>>runStartup:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+		each: 	a ClassSessionHandler(FreeTypeSettings)
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+[aBlock value: each] in [ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		aList: 	an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(S[..]
+		aBlock: 	[ :each | each startup: isImageStarting ]
+		each: 	a ClassSessionHandler(FreeTypeSettings)
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [aBlock value: each]
+	Arguments and temporary variables: 
+		exception: 	Exception
+		handlerAction: 	[ :error | self errorHandler handleError: error]
+	Receiver's instance variables: 
+		outerContext: 	[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :e[..]
+		compiledBlock: 	a CompiledBlock: [aBlock value: each]
+		numArgs: 	0
+		receiver: 	a WorkingSession
+
+
+[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		aList: 	an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(S[..]
+		aBlock: 	[ :each | each startup: isImageStarting ]
+		each: 	a ClassSessionHandler(FreeTypeSettings)
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+Array(SequenceableCollection)>>do:
+	Receiver: an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(SessionAccessModeRe[..]
+	Arguments and temporary variables: 
+		aBlock: 	[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error |[..]
+		index: 	40
+	Receiver's instance variables: 
+an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(SessionAccessModeRe[..]
+
+WorkingSession>>runList:do:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		aList: 	an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(S[..]
+		aBlock: 	[ :each | each startup: isImageStarting ]
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+WorkingSession>>runStartup:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+WorkingSession>>start:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+[ 
+		isImageStarting ifTrue: [ sessionManager installNewSession ].
+		sessionManager currentSession start: isImageStarting ] in SnapshotOperation>>performSnapshot
+	Receiver: a SnapshotOperation
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		isImageStarting: 	true
+		error: 	nil
+		save: 	true
+		quit: 	true
+		sessionManager: 	a SessionManager
+		imageFormatOption: 	nil
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [ 
+		isImageStarting ifTrue: [ sessionManager installNewSession ].
+		sessionManager cu[..]
+	Arguments and temporary variables: 
+		exception: 	Error
+		handlerAction: 	[:ex | errorHandlerBlock cull: ex]
+	Receiver's instance variables: 
+		outerContext: 	SnapshotOperation>>performSnapshot
+		compiledBlock: 	a CompiledBlock: [ 
+		isImageStarting ifTrue: [ sessionManag[..]
+		numArgs: 	0
+		receiver: 	a SnapshotOperation
+
+
+
+--- The full stack ---
+TFFIBackend>>primLoadSymbol:module:
+TFFIBackend>>loadSymbol:module:
+ExternalAddress class>>loadSymbol:module:
+TFExternalFunction>>validate
+TFSameThreadRunner>>invokeFunction:withArguments:
+FT2Library>>ffiInitFreeType:
+TFCalloutAPI(FFICalloutAPI)>>function:library:
+FT2Library(Object)>>ffiCall:library:options:fixedArgumentCount:
+FT2Library(Object)>>ffiCall:library:options:
+FT2Library(Object)>>ffiCall:
+FT2Library>>ffiInitFreeType:
+FT2Library>>checkLibrary
+FreeTypeFace(FT2Face)>>newFaceFromExternalMemory:index:
+[
+	  newFace
+		  newFaceFromExternalMemory: externalMem index: index;
+		  loadFields;
+		  yourself ] in FreeTypeFontFileInstaller>>newFaceFromData:
+FullBlockClosure(BlockClosure)>>on:do:
+FreeTypeFontFileInstaller>>newFaceFromData:
+FreeTypeFontFileInstaller>>addFromFileContents:baseName:
+EmbeddedFreeTypeFontInstaller>>addFromFileContents:baseName:
+LucidaGrandeRegular class(EmbeddedFreeTypeFontDescription class)>>installFontsIn:
+[ :each | each installFontsIn: provider ] in EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+OrderedCollection>>do:
+EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+EmbeddedFreeTypeFontInstaller>>installAllFontsIn:
+[ :each | each installAllFontsIn: self ] in FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+OrderedCollection>>do:
+FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+FreeTypeSettings class>>updateFreeType
+FreeTypeSettings class>>startUp:
+ClassSessionHandler>>startup:
+[ :each | each startup: isImageStarting ] in WorkingSession>>runStartup:
+[aBlock value: each] in [ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+FullBlockClosure(BlockClosure)>>on:do:
+[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+Array(SequenceableCollection)>>do:
+WorkingSession>>runList:do:
+WorkingSession>>runStartup:
+WorkingSession>>start:
+[ 
+		isImageStarting ifTrue: [ sessionManager installNewSession ].
+		sessionManager currentSession start: isImageStarting ] in SnapshotOperation>>performSnapshot
+FullBlockClosure(BlockClosure)>>on:do:
+ - - - - - - - - - - - - - - -
+			- - - - - - - - - - - - - - - - - -
+FullBlockClosure(BlockClosure)>>onErrorDo:
+SnapshotOperation>>executeStoringError:
+SnapshotOperation>>performSnapshot
+SessionManager>>launchSnapshot:andQuit:
+[  snapshotOperation := self launchSnapshot: save andQuit: quit.
+	   wait signal ] in SessionManager>>snapshot:andQuit:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+-------------------------------------------------------------------------------
+
+Processes and their stacks: 
+Process: a Process in AtomicSharedQueue>>waitForNewItems
+  stack:
+
+AtomicSharedQueue>>waitForNewItems
+AtomicSharedQueue>>next
+TKTWorkerProcess>>privateNextTask
+TKTWorkerProcess>>workerLoop
+MessageSend>>value
+[ aValuable value ] in TKTPharoProcessProvider>>createProcessDoing:named:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in AtomicSharedQueue>>waitForNewItems
+  stack:
+
+AtomicSharedQueue>>waitForNewItems
+AtomicSharedQueue>>next
+TKTWorkerProcess>>privateNextTask
+TKTWorkerProcess>>workerLoop
+MessageSend>>value
+[ aValuable value ] in TKTPharoProcessProvider>>createProcessDoing:named:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in DelayMicrosecondTicker>>waitForUserSignalled:orExpired:
+  stack:
+
+DelayMicrosecondTicker>>waitForUserSignalled:orExpired:
+[  [runTimerEventLoop] whileTrue:
+		[	|nowTick|
+			"Warning! Stepping <Over> the following line may lock the Image. Use <Into> or <Proceed>."
+		 	ticker waitForUserSignalled: timingSemaphore orExpired: activeDelay.
+
+			"Invoke the api back-ends, which set the transfer-variable to nil"
+			suspendSemaphore ifNotNil: [ self suspendAtTimingPriority    ].
+			delayToStart     ifNotNil: [ self scheduleAtTimingPriority   ].
+			delayToStop      ifNotNil: [ self unscheduleAtTimingPriority ].
+
+			"Signal any expired delays"
+			nowTick := ticker nowTick.
+			[ 	activeDelay isNotNil and: [nowTick >= activeDelay resumptionTick] ]
+					whileTrue: [
+						activeDelay timingPrioritySignalExpired.
+						activeDelay := suspendedDelays removeFirstOrNil ].
+		]
+	] in DelaySemaphoreScheduler(DelayBasicScheduler)>>runBackendLoopAtTimingPriority
+FullBlockClosure(BlockClosure)>>ensure:
+DelaySemaphoreScheduler(DelayBasicScheduler)>>runBackendLoopAtTimingPriority
+[ self runBackendLoopAtTimingPriority ] in DelaySemaphoreScheduler(DelayBasicScheduler)>>startTimerEventLoopPriority:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in MorphicRenderLoop>>doOneCycleWhile:
+  stack:
+
+MorphicRenderLoop>>doOneCycleWhile:
+[ MorphicRenderLoop new doOneCycleWhile: [ true ] ] in MorphicUIManager>>spawnNewProcess
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in nil
+  stack:
+
+Array(SequenceableCollection)>>do:
+[:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]] in [ Smalltalk
+		logError: aString
+		inContext: aContext.
+
+	" Print stacks of all current processes "
+
+	Smalltalk logDuring: [:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]].
+	] in NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+[
+		logStream := self openLog.
+		aMonadicBlock value: logStream.
+	] in SmalltalkImage>>logDuring:
+FullBlockClosure(BlockClosure)>>ensure:
+SmalltalkImage>>logDuring:
+[ Smalltalk
+		logError: aString
+		inContext: aContext.
+
+	" Print stacks of all current processes "
+
+	Smalltalk logDuring: [:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]].
+	] in NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+FullBlockClosure(BlockClosure)>>ensure:
+NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+NonInteractiveUIManager(CommandLineUIManager)>>handleError:log:
+[
+				self uiManager handleError: anError log: false ] in StartupUIManager>>handleError:log:
+FullBlockClosure(BlockClosure)>>cull:
+WorkingSession>>executeDeferredStartupActions:
+SessionManager>>snapshot:andQuit:
+[^SessionManager default snapshot: save andQuit: quit] in SmalltalkImage>>snapshot:andQuit:
+CurrentExecutionEnvironment class>>activate:for:
+DefaultExecutionEnvironment(ExecutionEnvironment)>>beActiveDuring:
+DefaultExecutionEnvironment class>>beActiveDuring:
+SmalltalkImage>>snapshot:andQuit:
+EvaluateCommandLineHandler>>activate
+EvaluateCommandLineHandler class(CommandLineHandler class)>>activateWith:
+------------------------------
+
+Process: a Process in SmalltalkImage>>lowSpaceWatcher
+  stack:
+
+SmalltalkImage>>lowSpaceWatcher
+[ self lowSpaceWatcher ] in SmalltalkImage>>installLowSpaceWatcher
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in [self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+  stack:
+
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in FinalizationProcess class>>finalizationProcess
+  stack:
+
+FinalizationProcess class>>finalizationProcess
+[self finalizationProcess] in FinalizationProcess class>>restartFinalizationProcess
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in [
+		[ true ] whileTrue: [
+			semaphore wait.
+			[self executeCallback: self nextPendingCallback]
+				on: Exception fork:  [:ex | ex pass ] ] ] in TFCallbackQueue>>forkCallbackProcess
+  stack:
+
+[
+		[ true ] whileTrue: [
+			semaphore wait.
+			[self executeCallback: self nextPendingCallback]
+				on: Exception fork:  [:ex | ex pass ] ] ] in TFCallbackQueue>>forkCallbackProcess
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in MethodDictionary>>valuesDo:
+  stack:
+
+MethodDictionary>>valuesDo:
+[ :out | self valuesDo: [:value | out nextPut: value]] in MethodDictionary(Dictionary)>>values
+Array class(SequenceableCollection class)>>new:streamContents:
+MethodDictionary(Dictionary)>>values
+Metaclass(Behavior)>>methods
+[ :behavior | behavior methods ] in SystemEnvironment>>allMethods
+[ :each | stream nextPutAll: (aBlock value: each) ] in [ :stream | self do: [ :each | stream nextPutAll: (aBlock value: each) ] ] in OrderedCollection(SequenceableCollection)>>flatCollect:
+OrderedCollection>>do:
+[ :stream | self do: [ :each | stream nextPutAll: (aBlock value: each) ] ] in OrderedCollection(SequenceableCollection)>>flatCollect:
+OrderedCollection class(SequenceableCollection class)>>new:streamContents:
+OrderedCollection class>>new:streamContents:
+OrderedCollection(SequenceableCollection)>>flatCollect:
+SystemEnvironment>>allMethods
+SystemNavigation>>allMethods
+Symbol class>>rebuildSelectorTable
+Symbol class>>selectorTable
+Symbol class>>recordSelector:
+BaselineOfSwiftyPharo class(Behavior)>>addSelectorSilently:withMethod:
+BaselineOfSwiftyPharo class(ClassDescription)>>addSelectorSilently:withMethod:
+BaselineOfSwiftyPharo class(ClassDescription)>>addAndClassifySelector:withMethod:inProtocol:
+------------------------------
+
+THERE_BE_DRAGONS_HERE
+SymbolNotFoundError: Could not find symbol named: #FT_Init_FreeType searching in module: 'libfreetype.dylib'
+20 July 2026 11:22:52.579172 pm
+
+VM: Mac OS - arm64 - 1000 - CoInterpreter
+StackToRegisterMappingCogit
+23e5a5a76c90fcb95a4aa5e4fccb5f1318ad0ad2+0.23e5a5a - Commit: 23e5a5a - Date: 2026-07-15 14:26:30 +0200
+
+Image: Pharo13.1.0SNAPSHOT [Build information: Pharo-13.1.0+SNAPSHOT.build.744.sha.4c3e4714cc70093d033f85fd333decb87d03001d (64 Bit)]
+
+TFFIBackend>>primLoadSymbol:module:
+	Receiver: a TFFIBackend
+	Arguments and temporary variables: 
+		moduleSymbol: 	#FT_Init_FreeType
+		module: 	'libfreetype.dylib'
+	Receiver's instance variables: 
+a TFFIBackend
+
+TFFIBackend>>loadSymbol:module:
+	Receiver: a TFFIBackend
+	Arguments and temporary variables: 
+		moduleSymbol: 	#FT_Init_FreeType
+		module: 	'libfreetype.dylib'
+		encodedString: 	'libfreetype.dylib'
+	Receiver's instance variables: 
+a TFFIBackend
+
+ExternalAddress class>>loadSymbol:module:
+	Receiver: ExternalAddress
+	Arguments and temporary variables: 
+		moduleSymbol: 	#FT_Init_FreeType
+		module: 	'libfreetype.dylib'
+	Receiver's instance variables: 
+		superclass: 	ByteArray
+		methodDict: 	a MethodDictionary(#+->ExternalAddress>>#+ #=->ExternalAddress>[..]
+		format: 	1048576
+		layout: 	a ByteLayout
+		protocols: 	an Array(Protocol (arithmetic) - 1 selector(s) Protocol (compari[..]
+		subclasses: 	nil
+		name: 	#ExternalAddress
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	17321706
+		packageTag: 	a PackageTag(Uncategorized)
+		wordSize: 	8
+
+
+TFExternalFunction>>validate
+	Receiver: a TFExternalFunction
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+		definition: 	a TFFunctionDefinition(@ 16r8A6C1C840)
+		functionName: 	#FT_Init_FreeType
+		moduleName: 	'libfreetype.dylib'
+
+
+TFSameThreadRunner>>invokeFunction:withArguments:
+	Receiver: a TFSameThreadRunner(@ 16r00000000)
+	Arguments and temporary variables: 
+		function: 	a TFExternalFunction
+		aCollection: 	an Array(@ 16r10003729430)
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+		callbackInvocationStack: 	a Stack()
+		stackProtect: 	a Semaphore()
+		exceptionHandler: 	a TFForkCallbackExceptionHandler
+		semaphorePool: 	a TFPool(5 elements)
+		callbackReturnSemaphore: 	a Semaphore()
+
+
+FT2Library>>ffiInitFreeType:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		aPointer: 	an a subclass of FFIExternalValueHolder
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+TFCalloutAPI(FFICalloutAPI)>>function:library:
+	Receiver: a TFCalloutAPI
+	Arguments and temporary variables: 
+		functionSignature: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+		moduleNameOrLibrary: 	a FT2FFILibrary
+		sender: 	FT2Library>>ffiInitFreeType:
+		ffiMethod: 	FT2Library>>#ffiInitFreeType:
+		ffiMethodSelector: 	#ffiCall:
+	Receiver's instance variables: 
+		options: 	#(#+ #optStrict)
+		callingConvention: 	#cdecl
+		senderContext: 	nil
+		uFFIEntryPointContext: 	FT2Library(Object)>>ffiCall:library:options:fixedArg[..]
+		fixedArgumentCount: 	0
+
+
+FT2Library(Object)>>ffiCall:library:options:fixedArgumentCount:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		fnSpec: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+		aLibrary: 	a FT2FFILibrary
+		callOptions: 	#()
+		fixedArgumentsCount: 	0
+		ffiLibrary: 	a FT2FFILibrary
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library(Object)>>ffiCall:library:options:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		fnSpec: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+		aLibrary: 	a FT2FFILibrary
+		callOptions: 	#()
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library(Object)>>ffiCall:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		fnSpec: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library>>ffiInitFreeType:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		aPointer: 	an a subclass of FFIExternalValueHolder
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library>>checkLibrary
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		errorCode: 	nil
+		holder: 	an a subclass of FFIExternalValueHolder
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FreeTypeFace(FT2Face)>>newFaceFromExternalMemory:index:
+	Receiver: a FreeTypeFace(nil)<nil>
+	Arguments and temporary variables: 
+		aFreeTypeExternalMemory: 	a FreeTypeExternalMemory(@ 16r49AC00000)<0x9AC00000>
+		anInteger: 	0
+		memSize: 	3202372
+		holder: 	an a subclass of FFIExternalValueHolder
+		returnCode: 	nil
+	Receiver's instance variables: 
+		handle: 	nil
+		numFaces: 	nil
+		faceIndex: 	nil
+		faceFlags: 	nil
+		styleFlags: 	nil
+		numGlyphs: 	nil
+		familyName: 	nil
+		styleName: 	nil
+		numFixedSizes: 	nil
+		availableSizes: 	nil
+		numCharmaps: 	nil
+		charmaps: 	nil
+		bbox: 	nil
+		unitsPerEm: 	nil
+		ascender: 	nil
+		descender: 	nil
+		height: 	nil
+		maxAdvanceWidth: 	nil
+		maxAdvanceHeight: 	nil
+		underlinePosition: 	nil
+		underlineThickness: 	nil
+		glyph: 	nil
+		encoding: 	nil
+		platformId: 	nil
+		encodingId: 	nil
+		size: 	nil
+		filename: 	nil
+		index: 	nil
+		fileContentsExternalMemory: 	a FreeTypeExternalMemory(@ 16r49AC00000)<0x9AC0[..]
+		hasKerning: 	nil
+
+
+[
+	  newFace
+		  newFaceFromExternalMemory: externalMem index: index;
+		  loadFields;
+		  yourself ] in FreeTypeFontFileInstaller>>newFaceFromData:
+	Receiver: a FreeTypeFontFileInstaller
+	Arguments and temporary variables: 
+		externalMem: 	a FreeTypeExternalMemory(@ 16r49AC00000)<0x9AC00000>
+		newFace: 	a FreeTypeFace(nil)<nil>
+	Receiver's instance variables: 
+		fileInfoProvider: 	an EmbeddedFreeTypeFontInstaller
+		face: 	nil
+		numFaces: 	nil
+		index: 	0
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [
+	  newFace
+		  newFaceFromExternalMemory: externalMem index: index;
+		  loadFields;
+[..]
+	Arguments and temporary variables: 
+		exception: 	an ExceptionSet
+		handlerAction: 	[ :e | nil ]
+	Receiver's instance variables: 
+		outerContext: 	FreeTypeFontFileInstaller>>newFaceFromData:
+		compiledBlock: 	a CompiledBlock: [
+	  newFace
+		  newFaceFromExternalMemory:[..]
+		numArgs: 	0
+		receiver: 	a FreeTypeFontFileInstaller
+
+
+FreeTypeFontFileInstaller>>newFaceFromData:
+	Receiver: a FreeTypeFontFileInstaller
+	Arguments and temporary variables: 
+		externalMem: 	a FreeTypeExternalMemory(@ 16r49AC00000)<0x9AC00000>
+		newFace: 	a FreeTypeFace(nil)<nil>
+	Receiver's instance variables: 
+		fileInfoProvider: 	an EmbeddedFreeTypeFontInstaller
+		face: 	nil
+		numFaces: 	nil
+		index: 	0
+
+
+FreeTypeFontFileInstaller>>addFromFileContents:baseName:
+	Receiver: a FreeTypeFontFileInstaller
+	Arguments and temporary variables: 
+		bytes: 	#[116 116 99 102 0 2 0 0 0 0 0 4 0 0 0 40 0 0 1 148 0 0 2 240 0 0 4 [..]
+		originalFileBaseName: 	'LucidaGrande.ttc'
+		externalMem: 	a FreeTypeExternalMemory(@ 16r49AC00000)<0x9AC00000>
+		cachedNumFaces: 	nil
+	Receiver's instance variables: 
+		fileInfoProvider: 	an EmbeddedFreeTypeFontInstaller
+		face: 	nil
+		numFaces: 	nil
+		index: 	0
+
+
+EmbeddedFreeTypeFontInstaller>>addFromFileContents:baseName:
+	Receiver: an EmbeddedFreeTypeFontInstaller
+	Arguments and temporary variables: 
+		bytes: 	#[116 116 99 102 0 2 0 0 0 0 0 4 0 0 0 40 0 0 1 148 0 0 2 240 0 0 4 [..]
+		originalFileBaseName: 	'LucidaGrande.ttc'
+	Receiver's instance variables: 
+		embeddedFileInfoCache: 	a Dictionary(#(197644 0)->a Set({#embedded}(197644 b[..]
+		provider: 	a FreeTypeFontProvider
+		numFaces: 	nil
+		face: 	nil
+
+
+LucidaGrandeRegular class(EmbeddedFreeTypeFontDescription class)>>installFontsIn:
+	Receiver: LucidaGrandeRegular
+	Arguments and temporary variables: 
+		provider: 	an EmbeddedFreeTypeFontInstaller
+	Receiver's instance variables: 
+		superclass: 	EmbeddedFreeTypeFontDescription
+		methodDict: 	a MethodDictionary()
+		format: 	0
+		layout: 	a FixedLayout
+		protocols: 	#()
+		subclasses: 	nil
+		name: 	#LucidaGrandeRegular
+		classPool: 	nil
+		sharedPools: 	nil
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	30995696
+		packageTag: 	a PackageTag(Fonts)
+
+
+[ :each | each installFontsIn: provider ] in EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+	Receiver: EmbeddedFreeTypeFontDescription
+	Arguments and temporary variables: 
+		provider: 	an EmbeddedFreeTypeFontInstaller
+		each: 	LucidaGrandeRegular
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary()
+		format: 	0
+		layout: 	a FixedLayout
+		protocols: 	#()
+		subclasses: 	{LucidaGrandeRegular. SourceCodeProRegular. SourceSansProRegular}
+		name: 	#EmbeddedFreeTypeFontDescription
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	15774212
+		packageTag: 	a PackageTag(Base)
+
+
+OrderedCollection>>do:
+	Receiver: an OrderedCollection(LucidaGrandeRegular SourceCodeProRegular SourceSansProRegular)
+	Arguments and temporary variables: 
+		aBlock: 	[ :each | each installFontsIn: provider ]
+		index: 	1
+	Receiver's instance variables: 
+		array: 	{LucidaGrandeRegular. SourceCodeProRegular. SourceSansProRegular}
+		firstIndex: 	1
+		lastIndex: 	3
+
+
+EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+	Receiver: EmbeddedFreeTypeFontDescription
+	Arguments and temporary variables: 
+		provider: 	an EmbeddedFreeTypeFontInstaller
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary()
+		format: 	0
+		layout: 	a FixedLayout
+		protocols: 	#()
+		subclasses: 	{LucidaGrandeRegular. SourceCodeProRegular. SourceSansProRegular}
+		name: 	#EmbeddedFreeTypeFontDescription
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	15774212
+		packageTag: 	a PackageTag(Base)
+
+
+EmbeddedFreeTypeFontInstaller>>installAllFontsIn:
+	Receiver: an EmbeddedFreeTypeFontInstaller
+	Arguments and temporary variables: 
+		aProvider: 	a FreeTypeFontProvider
+	Receiver's instance variables: 
+		embeddedFileInfoCache: 	a Dictionary(#(197644 0)->a Set({#embedded}(197644 b[..]
+		provider: 	a FreeTypeFontProvider
+		numFaces: 	nil
+		face: 	nil
+
+
+[ :each | each installAllFontsIn: self ] in FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+	Receiver: a FreeTypeFontProvider
+	Arguments and temporary variables: 
+		each: 	an EmbeddedFreeTypeFontInstaller
+	Receiver's instance variables: 
+		fileInfos: 	an OrderedCollection({#embedded}(293956 bytes )[0] 'Source Sans [..]
+		fileInfoCache: 	a Dictionary()
+		tempFileInfos: 	nil
+		families: 	a Dictionary('Source Code Pro'->#FreeTypeFontFamily 'Source Code [..]
+		tempFamilies: 	nil
+		fontInstallers: 	an OrderedCollection(an EmbeddedFreeTypeFontInstaller)
+
+
+OrderedCollection>>do:
+	Receiver: an OrderedCollection(an EmbeddedFreeTypeFontInstaller)
+	Arguments and temporary variables: 
+		aBlock: 	[ :each | each installAllFontsIn: self ]
+		index: 	1
+	Receiver's instance variables: 
+		array: 	an Array(an EmbeddedFreeTypeFontInstaller nil nil nil nil nil nil ni[..]
+		firstIndex: 	1
+		lastIndex: 	1
+
+
+FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+	Receiver: a FreeTypeFontProvider
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		fileInfos: 	an OrderedCollection({#embedded}(293956 bytes )[0] 'Source Sans [..]
+		fileInfoCache: 	a Dictionary()
+		tempFileInfos: 	nil
+		families: 	a Dictionary('Source Code Pro'->#FreeTypeFontFamily 'Source Code [..]
+		tempFamilies: 	nil
+		fontInstallers: 	an OrderedCollection(an EmbeddedFreeTypeFontInstaller)
+
+
+FreeTypeSettings class>>updateFreeType
+	Receiver: FreeTypeSettings
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary(#bitBltSubPixelAvailable->FreeTypeSettings>>[..]
+		format: 	65549
+		layout: 	a FixedLayout
+		protocols: 	an Array(Protocol (*FreeType-Graphics) - 2 selector(s) Protocol [..]
+		subclasses: 	nil
+		name: 	#FreeTypeSettings
+		classPool: 	a Dictionary(#UpdateFontsAtImageStartup->false )
+		sharedPools: 	an OrderedCollection(FT2Constants FreeTypeCacheConstants)
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	23042638
+		packageTag: 	a PackageTag(Settings)
+		current: 	a FreeTypeSettings
+
+
+FreeTypeSettings class>>startUp:
+	Receiver: FreeTypeSettings
+	Arguments and temporary variables: 
+		resuming: 	true
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary(#bitBltSubPixelAvailable->FreeTypeSettings>>[..]
+		format: 	65549
+		layout: 	a FixedLayout
+		protocols: 	an Array(Protocol (*FreeType-Graphics) - 2 selector(s) Protocol [..]
+		subclasses: 	nil
+		name: 	#FreeTypeSettings
+		classPool: 	a Dictionary(#UpdateFontsAtImageStartup->false )
+		sharedPools: 	an OrderedCollection(FT2Constants FreeTypeCacheConstants)
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	23042638
+		packageTag: 	a PackageTag(Settings)
+		current: 	a FreeTypeSettings
+
+
+ClassSessionHandler>>startup:
+	Receiver: a ClassSessionHandler(FreeTypeSettings)
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+	Receiver's instance variables: 
+		registeredClassName: 	#FreeTypeSettings
+
+
+[ :each | each startup: isImageStarting ] in WorkingSession>>runStartup:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+		each: 	a ClassSessionHandler(FreeTypeSettings)
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+[aBlock value: each] in [ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		aList: 	an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(S[..]
+		aBlock: 	[ :each | each startup: isImageStarting ]
+		each: 	a ClassSessionHandler(FreeTypeSettings)
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [aBlock value: each]
+	Arguments and temporary variables: 
+		exception: 	Exception
+		handlerAction: 	[ :error | self errorHandler handleError: error]
+	Receiver's instance variables: 
+		outerContext: 	[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :e[..]
+		compiledBlock: 	a CompiledBlock: [aBlock value: each]
+		numArgs: 	0
+		receiver: 	a WorkingSession
+
+
+[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		aList: 	an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(S[..]
+		aBlock: 	[ :each | each startup: isImageStarting ]
+		each: 	a ClassSessionHandler(FreeTypeSettings)
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+Array(SequenceableCollection)>>do:
+	Receiver: an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(SessionAccessModeRe[..]
+	Arguments and temporary variables: 
+		aBlock: 	[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error |[..]
+		index: 	40
+	Receiver's instance variables: 
+an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(SessionAccessModeRe[..]
+
+WorkingSession>>runList:do:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		aList: 	an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(S[..]
+		aBlock: 	[ :each | each startup: isImageStarting ]
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+WorkingSession>>runStartup:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+WorkingSession>>start:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+[ 
+		isImageStarting ifTrue: [ sessionManager installNewSession ].
+		sessionManager currentSession start: isImageStarting ] in SnapshotOperation>>performSnapshot
+	Receiver: a SnapshotOperation
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		isImageStarting: 	true
+		error: 	nil
+		save: 	true
+		quit: 	true
+		sessionManager: 	a SessionManager
+		imageFormatOption: 	nil
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [ 
+		isImageStarting ifTrue: [ sessionManager installNewSession ].
+		sessionManager cu[..]
+	Arguments and temporary variables: 
+		exception: 	Error
+		handlerAction: 	[:ex | errorHandlerBlock cull: ex]
+	Receiver's instance variables: 
+		outerContext: 	SnapshotOperation>>performSnapshot
+		compiledBlock: 	a CompiledBlock: [ 
+		isImageStarting ifTrue: [ sessionManag[..]
+		numArgs: 	0
+		receiver: 	a SnapshotOperation
+
+
+
+--- The full stack ---
+TFFIBackend>>primLoadSymbol:module:
+TFFIBackend>>loadSymbol:module:
+ExternalAddress class>>loadSymbol:module:
+TFExternalFunction>>validate
+TFSameThreadRunner>>invokeFunction:withArguments:
+FT2Library>>ffiInitFreeType:
+TFCalloutAPI(FFICalloutAPI)>>function:library:
+FT2Library(Object)>>ffiCall:library:options:fixedArgumentCount:
+FT2Library(Object)>>ffiCall:library:options:
+FT2Library(Object)>>ffiCall:
+FT2Library>>ffiInitFreeType:
+FT2Library>>checkLibrary
+FreeTypeFace(FT2Face)>>newFaceFromExternalMemory:index:
+[
+	  newFace
+		  newFaceFromExternalMemory: externalMem index: index;
+		  loadFields;
+		  yourself ] in FreeTypeFontFileInstaller>>newFaceFromData:
+FullBlockClosure(BlockClosure)>>on:do:
+FreeTypeFontFileInstaller>>newFaceFromData:
+FreeTypeFontFileInstaller>>addFromFileContents:baseName:
+EmbeddedFreeTypeFontInstaller>>addFromFileContents:baseName:
+LucidaGrandeRegular class(EmbeddedFreeTypeFontDescription class)>>installFontsIn:
+[ :each | each installFontsIn: provider ] in EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+OrderedCollection>>do:
+EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+EmbeddedFreeTypeFontInstaller>>installAllFontsIn:
+[ :each | each installAllFontsIn: self ] in FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+OrderedCollection>>do:
+FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+FreeTypeSettings class>>updateFreeType
+FreeTypeSettings class>>startUp:
+ClassSessionHandler>>startup:
+[ :each | each startup: isImageStarting ] in WorkingSession>>runStartup:
+[aBlock value: each] in [ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+FullBlockClosure(BlockClosure)>>on:do:
+[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+Array(SequenceableCollection)>>do:
+WorkingSession>>runList:do:
+WorkingSession>>runStartup:
+WorkingSession>>start:
+[ 
+		isImageStarting ifTrue: [ sessionManager installNewSession ].
+		sessionManager currentSession start: isImageStarting ] in SnapshotOperation>>performSnapshot
+FullBlockClosure(BlockClosure)>>on:do:
+ - - - - - - - - - - - - - - -
+			- - - - - - - - - - - - - - - - - -
+FullBlockClosure(BlockClosure)>>onErrorDo:
+SnapshotOperation>>executeStoringError:
+SnapshotOperation>>performSnapshot
+SessionManager>>launchSnapshot:andQuit:
+[  snapshotOperation := self launchSnapshot: save andQuit: quit.
+	   wait signal ] in SessionManager>>snapshot:andQuit:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+-------------------------------------------------------------------------------
+
+Processes and their stacks: 
+Process: a Process in AtomicSharedQueue>>waitForNewItems
+  stack:
+
+AtomicSharedQueue>>waitForNewItems
+AtomicSharedQueue>>next
+TKTWorkerProcess>>privateNextTask
+TKTWorkerProcess>>workerLoop
+MessageSend>>value
+[ aValuable value ] in TKTPharoProcessProvider>>createProcessDoing:named:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in AtomicSharedQueue>>waitForNewItems
+  stack:
+
+AtomicSharedQueue>>waitForNewItems
+AtomicSharedQueue>>next
+TKTWorkerProcess>>privateNextTask
+TKTWorkerProcess>>workerLoop
+MessageSend>>value
+[ aValuable value ] in TKTPharoProcessProvider>>createProcessDoing:named:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in DelayMicrosecondTicker>>waitForUserSignalled:orExpired:
+  stack:
+
+DelayMicrosecondTicker>>waitForUserSignalled:orExpired:
+[  [runTimerEventLoop] whileTrue:
+		[	|nowTick|
+			"Warning! Stepping <Over> the following line may lock the Image. Use <Into> or <Proceed>."
+		 	ticker waitForUserSignalled: timingSemaphore orExpired: activeDelay.
+
+			"Invoke the api back-ends, which set the transfer-variable to nil"
+			suspendSemaphore ifNotNil: [ self suspendAtTimingPriority    ].
+			delayToStart     ifNotNil: [ self scheduleAtTimingPriority   ].
+			delayToStop      ifNotNil: [ self unscheduleAtTimingPriority ].
+
+			"Signal any expired delays"
+			nowTick := ticker nowTick.
+			[ 	activeDelay isNotNil and: [nowTick >= activeDelay resumptionTick] ]
+					whileTrue: [
+						activeDelay timingPrioritySignalExpired.
+						activeDelay := suspendedDelays removeFirstOrNil ].
+		]
+	] in DelaySemaphoreScheduler(DelayBasicScheduler)>>runBackendLoopAtTimingPriority
+FullBlockClosure(BlockClosure)>>ensure:
+DelaySemaphoreScheduler(DelayBasicScheduler)>>runBackendLoopAtTimingPriority
+[ self runBackendLoopAtTimingPriority ] in DelaySemaphoreScheduler(DelayBasicScheduler)>>startTimerEventLoopPriority:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in MorphicRenderLoop>>doOneCycleWhile:
+  stack:
+
+MorphicRenderLoop>>doOneCycleWhile:
+[ MorphicRenderLoop new doOneCycleWhile: [ true ] ] in MorphicUIManager>>spawnNewProcess
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in nil
+  stack:
+
+Array(SequenceableCollection)>>do:
+[:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]] in [ Smalltalk
+		logError: aString
+		inContext: aContext.
+
+	" Print stacks of all current processes "
+
+	Smalltalk logDuring: [:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]].
+	] in NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+[
+		logStream := self openLog.
+		aMonadicBlock value: logStream.
+	] in SmalltalkImage>>logDuring:
+FullBlockClosure(BlockClosure)>>ensure:
+SmalltalkImage>>logDuring:
+[ Smalltalk
+		logError: aString
+		inContext: aContext.
+
+	" Print stacks of all current processes "
+
+	Smalltalk logDuring: [:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]].
+	] in NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+FullBlockClosure(BlockClosure)>>ensure:
+NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+NonInteractiveUIManager(CommandLineUIManager)>>handleError:log:
+[
+				self uiManager handleError: anError log: false ] in StartupUIManager>>handleError:log:
+FullBlockClosure(BlockClosure)>>cull:
+WorkingSession>>executeDeferredStartupActions:
+SessionManager>>snapshot:andQuit:
+[^SessionManager default snapshot: save andQuit: quit] in SmalltalkImage>>snapshot:andQuit:
+CurrentExecutionEnvironment class>>activate:for:
+DefaultExecutionEnvironment(ExecutionEnvironment)>>beActiveDuring:
+DefaultExecutionEnvironment class>>beActiveDuring:
+SmalltalkImage>>snapshot:andQuit:
+EvaluateCommandLineHandler>>activate
+EvaluateCommandLineHandler class(CommandLineHandler class)>>activateWith:
+------------------------------
+
+Process: a Process in SmalltalkImage>>lowSpaceWatcher
+  stack:
+
+SmalltalkImage>>lowSpaceWatcher
+[ self lowSpaceWatcher ] in SmalltalkImage>>installLowSpaceWatcher
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in [self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+  stack:
+
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in FinalizationProcess class>>finalizationProcess
+  stack:
+
+FinalizationProcess class>>finalizationProcess
+[self finalizationProcess] in FinalizationProcess class>>restartFinalizationProcess
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in [
+		[ true ] whileTrue: [
+			semaphore wait.
+			[self executeCallback: self nextPendingCallback]
+				on: Exception fork:  [:ex | ex pass ] ] ] in TFCallbackQueue>>forkCallbackProcess
+  stack:
+
+[
+		[ true ] whileTrue: [
+			semaphore wait.
+			[self executeCallback: self nextPendingCallback]
+				on: Exception fork:  [:ex | ex pass ] ] ] in TFCallbackQueue>>forkCallbackProcess
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in OCIRSequence>>ifNotEmpty:
+  stack:
+
+OCIRSequence>>ifNotEmpty:
+OCIRBuilder>>popTop
+OCASTTranslator>>visitEffectNode:
+[:each | self visitEffectNode: each] in OCASTTranslator>>visitSequenceNode:
+OrderedCollection(SequenceableCollection)>>allButLastDo:
+OCASTTranslator>>visitSequenceNode:
+OCSequenceNode>>acceptVisitor:
+OCASTTranslator(OCProgramNodeVisitor)>>visitNode:
+OCASTTranslator>>visitNode:
+OCASTTranslator>>visitEffectNode:
+OCASTTranslator>>visitMethodNode:
+OCMethodNode>>acceptVisitor:
+OCASTTranslator(OCProgramNodeVisitor)>>visitNode:
+OCASTTranslator>>visitNode:
+OpalCompiler>>generateIR
+OCMethodNode>>generateIR
+[ self generateIR ] in OCMethodNode>>ir
+[ self propertyAt: aKey put: aBlock value ] in OCMethodNode(OCProgramNode)>>propertyAt:ifAbsentPut:
+SmallDictionary>>at:ifAbsent:
+OCMethodNode(OCProgramNode)>>propertyAt:ifAbsent:
+------------------------------
+
+eArguments
+		session: 	a WorkingSession
+		stdout: 	a VTermOutputDriver
+		stderr: 	a VTermOutputDriver
+		sourceFiles: 	nil
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [
+	result := Smalltalk compiler evaluate: aStream.
+	self hasSessionChanged
+		ifFalse: [..]
+	Arguments and temporary variables: 
+		exception: 	Error
+		handlerAction: 	[ :error | self handleError: error ]
+	Receiver's instance variables: 
+		outerContext: 	EvaluateCommandLineHandler>>evaluate:
+		compiledBlock: 	a CompiledBlock: [
+	result := Smalltalk compiler evaluate: a[..]
+		numArgs: 	0
+		receiver: 	an EvaluateCommandLineHandler
+
+
+EvaluateCommandLineHandler>>evaluate:
+	Receiver: an EvaluateCommandLineHandler
+	Arguments and temporary variables: 
+		result: 	nil
+		aStream: 	'Smalltalk at: #SwpBridge'
+	Receiver's instance variables: 
+		commandLine: 	a CommandLineArguments
+		session: 	a WorkingSession
+		stdout: 	a VTermOutputDriver
+		stderr: 	a VTermOutputDriver
+		sourceFiles: 	nil
+
+
+EvaluateCommandLineHandler>>evaluateArguments
+	Receiver: an EvaluateCommandLineHandler
+	Arguments and temporary variables: 
+		argumentString: 	'Smalltalk at: #SwpBridge'
+	Receiver's instance variables: 
+		commandLine: 	a CommandLineArguments
+		session: 	a WorkingSession
+		stdout: 	a VTermOutputDriver
+		stderr: 	a VTermOutputDriver
+		sourceFiles: 	nil
+
+
+EvaluateCommandLineHandler>>activate
+	Receiver: an EvaluateCommandLineHandler
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		commandLine: 	a CommandLineArguments
+		session: 	a WorkingSession
+		stdout: 	a VTermOutputDriver
+		stderr: 	a VTermOutputDriver
+		sourceFiles: 	nil
+
+
+EvaluateCommandLineHandler class(CommandLineHandler class)>>activateWith:
+	Receiver: EvaluateCommandLineHandler
+	Arguments and temporary variables: 
+		aCommandLine: 	a CommandLineArguments
+	Receiver's instance variables: 
+		superclass: 	STCommandLineHandler
+		methodDict: 	a MethodDictionary(#activate->EvaluateCommandLineHandler>>#acti[..]
+		format: 	65541
+		layout: 	a FixedLayout
+		protocols: 	an Array(Protocol (activation) - 4 selector(s) Protocol (command[..]
+		subclasses: 	nil
+		name: 	#EvaluateCommandLineHandler
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	16991828
+		packageTag: 	a PackageTag(Base)
+
+
+[ aCommandLinehandler activateWith: commandLine ] in PharoCommandLineHandler(BasicCommandLineHandler)>>activateSubCommand:
+	Receiver: a PharoCommandLineHandler
+	Arguments and temporary variables: 
+		aCommandLinehandler: 	EvaluateCommandLineHandler
+	Receiver's instance variables: 
+		commandLine: 	a CommandLineArguments
+		session: 	a WorkingSession
+		stdout: 	a VTermOutputDriver
+		stderr: 	a VTermOutputDriver
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [ aCommandLinehandler activateWith: commandLine ]
+	Arguments and temporary variables: 
+		exception: 	Exit
+		handlerAction: 	[ :exit |
+		^ self handleExit: exit for: aCommandLinehandler ]
+	Receiver's instance variables: 
+		outerContext: 	PharoCommandLineHandler(BasicCommandLineHandler)>>activateSub[..]
+		compiledBlock: 	a CompiledBlock: [ aCommandLinehandler activateWith: command[..]
+		numArgs: 	0
+		receiver: 	a PharoCommandLineHandler
+
+
+PharoCommandLineHandler(BasicCommandLineHandler)>>activateSubCommand:
+	Receiver: a PharoCommandLineHandler
+	Arguments and temporary variables: 
+		aCommandLinehandler: 	EvaluateCommandLineHandler
+	Receiver's instance variables: 
+		commandLine: 	a CommandLineArguments
+		session: 	a WorkingSession
+		stdout: 	a VTermOutputDriver
+		stderr: 	a VTermOutputDriver
+
+
+PharoCommandLineHandler(BasicCommandLineHandler)>>handleSubcommand
+	Receiver: a PharoCommandLineHandler
+	Arguments and temporary variables: 
+		handlers: 	an OrderedCollection(EvaluateCommandLineHandler)
+	Receiver's instance variables: 
+		commandLine: 	a CommandLineArguments
+		session: 	a WorkingSession
+		stdout: 	a VTermOutputDriver
+		stderr: 	a VTermOutputDriver
+
+
+PharoCommandLineHandler(BasicCommandLineHandler)>>handleArgument:
+	Receiver: a PharoCommandLineHandler
+	Arguments and temporary variables: 
+		aString: 	'eval'
+	Receiver's instance variables: 
+		commandLine: 	a CommandLineArguments
+		session: 	a WorkingSession
+		stdout: 	a VTermOutputDriver
+		stderr: 	a VTermOutputDriver
+
+
+[ self handleArgument: self firstArgument ] in [ [ self handleArgument: self firstArgument ]
+		on: Exit
+		do: [ :exit |
+			"If the command line is protected by password, we just exit the image because in non-headless mode the handleExit will let the image open. If the password protection is enabled, it is to avoid to let the access to the image."
+			self class commandLinePasswordManager hasPasswordSet
+				ifTrue: [ Smalltalk snapshot: false andQuit: true ].
+			self handleExit: exit ] ] in PharoCommandLineHandler(BasicCommandLineHandler)>>activate
+	Receiver: a PharoCommandLineHandler
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		commandLine: 	a CommandLineArguments
+		session: 	a WorkingSession
+		stdout: 	a VTermOutputDriver
+		stderr: 	a VTermOutputDriver
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [ self handleArgument: self firstArgument ]
+	Arguments and temporary variables: 
+		exception: 	Exit
+		handlerAction: 	[ :exit |
+			"If the command line is protected by password, [..]
+	Receiver's instance variables: 
+		outerContext: 	[ [ self handleArgument: self firstArgument ]
+		on: Exit
+		do[..]
+		compiledBlock: 	a CompiledBlock: [ self handleArgument: self firstArgument ]
+		numArgs: 	0
+		receiver: 	a PharoCommandLineHandler
+
+
+[ [ self handleArgument: self firstArgument ]
+		on: Exit
+		do: [ :exit |
+			"If the command line is protected by password, we just exit the image because in non-headless mode the handleExit will let the image open. If the password protection is enabled, it is to avoid to let the access to the image."
+			self class commandLinePasswordManager hasPasswordSet
+				ifTrue: [ Smalltalk snapshot: false andQuit: true ].
+			self handleExit: exit ] ] in PharoCommandLineHandler(BasicCommandLineHandler)>>activate
+	Receiver: a PharoCommandLineHandler
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		commandLine: 	a CommandLineArguments
+		session: 	a WorkingSession
+		stdout: 	a VTermOutputDriver
+		stderr: 	a VTermOutputDriver
+
+
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+	Receiver: [ [ self handleArgument: self firstArgument ]
+		on: Exit
+		do: [ :exit |
+			"If the co[..]
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		outerContext: 	PharoCommandLineHandler(BasicCommandLineHandler)>>activate
+		compiledBlock: 	a CompiledBlock: [ [ self handleArgument: self firstArgument[..]
+		numArgs: 	0
+		receiver: 	a PharoCommandLineHandler
+
+
+
+--- The full stack ---
+SystemEnvironment(Dictionary)>>errorKeyNotFound:
+[self errorKeyNotFound: key] in SystemEnvironment(Dictionary)>>at:
+SystemEnvironment(Dictionary)>>at:ifAbsent:
+SystemEnvironment(Dictionary)>>at:
+SmalltalkImage>>at:
+UndefinedObject>>DoIt
+OCReceiverDoItSemanticScope(OCDoItSemanticScope)>>evaluateDoIt:
+OpalCompiler>>evaluate
+OpalCompiler>>evaluate:
+[
+	result := Smalltalk compiler evaluate: aStream.
+	self hasSessionChanged
+		ifFalse: [
+			self stdout
+				print: result;
+				lf ] ] in EvaluateCommandLineHandler>>evaluate:
+FullBlockClosure(BlockClosure)>>on:do:
+EvaluateCommandLineHandler>>evaluate:
+EvaluateCommandLineHandler>>evaluateArguments
+EvaluateCommandLineHandler>>activate
+EvaluateCommandLineHandler class(CommandLineHandler class)>>activateWith:
+[ aCommandLinehandler activateWith: commandLine ] in PharoCommandLineHandler(BasicCommandLineHandler)>>activateSubCommand:
+FullBlockClosure(BlockClosure)>>on:do:
+PharoCommandLineHandler(BasicCommandLineHandler)>>activateSubCommand:
+PharoCommandLineHandler(BasicCommandLineHandler)>>handleSubcommand
+PharoCommandLineHandler(BasicCommandLineHandler)>>handleArgument:
+[ self handleArgument: self firstArgument ] in [ [ self handleArgument: self firstArgument ]
+		on: Exit
+		do: [ :exit |
+			"If the command line is protected by password, we just exit the image because in non-headless mode the handleExit will let the image open. If the password protection is enabled, it is to avoid to let the access to the image."
+			self class commandLinePasswordManager hasPasswordSet
+				ifTrue: [ Smalltalk snapshot: false andQuit: true ].
+			self handleExit: exit ] ] in PharoCommandLineHandler(BasicCommandLineHandler)>>activate
+FullBlockClosure(BlockClosure)>>on:do:
+[ [ self handleArgument: self firstArgument ]
+		on: Exit
+		do: [ :exit |
+			"If the command line is protected by password, we just exit the image because in non-headless mode the handleExit will let the image open. If the password protection is enabled, it is to avoid to let the access to the image."
+			self class commandLinePasswordManager hasPasswordSet
+				ifTrue: [ Smalltalk snapshot: false andQuit: true ].
+			self handleExit: exit ] ] in PharoCommandLineHandler(BasicCommandLineHandler)>>activate
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+-------------------------------------------------------------------------------
+
+Processes and their stacks: 
+Process: a Process in AtomicSharedQueue>>waitForNewItems
+  stack:
+
+AtomicSharedQueue>>waitForNewItems
+AtomicSharedQueue>>next
+TKTWorkerProcess>>privateNextTask
+TKTWorkerProcess>>workerLoop
+MessageSend>>value
+[ aValuable value ] in TKTPharoProcessProvider>>createProcessDoing:named:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in AtomicSharedQueue>>waitForNewItems
+  stack:
+
+AtomicSharedQueue>>waitForNewItems
+AtomicSharedQueue>>next
+TKTWorkerProcess>>privateNextTask
+TKTWorkerProcess>>workerLoop
+MessageSend>>value
+[ aValuable value ] in TKTPharoProcessProvider>>createProcessDoing:named:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in DelayMicrosecondTicker>>waitForUserSignalled:orExpired:
+  stack:
+
+DelayMicrosecondTicker>>waitForUserSignalled:orExpired:
+[  [runTimerEventLoop] whileTrue:
+		[	|nowTick|
+			"Warning! Stepping <Over> the following line may lock the Image. Use <Into> or <Proceed>."
+		 	ticker waitForUserSignalled: timingSemaphore orExpired: activeDelay.
+
+			"Invoke the api back-ends, which set the transfer-variable to nil"
+			suspendSemaphore ifNotNil: [ self suspendAtTimingPriority    ].
+			delayToStart     ifNotNil: [ self scheduleAtTimingPriority   ].
+			delayToStop      ifNotNil: [ self unscheduleAtTimingPriority ].
+
+			"Signal any expired delays"
+			nowTick := ticker nowTick.
+			[ 	activeDelay isNotNil and: [nowTick >= activeDelay resumptionTick] ]
+					whileTrue: [
+						activeDelay timingPrioritySignalExpired.
+						activeDelay := suspendedDelays removeFirstOrNil ].
+		]
+	] in DelaySemaphoreScheduler(DelayBasicScheduler)>>runBackendLoopAtTimingPriority
+FullBlockClosure(BlockClosure)>>ensure:
+DelaySemaphoreScheduler(DelayBasicScheduler)>>runBackendLoopAtTimingPriority
+[ self runBackendLoopAtTimingPriority ] in DelaySemaphoreScheduler(DelayBasicScheduler)>>startTimerEventLoopPriority:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in MorphicRenderLoop>>doOneCycleWhile:
+  stack:
+
+MorphicRenderLoop>>doOneCycleWhile:
+THERE_BE_DRAGONS_HERE
+SymbolNotFoundError: Could not find symbol named: #FT_Init_FreeType searching in module: 'libfreetype.dylib'
+20 July 2026 11:23:02.103862 pm
+
+VM: Mac OS - arm64 - 1000 - CoInterpreter
+StackToRegisterMappingCogit
+23e5a5a76c90fcb95a4aa5e4fccb5f1318ad0ad2+0.23e5a5a - Commit: 23e5a5a - Date: 2026-07-15 14:26:30 +0200
+
+Image: Pharo13.1.0SNAPSHOT [Build information: Pharo-13.1.0+SNAPSHOT.build.744.sha.4c3e4714cc70093d033f85fd333decb87d03001d (64 Bit)]
+
+TFFIBackend>>primLoadSymbol:module:
+	Receiver: a TFFIBackend
+	Arguments and temporary variables: 
+		moduleSymbol: 	#FT_Init_FreeType
+		module: 	'libfreetype.dylib'
+	Receiver's instance variables: 
+a TFFIBackend
+
+TFFIBackend>>loadSymbol:module:
+	Receiver: a TFFIBackend
+	Arguments and temporary variables: 
+		moduleSymbol: 	#FT_Init_FreeType
+		module: 	'libfreetype.dylib'
+		encodedString: 	'libfreetype.dylib'
+	Receiver's instance variables: 
+a TFFIBackend
+
+ExternalAddress class>>loadSymbol:module:
+	Receiver: ExternalAddress
+	Arguments and temporary variables: 
+		moduleSymbol: 	#FT_Init_FreeType
+		module: 	'libfreetype.dylib'
+	Receiver's instance variables: 
+		superclass: 	ByteArray
+		methodDict: 	a MethodDictionary(#+->ExternalAddress>>#+ #=->ExternalAddress>[..]
+		format: 	1048576
+		layout: 	a ByteLayout
+		protocols: 	an Array(Protocol (arithmetic) - 1 selector(s) Protocol (compari[..]
+		subclasses: 	nil
+		name: 	#ExternalAddress
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	17321706
+		packageTag: 	a PackageTag(Uncategorized)
+		wordSize: 	8
+
+
+TFExternalFunction>>validate
+	Receiver: a TFExternalFunction
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+		definition: 	a TFFunctionDefinition(@ 16r1037B9950)
+		functionName: 	#FT_Init_FreeType
+		moduleName: 	'libfreetype.dylib'
+
+
+TFSameThreadRunner>>invokeFunction:withArguments:
+	Receiver: a TFSameThreadRunner(@ 16r00000000)
+	Arguments and temporary variables: 
+		function: 	a TFExternalFunction
+		aCollection: 	an Array(@ 16r10003729430)
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+		callbackInvocationStack: 	a Stack()
+		stackProtect: 	a Semaphore()
+		exceptionHandler: 	a TFForkCallbackExceptionHandler
+		semaphorePool: 	a TFPool(5 elements)
+		callbackReturnSemaphore: 	a Semaphore()
+
+
+FT2Library>>ffiInitFreeType:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		aPointer: 	an a subclass of FFIExternalValueHolder
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+TFCalloutAPI(FFICalloutAPI)>>function:library:
+	Receiver: a TFCalloutAPI
+	Arguments and temporary variables: 
+		functionSignature: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+		moduleNameOrLibrary: 	a FT2FFILibrary
+		sender: 	FT2Library>>ffiInitFreeType:
+		ffiMethod: 	FT2Library>>#ffiInitFreeType:
+		ffiMethodSelector: 	#ffiCall:
+	Receiver's instance variables: 
+		options: 	#(#+ #optStrict)
+		callingConvention: 	#cdecl
+		senderContext: 	nil
+		uFFIEntryPointContext: 	FT2Library(Object)>>ffiCall:library:options:fixedArg[..]
+		fixedArgumentCount: 	0
+
+
+FT2Library(Object)>>ffiCall:library:options:fixedArgumentCount:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		fnSpec: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+		aLibrary: 	a FT2FFILibrary
+		callOptions: 	#()
+		fixedArgumentsCount: 	0
+		ffiLibrary: 	a FT2FFILibrary
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library(Object)>>ffiCall:library:options:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		fnSpec: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+		aLibrary: 	a FT2FFILibrary
+		callOptions: 	#()
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library(Object)>>ffiCall:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		fnSpec: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library>>ffiInitFreeType:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		aPointer: 	an a subclass of FFIExternalValueHolder
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library>>checkLibrary
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		errorCode: 	nil
+		holder: 	an a subclass of FFIExternalValueHolder
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FreeTypeFace(FT2Face)>>newFaceFromExternalMemory:index:
+	Receiver: a FreeTypeFace(nil)<nil>
+	Arguments and temporary variables: 
+		aFreeTypeExternalMemory: 	a FreeTypeExternalMemory(@ 16r4C4C00000)<0xC4C00000>
+		anInteger: 	0
+		memSize: 	3202372
+		holder: 	an a subclass of FFIExternalValueHolder
+		returnCode: 	nil
+	Receiver's instance variables: 
+		handle: 	nil
+		numFaces: 	nil
+		faceIndex: 	nil
+		faceFlags: 	nil
+		styleFlags: 	nil
+		numGlyphs: 	nil
+		familyName: 	nil
+		styleName: 	nil
+		numFixedSizes: 	nil
+		availableSizes: 	nil
+		numCharmaps: 	nil
+		charmaps: 	nil
+		bbox: 	nil
+		unitsPerEm: 	nil
+		ascender: 	nil
+		descender: 	nil
+		height: 	nil
+		maxAdvanceWidth: 	nil
+		maxAdvanceHeight: 	nil
+		underlinePosition: 	nil
+		underlineThickness: 	nil
+		glyph: 	nil
+		encoding: 	nil
+		platformId: 	nil
+		encodingId: 	nil
+		size: 	nil
+		filename: 	nil
+		index: 	nil
+		fileContentsExternalMemory: 	a FreeTypeExternalMemory(@ 16r4C4C00000)<0xC4C0[..]
+		hasKerning: 	nil
+
+
+[
+	  newFace
+		  newFaceFromExternalMemory: externalMem index: index;
+		  loadFields;
+		  yourself ] in FreeTypeFontFileInstaller>>newFaceFromData:
+	Receiver: a FreeTypeFontFileInstaller
+	Arguments and temporary variables: 
+		externalMem: 	a FreeTypeExternalMemory(@ 16r4C4C00000)<0xC4C00000>
+		newFace: 	a FreeTypeFace(nil)<nil>
+	Receiver's instance variables: 
+		fileInfoProvider: 	an EmbeddedFreeTypeFontInstaller
+		face: 	nil
+		numFaces: 	nil
+		index: 	0
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [
+	  newFace
+		  newFaceFromExternalMemory: externalMem index: index;
+		  loadFields;
+[..]
+	Arguments and temporary variables: 
+		exception: 	an ExceptionSet
+		handlerAction: 	[ :e | nil ]
+	Receiver's instance variables: 
+		outerContext: 	FreeTypeFontFileInstaller>>newFaceFromData:
+		compiledBlock: 	a CompiledBlock: [
+	  newFace
+		  newFaceFromExternalMemory:[..]
+		numArgs: 	0
+		receiver: 	a FreeTypeFontFileInstaller
+
+
+FreeTypeFontFileInstaller>>newFaceFromData:
+	Receiver: a FreeTypeFontFileInstaller
+	Arguments and temporary variables: 
+		externalMem: 	a FreeTypeExternalMemory(@ 16r4C4C00000)<0xC4C00000>
+		newFace: 	a FreeTypeFace(nil)<nil>
+	Receiver's instance variables: 
+		fileInfoProvider: 	an EmbeddedFreeTypeFontInstaller
+		face: 	nil
+		numFaces: 	nil
+		index: 	0
+
+
+FreeTypeFontFileInstaller>>addFromFileContents:baseName:
+	Receiver: a FreeTypeFontFileInstaller
+	Arguments and temporary variables: 
+		bytes: 	#[116 116 99 102 0 2 0 0 0 0 0 4 0 0 0 40 0 0 1 148 0 0 2 240 0 0 4 [..]
+		originalFileBaseName: 	'LucidaGrande.ttc'
+		externalMem: 	a FreeTypeExternalMemory(@ 16r4C4C00000)<0xC4C00000>
+		cachedNumFaces: 	nil
+	Receiver's instance variables: 
+		fileInfoProvider: 	an EmbeddedFreeTypeFontInstaller
+		face: 	nil
+		numFaces: 	nil
+		index: 	0
+
+
+EmbeddedFreeTypeFontInstaller>>addFromFileContents:baseName:
+	Receiver: an EmbeddedFreeTypeFontInstaller
+	Arguments and temporary variables: 
+		bytes: 	#[116 116 99 102 0 2 0 0 0 0 0 4 0 0 0 40 0 0 1 148 0 0 2 240 0 0 4 [..]
+		originalFileBaseName: 	'LucidaGrande.ttc'
+	Receiver's instance variables: 
+		embeddedFileInfoCache: 	a Dictionary(#(197644 0)->a Set({#embedded}(197644 b[..]
+		provider: 	a FreeTypeFontProvider
+		numFaces: 	nil
+		face: 	nil
+
+
+LucidaGrandeRegular class(EmbeddedFreeTypeFontDescription class)>>installFontsIn:
+	Receiver: LucidaGrandeRegular
+	Arguments and temporary variables: 
+		provider: 	an EmbeddedFreeTypeFontInstaller
+	Receiver's instance variables: 
+		superclass: 	EmbeddedFreeTypeFontDescription
+		methodDict: 	a MethodDictionary()
+		format: 	0
+		layout: 	a FixedLayout
+		protocols: 	#()
+		subclasses: 	nil
+		name: 	#LucidaGrandeRegular
+		classPool: 	nil
+		sharedPools: 	nil
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	30995696
+		packageTag: 	a PackageTag(Fonts)
+
+
+[ :each | each installFontsIn: provider ] in EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+	Receiver: EmbeddedFreeTypeFontDescription
+	Arguments and temporary variables: 
+		provider: 	an EmbeddedFreeTypeFontInstaller
+		each: 	LucidaGrandeRegular
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary()
+		format: 	0
+		layout: 	a FixedLayout
+		protocols: 	#()
+		subclasses: 	{LucidaGrandeRegular. SourceCodeProRegular. SourceSansProRegular}
+		name: 	#EmbeddedFreeTypeFontDescription
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	15774212
+		packageTag: 	a PackageTag(Base)
+
+
+OrderedCollection>>do:
+	Receiver: an OrderedCollection(LucidaGrandeRegular SourceCodeProRegular SourceSansProRegular)
+	Arguments and temporary variables: 
+		aBlock: 	[ :each | each installFontsIn: provider ]
+		index: 	1
+	Receiver's instance variables: 
+		array: 	{LucidaGrandeRegular. SourceCodeProRegular. SourceSansProRegular}
+		firstIndex: 	1
+		lastIndex: 	3
+
+
+EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+	Receiver: EmbeddedFreeTypeFontDescription
+	Arguments and temporary variables: 
+		provider: 	an EmbeddedFreeTypeFontInstaller
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary()
+		format: 	0
+		layout: 	a FixedLayout
+		protocols: 	#()
+		subclasses: 	{LucidaGrandeRegular. SourceCodeProRegular. SourceSansProRegular}
+		name: 	#EmbeddedFreeTypeFontDescription
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	15774212
+		packageTag: 	a PackageTag(Base)
+
+
+EmbeddedFreeTypeFontInstaller>>installAllFontsIn:
+	Receiver: an EmbeddedFreeTypeFontInstaller
+	Arguments and temporary variables: 
+		aProvider: 	a FreeTypeFontProvider
+	Receiver's instance variables: 
+		embeddedFileInfoCache: 	a Dictionary(#(197644 0)->a Set({#embedded}(197644 b[..]
+		provider: 	a FreeTypeFontProvider
+		numFaces: 	nil
+		face: 	nil
+
+
+[ :each | each installAllFontsIn: self ] in FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+	Receiver: a FreeTypeFontProvider
+	Arguments and temporary variables: 
+		each: 	an EmbeddedFreeTypeFontInstaller
+	Receiver's instance variables: 
+		fileInfos: 	an OrderedCollection({#embedded}(293956 bytes )[0] 'Source Sans [..]
+		fileInfoCache: 	a Dictionary()
+		tempFileInfos: 	nil
+		families: 	a Dictionary('Source Code Pro'->#FreeTypeFontFamily 'Source Code [..]
+		tempFamilies: 	nil
+		fontInstallers: 	an OrderedCollection(an EmbeddedFreeTypeFontInstaller)
+
+
+OrderedCollection>>do:
+	Receiver: an OrderedCollection(an EmbeddedFreeTypeFontInstaller)
+	Arguments and temporary variables: 
+		aBlock: 	[ :each | each installAllFontsIn: self ]
+		index: 	1
+	Receiver's instance variables: 
+		array: 	an Array(an EmbeddedFreeTypeFontInstaller nil nil nil nil nil nil ni[..]
+		firstIndex: 	1
+		lastIndex: 	1
+
+
+FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+	Receiver: a FreeTypeFontProvider
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		fileInfos: 	an OrderedCollection({#embedded}(293956 bytes )[0] 'Source Sans [..]
+		fileInfoCache: 	a Dictionary()
+		tempFileInfos: 	nil
+		families: 	a Dictionary('Source Code Pro'->#FreeTypeFontFamily 'Source Code [..]
+		tempFamilies: 	nil
+		fontInstallers: 	an OrderedCollection(an EmbeddedFreeTypeFontInstaller)
+
+
+FreeTypeSettings class>>updateFreeType
+	Receiver: FreeTypeSettings
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary(#bitBltSubPixelAvailable->FreeTypeSettings>>[..]
+		format: 	65549
+		layout: 	a FixedLayout
+		protocols: 	an Array(Protocol (*FreeType-Graphics) - 2 selector(s) Protocol [..]
+		subclasses: 	nil
+		name: 	#FreeTypeSettings
+		classPool: 	a Dictionary(#UpdateFontsAtImageStartup->false )
+		sharedPools: 	an OrderedCollection(FT2Constants FreeTypeCacheConstants)
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	23042638
+		packageTag: 	a PackageTag(Settings)
+		current: 	a FreeTypeSettings
+
+
+FreeTypeSettings class>>startUp:
+	Receiver: FreeTypeSettings
+	Arguments and temporary variables: 
+		resuming: 	true
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary(#bitBltSubPixelAvailable->FreeTypeSettings>>[..]
+		format: 	65549
+		layout: 	a FixedLayout
+		protocols: 	an Array(Protocol (*FreeType-Graphics) - 2 selector(s) Protocol [..]
+		subclasses: 	nil
+		name: 	#FreeTypeSettings
+		classPool: 	a Dictionary(#UpdateFontsAtImageStartup->false )
+		sharedPools: 	an OrderedCollection(FT2Constants FreeTypeCacheConstants)
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	23042638
+		packageTag: 	a PackageTag(Settings)
+		current: 	a FreeTypeSettings
+
+
+ClassSessionHandler>>startup:
+	Receiver: a ClassSessionHandler(FreeTypeSettings)
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+	Receiver's instance variables: 
+		registeredClassName: 	#FreeTypeSettings
+
+
+[ :each | each startup: isImageStarting ] in WorkingSession>>runStartup:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+		each: 	a ClassSessionHandler(FreeTypeSettings)
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+[aBlock value: each] in [ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		aList: 	an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(S[..]
+		aBlock: 	[ :each | each startup: isImageStarting ]
+		each: 	a ClassSessionHandler(FreeTypeSettings)
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [aBlock value: each]
+	Arguments and temporary variables: 
+		exception: 	Exception
+		handlerAction: 	[ :error | self errorHandler handleError: error]
+	Receiver's instance variables: 
+		outerContext: 	[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :e[..]
+		compiledBlock: 	a CompiledBlock: [aBlock value: each]
+		numArgs: 	0
+		receiver: 	a WorkingSession
+
+
+[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		aList: 	an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(S[..]
+		aBlock: 	[ :each | each startup: isImageStarting ]
+		each: 	a ClassSessionHandler(FreeTypeSettings)
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+Array(SequenceableCollection)>>do:
+	Receiver: an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(SessionAccessModeRe[..]
+	Arguments and temporary variables: 
+		aBlock: 	[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error |[..]
+		index: 	40
+	Receiver's instance variables: 
+an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(SessionAccessModeRe[..]
+
+WorkingSession>>runList:do:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		aList: 	an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(S[..]
+		aBlock: 	[ :each | each startup: isImageStarting ]
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+WorkingSession>>runStartup:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+WorkingSession>>start:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+[ 
+		isImageStarting ifTrue: [ sessionManager installNewSession ].
+		sessionManager currentSession start: isImageStarting ] in SnapshotOperation>>performSnapshot
+	Receiver: a SnapshotOperation
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		isImageStarting: 	true
+		error: 	nil
+		save: 	true
+		quit: 	true
+		sessionManager: 	a SessionManager
+		imageFormatOption: 	nil
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [ 
+		isImageStarting ifTrue: [ sessionManager installNewSession ].
+		sessionManager cu[..]
+	Arguments and temporary variables: 
+		exception: 	Error
+		handlerAction: 	[:ex | errorHandlerBlock cull: ex]
+	Receiver's instance variables: 
+		outerContext: 	SnapshotOperation>>performSnapshot
+		compiledBlock: 	a CompiledBlock: [ 
+		isImageStarting ifTrue: [ sessionManag[..]
+		numArgs: 	0
+		receiver: 	a SnapshotOperation
+
+
+
+--- The full stack ---
+TFFIBackend>>primLoadSymbol:module:
+TFFIBackend>>loadSymbol:module:
+ExternalAddress class>>loadSymbol:module:
+TFExternalFunction>>validate
+TFSameThreadRunner>>invokeFunction:withArguments:
+FT2Library>>ffiInitFreeType:
+TFCalloutAPI(FFICalloutAPI)>>function:library:
+FT2Library(Object)>>ffiCall:library:options:fixedArgumentCount:
+FT2Library(Object)>>ffiCall:library:options:
+FT2Library(Object)>>ffiCall:
+FT2Library>>ffiInitFreeType:
+FT2Library>>checkLibrary
+FreeTypeFace(FT2Face)>>newFaceFromExternalMemory:index:
+[
+	  newFace
+		  newFaceFromExternalMemory: externalMem index: index;
+		  loadFields;
+		  yourself ] in FreeTypeFontFileInstaller>>newFaceFromData:
+FullBlockClosure(BlockClosure)>>on:do:
+FreeTypeFontFileInstaller>>newFaceFromData:
+FreeTypeFontFileInstaller>>addFromFileContents:baseName:
+EmbeddedFreeTypeFontInstaller>>addFromFileContents:baseName:
+LucidaGrandeRegular class(EmbeddedFreeTypeFontDescription class)>>installFontsIn:
+[ :each | each installFontsIn: provider ] in EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+OrderedCollection>>do:
+EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+EmbeddedFreeTypeFontInstaller>>installAllFontsIn:
+[ :each | each installAllFontsIn: self ] in FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+OrderedCollection>>do:
+FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+FreeTypeSettings class>>updateFreeType
+FreeTypeSettings class>>startUp:
+ClassSessionHandler>>startup:
+[ :each | each startup: isImageStarting ] in WorkingSession>>runStartup:
+[aBlock value: each] in [ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+FullBlockClosure(BlockClosure)>>on:do:
+[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+Array(SequenceableCollection)>>do:
+WorkingSession>>runList:do:
+WorkingSession>>runStartup:
+WorkingSession>>start:
+[ 
+		isImageStarting ifTrue: [ sessionManager installNewSession ].
+		sessionManager currentSession start: isImageStarting ] in SnapshotOperation>>performSnapshot
+FullBlockClosure(BlockClosure)>>on:do:
+ - - - - - - - - - - - - - - -
+			- - - - - - - - - - - - - - - - - -
+FullBlockClosure(BlockClosure)>>onErrorDo:
+SnapshotOperation>>executeStoringError:
+SnapshotOperation>>performSnapshot
+SessionManager>>launchSnapshot:andQuit:
+[  snapshotOperation := self launchSnapshot: save andQuit: quit.
+	   wait signal ] in SessionManager>>snapshot:andQuit:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+-------------------------------------------------------------------------------
+
+Processes and their stacks: 
+Process: a Process in AtomicSharedQueue>>waitForNewItems
+  stack:
+
+AtomicSharedQueue>>waitForNewItems
+AtomicSharedQueue>>next
+TKTWorkerProcess>>privateNextTask
+TKTWorkerProcess>>workerLoop
+MessageSend>>value
+[ aValuable value ] in TKTPharoProcessProvider>>createProcessDoing:named:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in AtomicSharedQueue>>waitForNewItems
+  stack:
+
+AtomicSharedQueue>>waitForNewItems
+AtomicSharedQueue>>next
+TKTWorkerProcess>>privateNextTask
+TKTWorkerProcess>>workerLoop
+MessageSend>>value
+[ aValuable value ] in TKTPharoProcessProvider>>createProcessDoing:named:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in DelayMicrosecondTicker>>waitForUserSignalled:orExpired:
+  stack:
+
+DelayMicrosecondTicker>>waitForUserSignalled:orExpired:
+[  [runTimerEventLoop] whileTrue:
+		[	|nowTick|
+			"Warning! Stepping <Over> the following line may lock the Image. Use <Into> or <Proceed>."
+		 	ticker waitForUserSignalled: timingSemaphore orExpired: activeDelay.
+
+			"Invoke the api back-ends, which set the transfer-variable to nil"
+			suspendSemaphore ifNotNil: [ self suspendAtTimingPriority    ].
+			delayToStart     ifNotNil: [ self scheduleAtTimingPriority   ].
+			delayToStop      ifNotNil: [ self unscheduleAtTimingPriority ].
+
+			"Signal any expired delays"
+			nowTick := ticker nowTick.
+			[ 	activeDelay isNotNil and: [nowTick >= activeDelay resumptionTick] ]
+					whileTrue: [
+						activeDelay timingPrioritySignalExpired.
+						activeDelay := suspendedDelays removeFirstOrNil ].
+		]
+	] in DelaySemaphoreScheduler(DelayBasicScheduler)>>runBackendLoopAtTimingPriority
+FullBlockClosure(BlockClosure)>>ensure:
+DelaySemaphoreScheduler(DelayBasicScheduler)>>runBackendLoopAtTimingPriority
+[ self runBackendLoopAtTimingPriority ] in DelaySemaphoreScheduler(DelayBasicScheduler)>>startTimerEventLoopPriority:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in MorphicRenderLoop>>doOneCycleWhile:
+  stack:
+
+MorphicRenderLoop>>doOneCycleWhile:
+[ MorphicRenderLoop new doOneCycleWhile: [ true ] ] in MorphicUIManager>>spawnNewProcess
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in nil
+  stack:
+
+Array(SequenceableCollection)>>do:
+[:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]] in [ Smalltalk
+		logError: aString
+		inContext: aContext.
+
+	" Print stacks of all current processes "
+
+	Smalltalk logDuring: [:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]].
+	] in NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+[
+		logStream := self openLog.
+		aMonadicBlock value: logStream.
+	] in SmalltalkImage>>logDuring:
+FullBlockClosure(BlockClosure)>>ensure:
+SmalltalkImage>>logDuring:
+[ Smalltalk
+		logError: aString
+		inContext: aContext.
+
+	" Print stacks of all current processes "
+
+	Smalltalk logDuring: [:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]].
+	] in NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+FullBlockClosure(BlockClosure)>>ensure:
+NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+NonInteractiveUIManager(CommandLineUIManager)>>handleError:log:
+[
+				self uiManager handleError: anError log: false ] in StartupUIManager>>handleError:log:
+FullBlockClosure(BlockClosure)>>cull:
+WorkingSession>>executeDeferredStartupActions:
+SessionManager>>snapshot:andQuit:
+[^SessionManager default snapshot: save andQuit: quit] in SmalltalkImage>>snapshot:andQuit:
+CurrentExecutionEnvironment class>>activate:for:
+DefaultExecutionEnvironment(ExecutionEnvironment)>>beActiveDuring:
+DefaultExecutionEnvironment class>>beActiveDuring:
+SmalltalkImage>>snapshot:andQuit:
+EvaluateCommandLineHandler>>activate
+EvaluateCommandLineHandler class(CommandLineHandler class)>>activateWith:
+------------------------------
+
+Process: a Process in SmalltalkImage>>lowSpaceWatcher
+  stack:
+
+SmalltalkImage>>lowSpaceWatcher
+[ self lowSpaceWatcher ] in SmalltalkImage>>installLowSpaceWatcher
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in [self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+  stack:
+
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in FinalizationProcess class>>finalizationProcess
+  stack:
+
+FinalizationProcess class>>finalizationProcess
+[self finalizationProcess] in FinalizationProcess class>>restartFinalizationProcess
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in [
+		[ true ] whileTrue: [
+			semaphore wait.
+			[self executeCallback: self nextPendingCallback]
+				on: Exception fork:  [:ex | ex pass ] ] ] in TFCallbackQueue>>forkCallbackProcess
+  stack:
+
+[
+		[ true ] whileTrue: [
+			semaphore wait.
+			[self executeCallback: self nextPendingCallback]
+				on: Exception fork:  [:ex | ex pass ] ] ] in TFCallbackQueue>>forkCallbackProcess
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in FullBlockClosure(BlockClosure)>>on:do:
+  stack:
+
+FullBlockClosure(BlockClosure)>>on:do:
+BinaryFileStream(AbstractBinaryFileStream)>>next:putAll:startingAt:
+BinaryFileStream(AbstractBinaryFileStream)>>next:putAll:
+BinaryFileStream(AbstractBinaryFileStream)>>nextPutAll:
+BinaryFileStream(AbstractBinaryFileStream)>>nextPut:
+ZnUTF8Encoder>>nextPutCodePoint:toStream:
+ZnUTF8Encoder(ZnCharacterEncoder)>>nextPut:toStream:
+ZnCharacterWriteStream>>nextPut:
+ZnNewLineWriterStream>>nextPut:
+[:v | self nextPut: v] in ZnNewLineWriterStream(Stream)>>nextPutAll:
+ByteSymbol(SequenceableCollection)>>do:
+ZnNewLineWriterStream(Stream)>>nextPutAll:
+ZnNewLineWriterStream(WriteStream)>>nextPutAll:
+Context>>printOn:
+Process>>printOn:
+ZnNewLineWriterStream(Stream)>>print:
+[:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		] in [:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]] in [ Smalltalk
+		logError: aString
+		inContext: aContext.
+
+	" Print stacks of all current processes "
+
+	Smalltalk logDuring: [:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]].
+	] in NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+Array(SequenceableCollection)>>do:
+[:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]] in [ Smalltalk
+		logError: aString
+		inContext: aContext.
+
+	" Print stacks of all current processes "
+
+	Smalltalk logDuring: [:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]].
+	] in NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+[
+		logStream := self openLog.
+		aMonadicBlock value: logStream.
+	] in SmalltalkImage>>logDuring:
+------------------------------
+
+110]
+	Receiver's instance variables: 
+		file: 	a File
+		handle: 	#[170 184 20 6 1 0 0 0 8 86 37 247 1 0 0 0 1 2 255 1 1 0 0 0]
+		forWrite: 	true
+		semaphore: 	nil
+		semaphoreIndex: 	nil
+		peekBuffer: 	nil
+
+
+StdioStream(AbstractBinaryFileStream)>>nextPut:
+	Receiver: StdioStream: #stderr
+	Arguments and temporary variables: 
+		anInteger: 	110
+	Receiver's instance variables: 
+		file: 	a File
+		handle: 	#[170 184 20 6 1 0 0 0 8 86 37 247 1 0 0 0 1 2 255 1 1 0 0 0]
+		forWrite: 	true
+		semaphore: 	nil
+		semaphoreIndex: 	nil
+		peekBuffer: 	nil
+
+
+ZnUTF8Encoder>>nextPutCodePoint:toStream:
+	Receiver: a ZnUTF8Encoder
+	Arguments and temporary variables: 
+		codePoint: 	110
+		stream: 	StdioStream: #stderr
+	Receiver's instance variables: 
+a ZnUTF8Encoder
+
+ZnUTF8Encoder(ZnCharacterEncoder)>>nextPut:toStream:
+	Receiver: a ZnUTF8Encoder
+	Arguments and temporary variables: 
+		character: 	$n
+		stream: 	StdioStream: #stderr
+	Receiver's instance variables: 
+a ZnUTF8Encoder
+
+ZnCharacterWriteStream>>nextPut:
+	Receiver: a ZnCharacterWriteStream
+	Arguments and temporary variables: 
+		object: 	$n
+	Receiver's instance variables: 
+		stream: 	StdioStream: #stderr
+		encoder: 	a ZnUTF8Encoder
+
+
+ZnNewLineWriterStream>>nextPut:
+	Receiver: a ZnNewLineWriterStream
+	Arguments and temporary variables: 
+		aCharacter: 	$n
+	Receiver's instance variables: 
+		collection: 	nil
+		position: 	nil
+		readLimit: 	nil
+		writeLimit: 	nil
+		stream: 	a ZnCharacterWriteStream
+		cr: 	Character cr
+		lf: 	Character lf
+		previous: 	$o
+		lineEnding: 	'
+'
+
+
+[:v | self nextPut: v] in ZnNewLineWriterStream(Stream)>>nextPutAll:
+	Receiver: a ZnNewLineWriterStream
+	Arguments and temporary variables: 
+		aCollection: 	'Usage: [<subcommand>] [--help] [--copyright] [--version] [--l[..]
+		v: 	$n
+	Receiver's instance variables: 
+		collection: 	nil
+		position: 	nil
+		readLimit: 	nil
+		writeLimit: 	nil
+		stream: 	a ZnCharacterWriteStream
+		cr: 	Character cr
+		lf: 	Character lf
+		previous: 	$o
+		lineEnding: 	'
+'
+
+
+ByteString(SequenceableCollection)>>do:
+	Receiver: 'Usage: [<subcommand>] [--help] [--copyright] [--version] [--list] [ --no-quit ]
+	--he[..]
+	Arguments and temporary variables: 
+		aBlock: 	[:v | self nextPut: v]
+		index: 	835
+	Receiver's instance variables: 
+'Usage: [<subcommand>] [--help] [--copyright] [--version] [--list] [ --no-quit ]
+	--he[..]
+
+ZnNewLineWriterStream(Stream)>>nextPutAll:
+	Receiver: a ZnNewLineWriterStream
+	Arguments and temporary variables: 
+		aCollection: 	'Usage: [<subcommand>] [--help] [--copyright] [--version] [--l[..]
+	Receiver's instance variables: 
+		collection: 	nil
+		position: 	nil
+		readLimit: 	nil
+		writeLimit: 	nil
+		stream: 	a ZnCharacterWriteStream
+		cr: 	Character cr
+		lf: 	Character lf
+		previous: 	$o
+		lineEnding: 	'
+'
+
+
+ZnNewLineWriterStream(WriteStream)>>nextPutAll:
+	Receiver: a ZnNewLineWriterStream
+	Arguments and temporary variables: 
+		aCollection: 	'Usage: [<subcommand>] [--help] [--copyright] [--version] [--l[..]
+		newEnd: 	nil
+	Receiver's instance variables: 
+		collection: 	nil
+		position: 	nil
+		readLimit: 	nil
+		writeLimit: 	nil
+		stream: 	a ZnCharacterWriteStream
+		cr: 	Character cr
+		lf: 	Character lf
+		previous: 	$o
+		lineEnding: 	'
+'
+
+
+VTermOutputDriver>>nextPutAll:
+	Receiver: a VTermOutputDriver
+	Arguments and temporary variables: 
+		aString: 	'Usage: [<subcommand>] [--help] [--copyright] [--version] [--list][..]
+	Receiver's instance variables: 
+		termcap: 	a Termcap
+		outStream: 	a ZnNewLineWriterStream
+		currentBackground: 	0
+		currentColor: 	0
+		light: 	false
+		blink: 	false
+
+
+PharoCommandLineHandler(CommandLineHandler)>>printHelp
+	Receiver: a PharoCommandLineHandler
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		commandLine: 	a CommandLineArguments
+		session: 	a WorkingSession
+		stdout: 	a VTermOutputDriver
+		stderr: 	a VTermOutputDriver
+
+
+PharoCommandLineHandler(CommandLineHandler)>>help
+	Receiver: a PharoCommandLineHandler
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		commandLine: 	a CommandLineArguments
+		session: 	a WorkingSession
+		stdout: 	a VTermOutputDriver
+		stderr: 	a VTermOutputDriver
+
+
+PharoCommandLineHandler(BasicCommandLineHandler)>>handleArgument:
+	Receiver: a PharoCommandLineHandler
+	Arguments and temporary variables: 
+		aString: 	'--help'
+	Receiver's instance variables: 
+		commandLine: 	a CommandLineArguments
+		session: 	a WorkingSession
+		stdout: 	a VTermOutputDriver
+		stderr: 	a VTermOutputDriver
+
+
+[ self handleArgument: self firstArgument ] in [ [ self handleArgument: self firstArgument ]
+		on: Exit
+		do: [ :exit |
+			"If the command line is protected by password, we just exit the image because in non-headless mode the handleExit will let the image open. If the password protection is enabled, it is to avoid to let the access to the image."
+			self class commandLinePasswordManager hasPasswordSet
+				ifTrue: [ Smalltalk snapshot: false andQuit: true ].
+			self handleExit: exit ] ] in PharoCommandLineHandler(BasicCommandLineHandler)>>activate
+	Receiver: a PharoCommandLineHandler
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		commandLine: 	a CommandLineArguments
+		session: 	a WorkingSession
+		stdout: 	a VTermOutputDriver
+		stderr: 	a VTermOutputDriver
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [ self handleArgument: self firstArgument ]
+	Arguments and temporary variables: 
+		exception: 	Exit
+		handlerAction: 	[ :exit |
+			"If the command line is protected by password, [..]
+	Receiver's instance variables: 
+		outerContext: 	[ [ self handleArgument: self firstArgument ]
+		on: Exit
+		do[..]
+		compiledBlock: 	a CompiledBlock: [ self handleArgument: self firstArgument ]
+		numArgs: 	0
+		receiver: 	a PharoCommandLineHandler
+
+
+[ [ self handleArgument: self firstArgument ]
+		on: Exit
+		do: [ :exit |
+			"If the command line is protected by password, we just exit the image because in non-headless mode the handleExit will let the image open. If the password protection is enabled, it is to avoid to let the access to the image."
+			self class commandLinePasswordManager hasPasswordSet
+				ifTrue: [ Smalltalk snapshot: false andQuit: true ].
+			self handleExit: exit ] ] in PharoCommandLineHandler(BasicCommandLineHandler)>>activate
+	Receiver: a PharoCommandLineHandler
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		commandLine: 	a CommandLineArguments
+		session: 	a WorkingSession
+		stdout: 	a VTermOutputDriver
+		stderr: 	a VTermOutputDriver
+
+
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+	Receiver: [ [ self handleArgument: self firstArgument ]
+		on: Exit
+		do: [ :exit |
+			"If the co[..]
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		outerContext: 	PharoCommandLineHandler(BasicCommandLineHandler)>>activate
+		compiledBlock: 	a CompiledBlock: [ [ self handleArgument: self firstArgument[..]
+		numArgs: 	0
+		receiver: 	a PharoCommandLineHandler
+
+
+
+--- The full stack ---
+[ (FileWriteError fileName: self name)
+				signal:
+					(self closed
+						ifTrue: [ 'File ' , self name , ' is closed' ]
+						ifFalse: [ 'File ' , self name , ' write failed' ]) ] in StdioStream(AbstractBinaryFileStream)>>next:putAll:startingAt:
+FullBlockClosure(BlockClosure)>>cull:
+Context>>evaluateSignal:
+Context>>handleSignal:
+PrimitiveFailed(Exception)>>signal
+PrimitiveFailed class(SelectorException class)>>signalFor:
+File class(ProtoObject)>>primitiveFailed:
+File class(ProtoObject)>>primitiveFailed
+File class>>write:from:startingAt:count:
+[ File
+		write: handle
+		from: aByteArray
+		startingAt: startingIndex
+		count: amount ] in StdioStream(AbstractBinaryFileStream)>>next:putAll:startingAt:
+FullBlockClosure(BlockClosure)>>on:do:
+StdioStream(AbstractBinaryFileStream)>>next:putAll:startingAt:
+StdioStream(AbstractBinaryFileStream)>>next:putAll:
+StdioStream(AbstractBinaryFileStream)>>nextPutAll:
+StdioStream(AbstractBinaryFileStream)>>nextPut:
+ZnUTF8Encoder>>nextPutCodePoint:toStream:
+ZnUTF8Encoder(ZnCharacterEncoder)>>nextPut:toStream:
+ZnCharacterWriteStream>>nextPut:
+ZnNewLineWriterStream>>nextPut:
+[:v | self nextPut: v] in ZnNewLineWriterStream(Stream)>>nextPutAll:
+ByteString(SequenceableCollection)>>do:
+ZnNewLineWriterStream(Stream)>>nextPutAll:
+ZnNewLineWriterStream(WriteStream)>>nextPutAll:
+VTermOutputDriver>>nextPutAll:
+PharoCommandLineHandler(CommandLineHandler)>>printHelp
+PharoCommandLineHandler(CommandLineHandler)>>help
+PharoCommandLineHandler(BasicCommandLineHandler)>>handleArgument:
+[ self handleArgument: self firstArgument ] in [ [ self handleArgument: self firstArgument ]
+		on: Exit
+		do: [ :exit |
+			"If the command line is protected by password, we just exit the image because in non-headless mode the handleExit will let the image open. If the password protection is enabled, it is to avoid to let the access to the image."
+			self class commandLinePasswordManager hasPasswordSet
+				ifTrue: [ Smalltalk snapshot: false andQuit: true ].
+			self handleExit: exit ] ] in PharoCommandLineHandler(BasicCommandLineHandler)>>activate
+FullBlockClosure(BlockClosure)>>on:do:
+[ [ self handleArgument: self firstArgument ]
+		on: Exit
+		do: [ :exit |
+			"If the command line is protected by password, we just exit the image because in non-headless mode the handleExit will let the image open. If the password protection is enabled, it is to avoid to let the access to the image."
+			self class commandLinePasswordManager hasPasswordSet
+				ifTrue: [ Smalltalk snapshot: false andQuit: true ].
+			self handleExit: exit ] ] in PharoCommandLineHandler(BasicCommandLineHandler)>>activate
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+-------------------------------------------------------------------------------
+
+Processes and their stacks: 
+Process: a Process in AtomicSharedQueue>>waitForNewItems
+  stack:
+
+AtomicSharedQueue>>waitForNewItems
+AtomicSharedQueue>>next
+TKTWorkerProcess>>privateNextTask
+TKTWorkerProcess>>workerLoop
+MessageSend>>value
+[ aValuable value ] in TKTPharoProcessProvider>>createProcessDoing:named:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in AtomicSharedQueuTHERE_BE_DRAGONS_HERE
+SymbolNotFoundError: Could not find symbol named: #FT_Init_FreeType searching in module: 'libfreetype.dylib'
+20 July 2026 11:23:16.886636 pm
+
+VM: Mac OS - arm64 - 1000 - CoInterpreter
+StackToRegisterMappingCogit
+23e5a5a76c90fcb95a4aa5e4fccb5f1318ad0ad2+0.23e5a5a - Commit: 23e5a5a - Date: 2026-07-15 14:26:30 +0200
+
+Image: Pharo13.1.0SNAPSHOT [Build information: Pharo-13.1.0+SNAPSHOT.build.744.sha.4c3e4714cc70093d033f85fd333decb87d03001d (64 Bit)]
+
+TFFIBackend>>primLoadSymbol:module:
+	Receiver: a TFFIBackend
+	Arguments and temporary variables: 
+		moduleSymbol: 	#FT_Init_FreeType
+		module: 	'libfreetype.dylib'
+	Receiver's instance variables: 
+a TFFIBackend
+
+TFFIBackend>>loadSymbol:module:
+	Receiver: a TFFIBackend
+	Arguments and temporary variables: 
+		moduleSymbol: 	#FT_Init_FreeType
+		module: 	'libfreetype.dylib'
+		encodedString: 	'libfreetype.dylib'
+	Receiver's instance variables: 
+a TFFIBackend
+
+ExternalAddress class>>loadSymbol:module:
+	Receiver: ExternalAddress
+	Arguments and temporary variables: 
+		moduleSymbol: 	#FT_Init_FreeType
+		module: 	'libfreetype.dylib'
+	Receiver's instance variables: 
+		superclass: 	ByteArray
+		methodDict: 	a MethodDictionary(#+->ExternalAddress>>#+ #=->ExternalAddress>[..]
+		format: 	1048576
+		layout: 	a ByteLayout
+		protocols: 	an Array(Protocol (arithmetic) - 1 selector(s) Protocol (compari[..]
+		subclasses: 	nil
+		name: 	#ExternalAddress
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	17321706
+		packageTag: 	a PackageTag(Uncategorized)
+		wordSize: 	8
+
+
+TFExternalFunction>>validate
+	Receiver: a TFExternalFunction
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+		definition: 	a TFFunctionDefinition(@ 16r10365A430)
+		functionName: 	#FT_Init_FreeType
+		moduleName: 	'libfreetype.dylib'
+
+
+TFSameThreadRunner>>invokeFunction:withArguments:
+	Receiver: a TFSameThreadRunner(@ 16r00000000)
+	Arguments and temporary variables: 
+		function: 	a TFExternalFunction
+		aCollection: 	an Array(@ 16r10003729430)
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+		callbackInvocationStack: 	a Stack()
+		stackProtect: 	a Semaphore()
+		exceptionHandler: 	a TFForkCallbackExceptionHandler
+		semaphorePool: 	a TFPool(5 elements)
+		callbackReturnSemaphore: 	a Semaphore()
+
+
+FT2Library>>ffiInitFreeType:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		aPointer: 	an a subclass of FFIExternalValueHolder
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+TFCalloutAPI(FFICalloutAPI)>>function:library:
+	Receiver: a TFCalloutAPI
+	Arguments and temporary variables: 
+		functionSignature: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+		moduleNameOrLibrary: 	a FT2FFILibrary
+		sender: 	FT2Library>>ffiInitFreeType:
+		ffiMethod: 	FT2Library>>#ffiInitFreeType:
+		ffiMethodSelector: 	#ffiCall:
+	Receiver's instance variables: 
+		options: 	#(#+ #optStrict)
+		callingConvention: 	#cdecl
+		senderContext: 	nil
+		uFFIEntryPointContext: 	FT2Library(Object)>>ffiCall:library:options:fixedArg[..]
+		fixedArgumentCount: 	0
+
+
+FT2Library(Object)>>ffiCall:library:options:fixedArgumentCount:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		fnSpec: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+		aLibrary: 	a FT2FFILibrary
+		callOptions: 	#()
+		fixedArgumentsCount: 	0
+		ffiLibrary: 	a FT2FFILibrary
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library(Object)>>ffiCall:library:options:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		fnSpec: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+		aLibrary: 	a FT2FFILibrary
+		callOptions: 	#()
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library(Object)>>ffiCall:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		fnSpec: 	#(#int #FT_Init_FreeType #(#PointerHolder #* #aPointer))
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library>>ffiInitFreeType:
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		aPointer: 	an a subclass of FFIExternalValueHolder
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FT2Library>>checkLibrary
+	Receiver: a FT2Library(@ 16r00000000)<0x0>
+	Arguments and temporary variables: 
+		errorCode: 	nil
+		holder: 	an a subclass of FFIExternalValueHolder
+	Receiver's instance variables: 
+		handle: 	@ 16r00000000
+
+
+FreeTypeFace(FT2Face)>>newFaceFromExternalMemory:index:
+	Receiver: a FreeTypeFace(nil)<nil>
+	Arguments and temporary variables: 
+		aFreeTypeExternalMemory: 	a FreeTypeExternalMemory(@ 16r444C00000)<0x44C00000>
+		anInteger: 	0
+		memSize: 	3202372
+		holder: 	an a subclass of FFIExternalValueHolder
+		returnCode: 	nil
+	Receiver's instance variables: 
+		handle: 	nil
+		numFaces: 	nil
+		faceIndex: 	nil
+		faceFlags: 	nil
+		styleFlags: 	nil
+		numGlyphs: 	nil
+		familyName: 	nil
+		styleName: 	nil
+		numFixedSizes: 	nil
+		availableSizes: 	nil
+		numCharmaps: 	nil
+		charmaps: 	nil
+		bbox: 	nil
+		unitsPerEm: 	nil
+		ascender: 	nil
+		descender: 	nil
+		height: 	nil
+		maxAdvanceWidth: 	nil
+		maxAdvanceHeight: 	nil
+		underlinePosition: 	nil
+		underlineThickness: 	nil
+		glyph: 	nil
+		encoding: 	nil
+		platformId: 	nil
+		encodingId: 	nil
+		size: 	nil
+		filename: 	nil
+		index: 	nil
+		fileContentsExternalMemory: 	a FreeTypeExternalMemory(@ 16r444C00000)<0x44C0[..]
+		hasKerning: 	nil
+
+
+[
+	  newFace
+		  newFaceFromExternalMemory: externalMem index: index;
+		  loadFields;
+		  yourself ] in FreeTypeFontFileInstaller>>newFaceFromData:
+	Receiver: a FreeTypeFontFileInstaller
+	Arguments and temporary variables: 
+		externalMem: 	a FreeTypeExternalMemory(@ 16r444C00000)<0x44C00000>
+		newFace: 	a FreeTypeFace(nil)<nil>
+	Receiver's instance variables: 
+		fileInfoProvider: 	an EmbeddedFreeTypeFontInstaller
+		face: 	nil
+		numFaces: 	nil
+		index: 	0
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [
+	  newFace
+		  newFaceFromExternalMemory: externalMem index: index;
+		  loadFields;
+[..]
+	Arguments and temporary variables: 
+		exception: 	an ExceptionSet
+		handlerAction: 	[ :e | nil ]
+	Receiver's instance variables: 
+		outerContext: 	FreeTypeFontFileInstaller>>newFaceFromData:
+		compiledBlock: 	a CompiledBlock: [
+	  newFace
+		  newFaceFromExternalMemory:[..]
+		numArgs: 	0
+		receiver: 	a FreeTypeFontFileInstaller
+
+
+FreeTypeFontFileInstaller>>newFaceFromData:
+	Receiver: a FreeTypeFontFileInstaller
+	Arguments and temporary variables: 
+		externalMem: 	a FreeTypeExternalMemory(@ 16r444C00000)<0x44C00000>
+		newFace: 	a FreeTypeFace(nil)<nil>
+	Receiver's instance variables: 
+		fileInfoProvider: 	an EmbeddedFreeTypeFontInstaller
+		face: 	nil
+		numFaces: 	nil
+		index: 	0
+
+
+FreeTypeFontFileInstaller>>addFromFileContents:baseName:
+	Receiver: a FreeTypeFontFileInstaller
+	Arguments and temporary variables: 
+		bytes: 	#[116 116 99 102 0 2 0 0 0 0 0 4 0 0 0 40 0 0 1 148 0 0 2 240 0 0 4 [..]
+		originalFileBaseName: 	'LucidaGrande.ttc'
+		externalMem: 	a FreeTypeExternalMemory(@ 16r444C00000)<0x44C00000>
+		cachedNumFaces: 	nil
+	Receiver's instance variables: 
+		fileInfoProvider: 	an EmbeddedFreeTypeFontInstaller
+		face: 	nil
+		numFaces: 	nil
+		index: 	0
+
+
+EmbeddedFreeTypeFontInstaller>>addFromFileContents:baseName:
+	Receiver: an EmbeddedFreeTypeFontInstaller
+	Arguments and temporary variables: 
+		bytes: 	#[116 116 99 102 0 2 0 0 0 0 0 4 0 0 0 40 0 0 1 148 0 0 2 240 0 0 4 [..]
+		originalFileBaseName: 	'LucidaGrande.ttc'
+	Receiver's instance variables: 
+		embeddedFileInfoCache: 	a Dictionary(#(197644 0)->a Set({#embedded}(197644 b[..]
+		provider: 	a FreeTypeFontProvider
+		numFaces: 	nil
+		face: 	nil
+
+
+LucidaGrandeRegular class(EmbeddedFreeTypeFontDescription class)>>installFontsIn:
+	Receiver: LucidaGrandeRegular
+	Arguments and temporary variables: 
+		provider: 	an EmbeddedFreeTypeFontInstaller
+	Receiver's instance variables: 
+		superclass: 	EmbeddedFreeTypeFontDescription
+		methodDict: 	a MethodDictionary()
+		format: 	0
+		layout: 	a FixedLayout
+		protocols: 	#()
+		subclasses: 	nil
+		name: 	#LucidaGrandeRegular
+		classPool: 	nil
+		sharedPools: 	nil
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	30995696
+		packageTag: 	a PackageTag(Fonts)
+
+
+[ :each | each installFontsIn: provider ] in EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+	Receiver: EmbeddedFreeTypeFontDescription
+	Arguments and temporary variables: 
+		provider: 	an EmbeddedFreeTypeFontInstaller
+		each: 	LucidaGrandeRegular
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary()
+		format: 	0
+		layout: 	a FixedLayout
+		protocols: 	#()
+		subclasses: 	{LucidaGrandeRegular. SourceCodeProRegular. SourceSansProRegular}
+		name: 	#EmbeddedFreeTypeFontDescription
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	15774212
+		packageTag: 	a PackageTag(Base)
+
+
+OrderedCollection>>do:
+	Receiver: an OrderedCollection(LucidaGrandeRegular SourceCodeProRegular SourceSansProRegular)
+	Arguments and temporary variables: 
+		aBlock: 	[ :each | each installFontsIn: provider ]
+		index: 	1
+	Receiver's instance variables: 
+		array: 	{LucidaGrandeRegular. SourceCodeProRegular. SourceSansProRegular}
+		firstIndex: 	1
+		lastIndex: 	3
+
+
+EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+	Receiver: EmbeddedFreeTypeFontDescription
+	Arguments and temporary variables: 
+		provider: 	an EmbeddedFreeTypeFontInstaller
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary()
+		format: 	0
+		layout: 	a FixedLayout
+		protocols: 	#()
+		subclasses: 	{LucidaGrandeRegular. SourceCodeProRegular. SourceSansProRegular}
+		name: 	#EmbeddedFreeTypeFontDescription
+		classPool: 	nil
+		sharedPools: 	an OrderedCollection()
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	15774212
+		packageTag: 	a PackageTag(Base)
+
+
+EmbeddedFreeTypeFontInstaller>>installAllFontsIn:
+	Receiver: an EmbeddedFreeTypeFontInstaller
+	Arguments and temporary variables: 
+		aProvider: 	a FreeTypeFontProvider
+	Receiver's instance variables: 
+		embeddedFileInfoCache: 	a Dictionary(#(197644 0)->a Set({#embedded}(197644 b[..]
+		provider: 	a FreeTypeFontProvider
+		numFaces: 	nil
+		face: 	nil
+
+
+[ :each | each installAllFontsIn: self ] in FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+	Receiver: a FreeTypeFontProvider
+	Arguments and temporary variables: 
+		each: 	an EmbeddedFreeTypeFontInstaller
+	Receiver's instance variables: 
+		fileInfos: 	an OrderedCollection({#embedded}(293956 bytes )[0] 'Source Sans [..]
+		fileInfoCache: 	a Dictionary()
+		tempFileInfos: 	nil
+		families: 	a Dictionary('Source Code Pro'->#FreeTypeFontFamily 'Source Code [..]
+		tempFamilies: 	nil
+		fontInstallers: 	an OrderedCollection(an EmbeddedFreeTypeFontInstaller)
+
+
+OrderedCollection>>do:
+	Receiver: an OrderedCollection(an EmbeddedFreeTypeFontInstaller)
+	Arguments and temporary variables: 
+		aBlock: 	[ :each | each installAllFontsIn: self ]
+		index: 	1
+	Receiver's instance variables: 
+		array: 	an Array(an EmbeddedFreeTypeFontInstaller nil nil nil nil nil nil ni[..]
+		firstIndex: 	1
+		lastIndex: 	1
+
+
+FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+	Receiver: a FreeTypeFontProvider
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		fileInfos: 	an OrderedCollection({#embedded}(293956 bytes )[0] 'Source Sans [..]
+		fileInfoCache: 	a Dictionary()
+		tempFileInfos: 	nil
+		families: 	a Dictionary('Source Code Pro'->#FreeTypeFontFamily 'Source Code [..]
+		tempFamilies: 	nil
+		fontInstallers: 	an OrderedCollection(an EmbeddedFreeTypeFontInstaller)
+
+
+FreeTypeSettings class>>updateFreeType
+	Receiver: FreeTypeSettings
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary(#bitBltSubPixelAvailable->FreeTypeSettings>>[..]
+		format: 	65549
+		layout: 	a FixedLayout
+		protocols: 	an Array(Protocol (*FreeType-Graphics) - 2 selector(s) Protocol [..]
+		subclasses: 	nil
+		name: 	#FreeTypeSettings
+		classPool: 	a Dictionary(#UpdateFontsAtImageStartup->false )
+		sharedPools: 	an OrderedCollection(FT2Constants FreeTypeCacheConstants)
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	23042638
+		packageTag: 	a PackageTag(Settings)
+		current: 	a FreeTypeSettings
+
+
+FreeTypeSettings class>>startUp:
+	Receiver: FreeTypeSettings
+	Arguments and temporary variables: 
+		resuming: 	true
+	Receiver's instance variables: 
+		superclass: 	Object
+		methodDict: 	a MethodDictionary(#bitBltSubPixelAvailable->FreeTypeSettings>>[..]
+		format: 	65549
+		layout: 	a FixedLayout
+		protocols: 	an Array(Protocol (*FreeType-Graphics) - 2 selector(s) Protocol [..]
+		subclasses: 	nil
+		name: 	#FreeTypeSettings
+		classPool: 	a Dictionary(#UpdateFontsAtImageStartup->false )
+		sharedPools: 	an OrderedCollection(FT2Constants FreeTypeCacheConstants)
+		environment: 	a SystemEnvironment(lots of globals)
+		commentSourcePointer: 	23042638
+		packageTag: 	a PackageTag(Settings)
+		current: 	a FreeTypeSettings
+
+
+ClassSessionHandler>>startup:
+	Receiver: a ClassSessionHandler(FreeTypeSettings)
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+	Receiver's instance variables: 
+		registeredClassName: 	#FreeTypeSettings
+
+
+[ :each | each startup: isImageStarting ] in WorkingSession>>runStartup:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+		each: 	a ClassSessionHandler(FreeTypeSettings)
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+[aBlock value: each] in [ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		aList: 	an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(S[..]
+		aBlock: 	[ :each | each startup: isImageStarting ]
+		each: 	a ClassSessionHandler(FreeTypeSettings)
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [aBlock value: each]
+	Arguments and temporary variables: 
+		exception: 	Exception
+		handlerAction: 	[ :error | self errorHandler handleError: error]
+	Receiver's instance variables: 
+		outerContext: 	[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :e[..]
+		compiledBlock: 	a CompiledBlock: [aBlock value: each]
+		numArgs: 	0
+		receiver: 	a WorkingSession
+
+
+[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		aList: 	an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(S[..]
+		aBlock: 	[ :each | each startup: isImageStarting ]
+		each: 	a ClassSessionHandler(FreeTypeSettings)
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+Array(SequenceableCollection)>>do:
+	Receiver: an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(SessionAccessModeRe[..]
+	Arguments and temporary variables: 
+		aBlock: 	[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error |[..]
+		index: 	40
+	Receiver's instance variables: 
+an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(SessionAccessModeRe[..]
+
+WorkingSession>>runList:do:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		aList: 	an Array(a ClassSessionHandler(SmallInteger) a ClassSessionHandler(S[..]
+		aBlock: 	[ :each | each startup: isImageStarting ]
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+WorkingSession>>runStartup:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+WorkingSession>>start:
+	Receiver: a WorkingSession
+	Arguments and temporary variables: 
+		isImageStarting: 	true
+	Receiver's instance variables: 
+		manager: 	a SessionManager
+		deferredStartupActions: 	an OrderedCollection()
+		properties: 	a Dictionary(#accessMode->#readWrite )
+
+
+[ 
+		isImageStarting ifTrue: [ sessionManager installNewSession ].
+		sessionManager currentSession start: isImageStarting ] in SnapshotOperation>>performSnapshot
+	Receiver: a SnapshotOperation
+	Arguments and temporary variables: 
+x
+	Receiver's instance variables: 
+		isImageStarting: 	true
+		error: 	nil
+		save: 	true
+		quit: 	true
+		sessionManager: 	a SessionManager
+		imageFormatOption: 	nil
+
+
+FullBlockClosure(BlockClosure)>>on:do:
+	Receiver: [ 
+		isImageStarting ifTrue: [ sessionManager installNewSession ].
+		sessionManager cu[..]
+	Arguments and temporary variables: 
+		exception: 	Error
+		handlerAction: 	[:ex | errorHandlerBlock cull: ex]
+	Receiver's instance variables: 
+		outerContext: 	SnapshotOperation>>performSnapshot
+		compiledBlock: 	a CompiledBlock: [ 
+		isImageStarting ifTrue: [ sessionManag[..]
+		numArgs: 	0
+		receiver: 	a SnapshotOperation
+
+
+
+--- The full stack ---
+TFFIBackend>>primLoadSymbol:module:
+TFFIBackend>>loadSymbol:module:
+ExternalAddress class>>loadSymbol:module:
+TFExternalFunction>>validate
+TFSameThreadRunner>>invokeFunction:withArguments:
+FT2Library>>ffiInitFreeType:
+TFCalloutAPI(FFICalloutAPI)>>function:library:
+FT2Library(Object)>>ffiCall:library:options:fixedArgumentCount:
+FT2Library(Object)>>ffiCall:library:options:
+FT2Library(Object)>>ffiCall:
+FT2Library>>ffiInitFreeType:
+FT2Library>>checkLibrary
+FreeTypeFace(FT2Face)>>newFaceFromExternalMemory:index:
+[
+	  newFace
+		  newFaceFromExternalMemory: externalMem index: index;
+		  loadFields;
+		  yourself ] in FreeTypeFontFileInstaller>>newFaceFromData:
+FullBlockClosure(BlockClosure)>>on:do:
+FreeTypeFontFileInstaller>>newFaceFromData:
+FreeTypeFontFileInstaller>>addFromFileContents:baseName:
+EmbeddedFreeTypeFontInstaller>>addFromFileContents:baseName:
+LucidaGrandeRegular class(EmbeddedFreeTypeFontDescription class)>>installFontsIn:
+[ :each | each installFontsIn: provider ] in EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+OrderedCollection>>do:
+EmbeddedFreeTypeFontDescription class>>installAllFontsIn:
+EmbeddedFreeTypeFontInstaller>>installAllFontsIn:
+[ :each | each installAllFontsIn: self ] in FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+OrderedCollection>>do:
+FreeTypeFontProvider>>updateEmbeddedFreeTypeFonts
+FreeTypeSettings class>>updateFreeType
+FreeTypeSettings class>>startUp:
+ClassSessionHandler>>startup:
+[ :each | each startup: isImageStarting ] in WorkingSession>>runStartup:
+[aBlock value: each] in [ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+FullBlockClosure(BlockClosure)>>on:do:
+[ :each |
+		[aBlock value: each]
+			on: Exception
+			do: [ :error | self errorHandler handleError: error] ] in WorkingSession>>runList:do:
+Array(SequenceableCollection)>>do:
+WorkingSession>>runList:do:
+WorkingSession>>runStartup:
+WorkingSession>>start:
+[ 
+		isImageStarting ifTrue: [ sessionManager installNewSession ].
+		sessionManager currentSession start: isImageStarting ] in SnapshotOperation>>performSnapshot
+FullBlockClosure(BlockClosure)>>on:do:
+ - - - - - - - - - - - - - - -
+			- - - - - - - - - - - - - - - - - -
+FullBlockClosure(BlockClosure)>>onErrorDo:
+SnapshotOperation>>executeStoringError:
+SnapshotOperation>>performSnapshot
+SessionManager>>launchSnapshot:andQuit:
+[  snapshotOperation := self launchSnapshot: save andQuit: quit.
+	   wait signal ] in SessionManager>>snapshot:andQuit:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+-------------------------------------------------------------------------------
+
+Processes and their stacks: 
+Process: a Process in AtomicSharedQueue>>waitForNewItems
+  stack:
+
+AtomicSharedQueue>>waitForNewItems
+AtomicSharedQueue>>next
+TKTWorkerProcess>>privateNextTask
+TKTWorkerProcess>>workerLoop
+MessageSend>>value
+[ aValuable value ] in TKTPharoProcessProvider>>createProcessDoing:named:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in AtomicSharedQueue>>waitForNewItems
+  stack:
+
+AtomicSharedQueue>>waitForNewItems
+AtomicSharedQueue>>next
+TKTWorkerProcess>>privateNextTask
+TKTWorkerProcess>>workerLoop
+MessageSend>>value
+[ aValuable value ] in TKTPharoProcessProvider>>createProcessDoing:named:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in DelayMicrosecondTicker>>waitForUserSignalled:orExpired:
+  stack:
+
+DelayMicrosecondTicker>>waitForUserSignalled:orExpired:
+[  [runTimerEventLoop] whileTrue:
+		[	|nowTick|
+			"Warning! Stepping <Over> the following line may lock the Image. Use <Into> or <Proceed>."
+		 	ticker waitForUserSignalled: timingSemaphore orExpired: activeDelay.
+
+			"Invoke the api back-ends, which set the transfer-variable to nil"
+			suspendSemaphore ifNotNil: [ self suspendAtTimingPriority    ].
+			delayToStart     ifNotNil: [ self scheduleAtTimingPriority   ].
+			delayToStop      ifNotNil: [ self unscheduleAtTimingPriority ].
+
+			"Signal any expired delays"
+			nowTick := ticker nowTick.
+			[ 	activeDelay isNotNil and: [nowTick >= activeDelay resumptionTick] ]
+					whileTrue: [
+						activeDelay timingPrioritySignalExpired.
+						activeDelay := suspendedDelays removeFirstOrNil ].
+		]
+	] in DelaySemaphoreScheduler(DelayBasicScheduler)>>runBackendLoopAtTimingPriority
+FullBlockClosure(BlockClosure)>>ensure:
+DelaySemaphoreScheduler(DelayBasicScheduler)>>runBackendLoopAtTimingPriority
+[ self runBackendLoopAtTimingPriority ] in DelaySemaphoreScheduler(DelayBasicScheduler)>>startTimerEventLoopPriority:
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in MorphicRenderLoop>>doOneCycleWhile:
+  stack:
+
+MorphicRenderLoop>>doOneCycleWhile:
+[ MorphicRenderLoop new doOneCycleWhile: [ true ] ] in MorphicUIManager>>spawnNewProcess
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in nil
+  stack:
+
+Array(SequenceableCollection)>>do:
+[:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]] in [ Smalltalk
+		logError: aString
+		inContext: aContext.
+
+	" Print stacks of all current processes "
+
+	Smalltalk logDuring: [:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]].
+	] in NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+[
+		logStream := self openLog.
+		aMonadicBlock value: logStream.
+	] in SmalltalkImage>>logDuring:
+FullBlockClosure(BlockClosure)>>ensure:
+SmalltalkImage>>logDuring:
+[ Smalltalk
+		logError: aString
+		inContext: aContext.
+
+	" Print stacks of all current processes "
+
+	Smalltalk logDuring: [:logger |
+		logger nextPutAll: 'Processes and their stacks: ';cr.
+
+		Process allInstances do: [:each | | ctx |
+			logger nextPutAll: 'Process: '; print: each; cr; nextPutAll: '  stack:'; cr; cr.
+
+			ctx := each isActive ifTrue: [ thisContext sender ] ifFalse: [ each suspendedContext ].
+			ctx ifNotNil: [
+				(ctx stackOfSize: 20) do: [:s | logger print: s; cr ]].
+			logger nextPutAll: '------------------------------'; cr; cr.
+		]].
+	] in NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+FullBlockClosure(BlockClosure)>>ensure:
+NonInteractiveUIManager(CommandLineUIManager)>>quitFrom:withMessage:
+NonInteractiveUIManager(CommandLineUIManager)>>handleError:log:
+[
+				self uiManager handleError: anError log: false ] in StartupUIManager>>handleError:log:
+FullBlockClosure(BlockClosure)>>cull:
+WorkingSession>>executeDeferredStartupActions:
+SessionManager>>snapshot:andQuit:
+[^SessionManager default snapshot: save andQuit: quit] in SmalltalkImage>>snapshot:andQuit:
+CurrentExecutionEnvironment class>>activate:for:
+DefaultExecutionEnvironment(ExecutionEnvironment)>>beActiveDuring:
+DefaultExecutionEnvironment class>>beActiveDuring:
+SmalltalkImage>>snapshot:andQuit:
+EvaluateCommandLineHandler>>activate
+EvaluateCommandLineHandler class(CommandLineHandler class)>>activateWith:
+------------------------------
+
+Process: a Process in SmalltalkImage>>lowSpaceWatcher
+  stack:
+
+SmalltalkImage>>lowSpaceWatcher
+[ self lowSpaceWatcher ] in SmalltalkImage>>installLowSpaceWatcher
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in [self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+  stack:
+
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in FinalizationProcess class>>finalizationProcess
+  stack:
+
+FinalizationProcess class>>finalizationProcess
+[self finalizationProcess] in FinalizationProcess class>>restartFinalizationProcess
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in [
+		[ true ] whileTrue: [
+			semaphore wait.
+			[self executeCallback: self nextPendingCallback]
+				on: Exception fork:  [:ex | ex pass ] ] ] in TFCallbackQueue>>forkCallbackProcess
+  stack:
+
+[
+		[ true ] whileTrue: [
+			semaphore wait.
+			[self executeCallback: self nextPendingCallback]
+				on: Exception fork:  [:ex | ex pass ] ] ] in TFCallbackQueue>>forkCallbackProcess
+[self value.
+			"IMPORTANT: Do not step over next line of code. See method comments for details"
+			Processor terminateRealActive] in FullBlockClosure(BlockClosure)>>newProcess
+------------------------------
+
+Process: a Process in Process>>endProcess
+  stack:
+
+Process>>endProcess
+------------------------------
+
+Process: a Process in Array class(SequenceableCollection class)>>new:streamContents:
+  stack:
+
+Array class(SequenceableCollection class)>>new:streamContents:
+MethodDictionary(Dictionary)>>values
+IceTipRepairPullRemoteBranch class(Behavior)>>methods
+[ :behavior | behavior methods ] in SystemEnvironment>>allMethods
+[ :each | stream nextPutAll: (aBlock value: each) ] in [ :stream | self do: [ :each | stream nextPutAll: (aBlock value: each) ] ] in OrderedCollection(SequenceableCollection)>>flatCollect:
+OrderedCollection>>do:
+[ :stream | self do: [ :each | stream nextPutAll: (aBlock value: each) ] ] in OrderedCollection(SequenceableCollection)>>flatCollect:
+OrderedCollection class(SequenceableCollection class)>>new:streamContents:
+OrderedCollection class>>new:streamContents:
+OrderedCollection(SequenceableCollection)>>flatCollect:
+SystemEnvironment>>allMethods
+SystemNavigation>>allMethods
+Symbol class>>rebuildSelectorTable
+Symbol class>>selectorTable
+Symbol class>>recordSelector:
+BaselineOfSwiftyPharo class(Behavior)>>addSelectorSilently:withMethod:
+BaselineOfSwiftyPharo class(ClassDescription)>>addSelectorSilently:withMethod:
+BaselineOfSwiftyPharo class(ClassDescription)>>addAndClassifySelector:withMethod:inProtocol:
+OpalCompiler>>install
+OpalCompiler>>install:
+------------------------------
+

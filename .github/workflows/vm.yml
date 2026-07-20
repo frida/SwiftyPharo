@@ -21,8 +21,8 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v7
 
-      - name: Install meson
-        run: brew install meson
+      - name: Install build dependencies
+        run: brew install meson freetype
 
       - name: Build VM
         run: tools/build-vm.sh
@@ -38,6 +38,18 @@ jobs:
         with:
           name: slice-${{ matrix.platform }}
           path: slice.tar.gz
+
+      # The macOS build is the only one that yields a runnable Pharo CLI.
+      - name: Build image
+        if: matrix.platform == 'macos'
+        run: tools/build-image.sh
+
+      - name: Upload image
+        if: matrix.platform == 'macos'
+        uses: actions/upload-artifact@v7
+        with:
+          name: image
+          path: artifacts/SwiftyPharo.image.zip
 
   xcframework:
     needs: slice
@@ -59,6 +71,12 @@ jobs:
             tar -xzf "${archive}" -C artifacts/slices
           done
 
+      - name: Download image
+        uses: actions/download-artifact@v8
+        with:
+          name: image
+          path: artifacts/
+
       - name: Create xcframework
         run: tools/make-xcframework.sh | tee artifacts.txt
 
@@ -73,4 +91,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           body_path: artifacts.txt
-          files: artifacts/PharoVM.xcframework.zip
+          files: |
+            artifacts/PharoVM.xcframework.zip
+            artifacts/SwiftyPharo.image.zip
