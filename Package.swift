@@ -7,7 +7,7 @@ import PackageDescription
 // SwiftPM only accepts binary paths under the package root, so this is relative.
 let localVMRoot = ProcessInfo.processInfo.environment["PHARO_VM_ROOT"]
 
-let vmVersion = "20260720"
+let vmVersion = "20260720.1"
 
 let pharoVMTarget: Target
 if let localVMRoot {
@@ -19,7 +19,7 @@ if let localVMRoot {
     pharoVMTarget = .binaryTarget(
         name: "PharoVM",
         url: "https://github.com/frida/SwiftyPharo/releases/download/vm-\(vmVersion)/PharoVM.xcframework.zip",
-        checksum: "7d8004aff605b9096e28254794badd5988073c9c0c4f3935ab643957f305c300"
+        checksum: "673f2a8de3820f1d51bef3f24cc6a6fbcbf2b8da45c1ad9346e2c94f724d3992"
     )
     #else
     pharoVMTarget = .systemLibrary(
