@@ -148,6 +148,17 @@ generate_sources() {
 	cmake --build "${generated_dir}" --target generate-sources -j"$(sysctl -n hw.ncpu)"
 }
 
+# The VM asks for its code zone at a fixed address and gives up when something
+# already holds it -- in Luma that is JavaScriptCore, whose own JIT claims the
+# same range. Nothing reads the address as a constant, so let it settle wherever
+# mmap put it. macOS gets no MAP_FIXED, so there is nothing else to try.
+tolerate_relocated_code_zone() {
+	local generated
+	for generated in "${generated_dir}"/generated/64/vm/src/*interp.c; do
+		perl -0pi -e 's/(logError\("Could not allocate codeZone[^\n]*\n)\s*error\("Error allocating"\);\n/$1/' "${generated}"
+	done
+}
+
 configure_and_build() {
 	local options=(
 		-DCMAKE_BUILD_TYPE=Release
@@ -312,6 +323,7 @@ if [ -n "${sysroot}" ]; then
 	build_libffi
 fi
 generate_sources
+tolerate_relocated_code_zone
 configure_and_build
 stage_framework
 report
