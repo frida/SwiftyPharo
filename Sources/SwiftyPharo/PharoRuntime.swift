@@ -27,15 +27,14 @@ public final class PharoRuntime: @unchecked Sendable {
     /// `runningState()` to learn whether the image loaded. `plugins` holds
     /// libFilePlugin and friends, which the VM resolves as the image asks.
     public func boot(image: URL, plugins: URL) {
-        let arguments = retainedArgumentVector(for: image)
-        let environment = retainedEnvironmentVector()
-
         swifty_pharo_boot(
             image.path,
             plugins.path,
-            Int32(arguments.count),
-            arguments.baseAddress,
-            environment.baseAddress)
+            CommandLine.argc,
+            UnsafeMutableRawPointer(CommandLine.unsafeArgv)
+                .assumingMemoryBound(to: UnsafePointer<CChar>?.self),
+            UnsafeMutableRawPointer(environ)
+                .assumingMemoryBound(to: UnsafePointer<CChar>?.self))
     }
 
     @available(macOS 12, iOS 15, *)

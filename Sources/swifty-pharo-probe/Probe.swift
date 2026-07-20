@@ -1,3 +1,4 @@
+import CPharoVM
 import Foundation
 import SwiftyPharo
 
@@ -5,7 +6,7 @@ import SwiftyPharo
 @available(macOS 12, iOS 15, *)
 @main
 struct Probe {
-    static func main() async throws {
+    static func main() {
         setbuf(stdout, nil)
 
         let arguments = CommandLine.arguments
@@ -19,24 +20,37 @@ struct Probe {
             image: URL(fileURLWithPath: arguments[1]),
             plugins: URL(fileURLWithPath: arguments[2]))
 
-        try await runtime.runningState()
-        print("state: \(runtime.state)")
-
-        let probe = try await runtime.evaluate("SwpProbe new")
-        print("evaluated: \(probe.className) \(probe.printString) handle=\(probe.handle)")
-
-        for view in try await runtime.views(of: probe) {
-            print("view: \(view.viewName) \"\(view.title)\" priority=\(view.priority) <- \(view.methodSelector)")
+        for _ in 0..<200 where !swifty_pharo_bridge_is_ready() {
+            usleep(50000)
         }
+        print("state: \(runtime.state), bridge: \(swifty_pharo_bridge_is_ready())")
 
-        let page = try await runtime.items(of: probe, view: "gtNumbersFor:", from: 2, count: 2)
-        print("items: total=\(page.total) window=\(page.items)")
+        walk(runtime)
+        dispatchMain()
+    }
 
-        let element = try await runtime.drillInto(probe, view: "gtNumbersFor:", index: 3)
-        print("drilled: handle=\(element.handle) \(element.printString)")
+    private static func walk(_ runtime: PharoRuntime) {
+        Task {
+            do {
+                let probe = try await runtime.evaluate("SwpProbe new")
+                print("evaluated: \(probe.className) \(probe.printString) handle=\(probe.handle)")
 
-        try await runtime.release(element)
-        print("released")
-        exit(0)
+                for view in try await runtime.views(of: probe) {
+                    print("view: \(view.viewName) \"\(view.title)\" priority=\(view.priority)")
+                }
+
+                let page = try await runtime.items(of: probe, view: "gtNumbersFor:", from: 2, count: 2)
+                print("items: total=\(page.total) window=\(page.items)")
+
+                let element = try await runtime.drillInto(probe, view: "gtNumbersFor:", index: 3)
+                print("drilled: handle=\(element.handle) \(element.printString)")
+
+                try await runtime.release(element)
+                print("released")
+            } catch {
+                print("failed: \(error)")
+            }
+            exit(0)
+        }
     }
 }
