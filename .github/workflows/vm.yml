@@ -1,0 +1,82 @@
+name: VM
+
+on:
+  push:
+    tags:
+      - vm-*
+  pull_request:
+    paths:
+      - tools/**
+      - .github/workflows/vm.yml
+  workflow_dispatch:
+
+jobs:
+  slice:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos, ios, iossimulator]
+    runs-on: macos-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v7
+
+      - name: Install meson
+        run: brew install meson
+
+      - name: Build VM
+        run: tools/build-vm.sh
+        env:
+          PLATFORM: ${{ matrix.platform }}
+
+      - name: Upload slice
+        uses: actions/upload-artifact@v7
+        with:
+          name: slice-${{ matrix.platform }}
+          path: .build/artifacts/slices/
+
+      - name: Upload plugins
+        if: matrix.platform == 'macos'
+        uses: actions/upload-artifact@v7
+        with:
+          name: plugins-${{ matrix.platform }}
+          path: .build/artifacts/PharoVMPlugins-*.zip
+
+  xcframework:
+    needs: slice
+    runs-on: macos-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v7
+
+      - name: Download slices
+        uses: actions/download-artifact@v8
+        with:
+          pattern: slice-*
+          path: .build/artifacts/slices/
+          merge-multiple: true
+
+      - name: Download plugins
+        uses: actions/download-artifact@v8
+        with:
+          pattern: plugins-*
+          path: .build/artifacts/
+          merge-multiple: true
+
+      - name: Create xcframework
+        run: tools/make-xcframework.sh | tee artifacts.txt
+
+      - name: Upload xcframework
+        uses: actions/upload-artifact@v7
+        with:
+          name: PharoVM.xcframework
+          path: .build/artifacts/PharoVM.xcframework.zip
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/vm-')
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: artifacts.txt
+          files: |
+            .build/artifacts/PharoVM.xcframework.zip
+            .build/artifacts/PharoVMPlugins-*.zip

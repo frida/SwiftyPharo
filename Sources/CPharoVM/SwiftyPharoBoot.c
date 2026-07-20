@@ -1,0 +1,175 @@
+#include "include/SwiftyPharoBoot.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+#ifdef _WIN32
+#include <process.h>
+#include <windows.h>
+#else
+#include <pthread.h>
+#endif
+
+#include "pharovm/pharoClient.h"
+
+extern int vmRunOnWorkerThread;
+extern void setProcessArguments(int argc, const char **argv);
+extern void setProcessEnvironmentVector(const char **environment);
+extern void registerCurrentThreadToHandleExceptions(void);
+
+// NULL in the VM; embedders set it.
+extern char **pluginPaths;
+
+typedef struct Worker Worker;
+extern Worker *worker_newSpawning(int spawn);
+extern Worker *mainThreadWorker;
+
+static VMParameters *newInterpreterParameters(const char *imagePath, int argc, const char **argv,
+                                              const char **environment);
+static void usePluginDirectory(const char *pluginsPath);
+static void configureProcessContext(int argc, const char **argv, const char **environment);
+static void spawnMainQueueFFIWorker(void);
+static int spawnInterpreterThread(VMParameters *parameters);
+static void runInterpreter(VMParameters *parameters);
+
+static SwiftyPharoState currentState = SwiftyPharoStateStarting;
+
+// vm_main_with_parameters() would install its own SIGSEGV/SIGBUS handlers.
+SwiftyPharoState
+swifty_pharo_boot(const char *imagePath, const char *pluginsPath, int argc, const char **argv,
+                  const char **environment)
+{
+    VMParameters *parameters = newInterpreterParameters(imagePath, argc, argv, environment);
+
+    usePluginDirectory(pluginsPath);
+    configureProcessContext(argc, argv, environment);
+    osCogStackPageHeadroom();
+    spawnMainQueueFFIWorker();
+
+    if (spawnInterpreterThread(parameters) != 0)
+        currentState = SwiftyPharoStateThreadSpawnFailed;
+
+    return currentState;
+}
+
+SwiftyPharoState
+swifty_pharo_state(void)
+{
+    return currentState;
+}
+
+// Heap-allocated because the interpreter thread outlives swifty_pharo_boot().
+static VMParameters *
+newInterpreterParameters(const char *imagePath, int argc, const char **argv, const char **environment)
+{
+    VMParameters *parameters = calloc(1, sizeof(VMParameters));
+
+    vm_parameters_init(parameters);
+    parameters->imageFileName = strdup(imagePath);
+    parameters->isDefaultImage = false;
+    parameters->defaultImageFound = true;
+    parameters->isInteractiveSession = false;
+    parameters->isWorker = true;
+    parameters->processArgc = argc;
+    parameters->processArgv = argv;
+    parameters->environmentVector = environment;
+
+    return parameters;
+}
+
+// Outlives this call.
+static void
+usePluginDirectory(const char *pluginsPath)
+{
+    static char *searchPaths[2];
+
+    searchPaths[0] = strdup(pluginsPath);
+    searchPaths[1] = NULL;
+    pluginPaths = searchPaths;
+}
+
+static void
+configureProcessContext(int argc, const char **argv, const char **environment)
+{
+    vmRunOnWorkerThread = 1;
+    setProcessArguments(argc, argv);
+    setProcessEnvironmentVector(environment);
+}
+
+// runMainThreadWorker() never returns; spawning leaves the caller its thread.
+static void
+spawnMainQueueFFIWorker(void)
+{
+    mainThreadWorker = worker_newSpawning(1);
+}
+
+// The interpreter recurses far deeper than a default thread stack allows.
+#define INTERPRETER_STACK_SIZE (4 * 1024 * 1024)
+
+#ifdef _WIN32
+
+static unsigned __stdcall interpreterThreadMain(void *context);
+
+static int
+spawnInterpreterThread(VMParameters *parameters)
+{
+    uintptr_t thread = _beginthreadex(NULL, INTERPRETER_STACK_SIZE, interpreterThreadMain, parameters, 0, NULL);
+    if (thread == 0)
+        return -1;
+
+    CloseHandle((HANDLE)thread);
+
+    return 0;
+}
+
+static unsigned __stdcall
+interpreterThreadMain(void *context)
+{
+    runInterpreter(context);
+
+    return 0;
+}
+
+#else
+
+static void *interpreterThreadMain(void *context);
+
+static int
+spawnInterpreterThread(VMParameters *parameters)
+{
+    pthread_attr_t attributes;
+    pthread_attr_init(&attributes);
+    pthread_attr_setstacksize(&attributes, INTERPRETER_STACK_SIZE);
+
+    pthread_t interpreterThread;
+    int result = pthread_create(&interpreterThread, &attributes, interpreterThreadMain, parameters);
+    if (result == 0)
+        pthread_detach(interpreterThread);
+
+    return result;
+}
+
+static void *
+interpreterThreadMain(void *context)
+{
+    runInterpreter(context);
+
+    return NULL;
+}
+
+#endif
+
+// vm_init() records ioVMThread from the calling thread.
+static void
+runInterpreter(VMParameters *parameters)
+{
+    if (!vm_init(parameters)) {
+        currentState = SwiftyPharoStateImageLoadFailed;
+        return;
+    }
+
+    registerCurrentThreadToHandleExceptions();
+    currentState = SwiftyPharoStateRunning;
+
+    vm_run_interpreter();
+}

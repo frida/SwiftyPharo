@@ -1,0 +1,5 @@
+module PharoVM [system] {
+    header "shim.h"
+    link "PharoVMCore"
+    export *
+}
