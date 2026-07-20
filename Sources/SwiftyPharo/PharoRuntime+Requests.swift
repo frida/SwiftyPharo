@@ -55,16 +55,19 @@ extension PharoRuntime {
     private func requestJSON(_ request: String) async throws -> String {
         try await withCheckedThrowingContinuation { continuation in
             PharoRuntime.requestQueue.async {
-                continuation.resume(returning: PharoRuntime.callImage(request))
+                continuation.resume(with: Result { try PharoRuntime.callImage(request) })
             }
         }
     }
 
-    private static func callImage(_ request: String) -> String {
+    private static func callImage(_ request: String) throws -> String {
         var capacity = 64 * 1024
         while true {
             var response = [CChar](repeating: 0, count: capacity)
             let length = Int(swifty_pharo_request(request, &response, Int32(capacity)))
+            if length == Int(SWIFTY_PHARO_BRIDGE_UNAVAILABLE) {
+                throw PharoRequestError.bridgeUnavailable
+            }
             if length < capacity {
                 return String(cString: response)
             }

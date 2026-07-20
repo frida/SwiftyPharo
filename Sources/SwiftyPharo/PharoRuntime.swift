@@ -36,12 +36,15 @@ public final class PharoRuntime: @unchecked Sendable {
                 .assumingMemoryBound(to: UnsafePointer<CChar>?.self))
     }
 
+    /// Returns once the image is not just up but serving requests.
     @available(macOS 12, iOS 15, *)
     public func runningState() async throws {
         while true {
             switch state {
-            case .running:
+            case .running where swifty_pharo_bridge_is_ready():
                 return
+            case .running:
+                try await Task.sleep(nanoseconds: 5_000_000)
             case .imageLoadFailed:
                 throw PharoRuntimeError.imageLoadFailed
             case .threadSpawnFailed:

@@ -30,6 +30,7 @@ public struct PharoItemsPage: Sendable, Decodable {
 
 public enum PharoRequestError: Error, Sendable {
     case imageFailed(String)
+    case bridgeUnavailable
 }
 
 struct PharoFailure: Decodable {

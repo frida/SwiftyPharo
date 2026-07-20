@@ -10,14 +10,23 @@ no port.
 ```swift
 import SwiftyPharo
 
-PharoRuntime.shared.boot(image: imageURL, plugins: pluginsURL)
+PharoRuntime.shared.boot(image: imageURL)
 try await PharoRuntime.shared.runningState()
 ```
 
-`libPharoVMCore` is linked, but the plugins behind file, socket and SSL
-primitives are `dlopen`ed by leaf name while the image runs. `pluginPaths`, the
-global the VM consults for them, ships as `NULL` and is assigned nowhere in the
-VM — an embedder is expected to set it, which is what `plugins:` does.
+## Laying out the runtime
+
+**Unpack `PharoVMPlugins-<platform>.zip` into the directory holding
+`libPharoVMCore`.** The plugins behind the file, socket and SSL primitives are
+loaded from wherever the core sits, so an image that cannot find them starts,
+spins and never answers. SwiftPM copies the core next to the product, and the
+stock `Pharo.app` keeps the two together in `Contents/MacOS/Plugins` for the
+same reason; Windows resolves DLLs from the loading module's directory, so one
+directory suits every platform.
+
+There is a `pluginPaths` global in the VM that looks like the place to point at
+a plugins directory. It is not: the image loads its plugins just as happily with
+that global aimed at a directory that does not exist.
 
 ## How it embeds
 
