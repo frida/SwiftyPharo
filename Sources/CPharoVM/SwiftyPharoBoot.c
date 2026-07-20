@@ -10,7 +10,7 @@
 #include <pthread.h>
 #endif
 
-#include "pharovm/pharoClient.h"
+#include <PharoVM/pharoClient.h>
 
 extern int vmRunOnWorkerThread;
 extern void setProcessArguments(int argc, const char **argv);

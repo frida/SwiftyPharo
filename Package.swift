@@ -4,13 +4,14 @@ import PackageDescription
 
 // A locally built VM (see tools/build-vm.sh) short-circuits the published
 // artifact, mirroring how r2pharo/frida-pharo honour R2PHARO_LIB/FRIDA_CORE_LIB.
+// SwiftPM only accepts binary paths under the package root, so this is relative.
 let localVMRoot = ProcessInfo.processInfo.environment["PHARO_VM_ROOT"]
 
 let vmVersion = "20260720"
 
 let pharoVMTarget: Target
-if localVMRoot != nil {
-    pharoVMTarget = .systemLibrary(name: "PharoVM", path: "Sources/PharoVM")
+if let localVMRoot {
+    pharoVMTarget = .binaryTarget(name: "PharoVM", path: localVMRoot)
 } else {
     #if os(Windows)
     pharoVMTarget = .systemLibrary(name: "PharoVM", path: "Sources/PharoVM")

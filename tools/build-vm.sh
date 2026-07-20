@@ -19,7 +19,7 @@ IOS_MINIMUM_VERSION="${IOS_MINIMUM_VERSION:-11.0}"
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 work_dir="${script_dir}/../.build/vm"
 checkout_dir="${work_dir}/pharo-vm"
-output_dir="${script_dir}/../.build/artifacts"
+output_dir="${script_dir}/../artifacts"
 
 # iOS withholds writable-executable memory, so no JIT there.
 case "${PLATFORM}" in
@@ -190,52 +190,113 @@ built_libraries_dir() {
 	fi
 }
 
-stage_slice() {
+# A framework keeps the core and its plugins together as one embeddable piece.
+stage_framework() {
 	rm -rf "${slice_dir}"
-	mkdir -p "${slice_dir}/Headers"
 
-	cp "$(built_libraries_dir)/libPharoVMCore.dylib" "${slice_dir}/"
-	strip_symbols "${slice_dir}/libPharoVMCore.dylib"
-	cp -R "${checkout_dir}/include/pharovm" "${slice_dir}/Headers/"
-	cp "${build_dir}/build/include/pharovm/config.h" "${slice_dir}/Headers/pharovm/"
-	cp "${generated_dir}"/generated/64/vm/include/*.h "${slice_dir}/Headers/pharovm/"
-	flatten_headers
+	local framework="${slice_dir}/PharoVM.framework"
+	local contents="${framework}"
+	local binary_subpath=""
+	if [ -z "${sysroot}" ]; then
+		contents="${framework}/Versions/A"
+		binary_subpath="Versions/A/"
+	fi
+	local install_name="@rpath/PharoVM.framework/${binary_subpath}PharoVM"
+
+	mkdir -p "${contents}"
+	cp "$(built_libraries_dir)/libPharoVMCore.dylib" "${contents}/PharoVM"
+	install_name_tool -id "${install_name}" "${contents}/PharoVM"
+
+	# ioLoadModule() falls back to dlopen()ing a plugin by leaf name, which dyld
+	# resolves through the rpaths of whoever called it. Naming itself lets the
+	# core find the plugins sitting beside it wherever the framework is dropped.
+	install_name_tool -add_rpath @loader_path "${contents}/PharoVM"
+	sign_adhoc "${contents}/PharoVM"
+
+	stage_plugins_into "${contents}" "${install_name}"
+	stage_headers_into "${contents}/Headers"
+	write_framework_plist "${contents}"
+
+	if [ -z "${sysroot}" ]; then
+		ln -s A "${framework}/Versions/Current"
+		ln -s Versions/Current/PharoVM "${framework}/PharoVM"
+		ln -s Versions/Current/Headers "${framework}/Headers"
+		ln -s Versions/Current/Resources "${framework}/Resources"
+	fi
+
+	sign_adhoc "${framework}"
 }
 
-# Headers include their siblings unqualified across directories, which the VM's
-# own build answers with a long -I list. A flat copy keeps a single one working.
-flatten_headers() {
-	local headers="${slice_dir}/Headers"
-
-	rm -rf "${headers}/pharovm/win"
-
-	find "${headers}/pharovm" -name '*.h' -not -path '*/osx/*' -not -path '*/unix/*' -exec cp {} "${headers}/" \;
-	cp "${headers}/pharovm/unix"/*.h "${headers}/"
-	cp "${headers}/pharovm/osx"/*.h "${headers}/"
-}
-
-# An xcframework carries one library, so these travel separately.
-package_plugins() {
-	local staging_dir="${output_dir}/plugin-staging"
-
-	rm -rf "${staging_dir}"
-	mkdir -p "${staging_dir}/Plugins"
-
-	cp "$(built_libraries_dir)"/*.dylib "${staging_dir}/Plugins/"
-	rm -f "${staging_dir}/Plugins/libPharoVMCore.dylib"
-
+# The plugins were linked against the core's own name, so point them at the
+# framework's binary.
+stage_plugins_into() {
+	local destination="$1"
+	local install_name="$2"
 	local plugin
-	for plugin in "${staging_dir}/Plugins"/*.dylib; do
-		strip_symbols "${plugin}"
-	done
 
-	(cd "${staging_dir}" && zip -qry "${output_dir}/PharoVMPlugins-${PLATFORM}-${arch}.zip" Plugins)
-	rm -rf "${staging_dir}"
+	for plugin in "$(built_libraries_dir)"/*.dylib; do
+		case "$(basename "${plugin}")" in
+			libPharoVMCore.dylib) continue ;;
+		esac
+
+		cp "${plugin}" "${destination}/"
+		install_name_tool -change "@rpath/libPharoVMCore.dylib" "${install_name}" \
+			"${destination}/$(basename "${plugin}")"
+		sign_adhoc "${destination}/$(basename "${plugin}")"
+	done
 }
 
-# Exported entry points survive; about a sixth of the library goes.
-strip_symbols() {
-	strip -Sx "$1"
+# Rewriting load commands invalidates a signature, and a framework will not sign
+# while anything nested inside it is unsigned.
+sign_adhoc() {
+	codesign --force --sign - "$1" 2>/dev/null
+}
+
+# Headers reach for each other both unqualified and via "pharovm/..." paths,
+# which the VM's own build answers with a long -I list. Flattening them into one
+# directory and dropping the prefixes lets same-directory resolution do it all.
+stage_headers_into() {
+	local headers="$1"
+	local staging="${headers}.tree"
+
+	rm -rf "${headers}" "${staging}"
+	mkdir -p "${headers}"
+	cp -R "${checkout_dir}/include/pharovm" "${staging}"
+	cp "${build_dir}/build/include/pharovm/config.h" "${staging}/"
+	cp "${generated_dir}"/generated/64/vm/include/*.h "${staging}/"
+
+	rm -rf "${staging}/win"
+	find "${staging}" -name '*.h' -not -path '*/osx/*' -not -path '*/unix/*' -exec cp {} "${headers}/" \;
+	cp "${staging}/unix"/*.h "${headers}/"
+	cp "${staging}/osx"/*.h "${headers}/"
+	rm -rf "${staging}"
+
+	sed -i '' -E 's|#include[[:space:]]*"[^"]*/([^"/]+\.h)"|#include "\1"|' "${headers}"/*.h
+}
+
+write_framework_plist() {
+	local destination="$1"
+	local plist="${destination}/Info.plist"
+
+	if [ -z "${sysroot}" ]; then
+		mkdir -p "${destination}/Resources"
+		plist="${destination}/Resources/Info.plist"
+	fi
+
+	cat > "${plist}" <<-EOF
+		<?xml version="1.0" encoding="UTF-8"?>
+		<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+		<plist version="1.0">
+		<dict>
+			<key>CFBundleIdentifier</key><string>re.frida.PharoVM</string>
+			<key>CFBundleName</key><string>PharoVM</string>
+			<key>CFBundleExecutable</key><string>PharoVM</string>
+			<key>CFBundlePackageType</key><string>FMWK</string>
+			<key>CFBundleVersion</key><string>1</string>
+			<key>CFBundleShortVersionString</key><string>1.0</string>
+		</dict>
+		</plist>
+	EOF
 }
 
 report() {
@@ -243,7 +304,6 @@ report() {
 	echo "slice:    ${slice_dir}"
 	echo
 	echo "Run make-xcframework.sh to combine the staged slices."
-	echo "Unpack the plugins beside libPharoVMCore; the image loads them from there."
 }
 
 sync_checkout
@@ -253,8 +313,5 @@ if [ -n "${sysroot}" ]; then
 fi
 generate_sources
 configure_and_build
-stage_slice
-if [ "${PLATFORM}" = "macos" ]; then
-	package_plugins
-fi
+stage_framework
 report

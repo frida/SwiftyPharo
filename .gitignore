@@ -2,3 +2,4 @@
 .swiftpm/
 *.xcframework
 *.xcframework.zip
+artifacts/
