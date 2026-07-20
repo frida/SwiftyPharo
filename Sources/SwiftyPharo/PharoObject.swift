@@ -33,6 +33,17 @@ public enum PharoRequestError: Error, Sendable {
     case bridgeUnavailable
 }
 
+extension PharoRequestError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .imageFailed(let message):
+            message
+        case .bridgeUnavailable:
+            "The image stopped answering"
+        }
+    }
+}
+
 struct PharoFailure: Decodable {
     let error: String
     let message: String?
