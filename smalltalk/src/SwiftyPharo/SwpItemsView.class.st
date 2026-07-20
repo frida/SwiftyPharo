@@ -63,3 +63,8 @@ SwpItemsView >> textFor: anItem [
 SwpItemsView >> totalItems [
 	^ self items size
 ]
+
+{ #category : 'testing' }
+SwpItemsView >> isEmpty [
+	^ self totalItems = 0
+]

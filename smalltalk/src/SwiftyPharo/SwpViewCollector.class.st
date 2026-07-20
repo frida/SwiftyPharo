@@ -135,9 +135,26 @@ SwpViewCollector class >> listViewOfItems: aCollection [
 	items := aCollection asOrderedCollection.
 	^ SwpListView new
 		  items: [ items ];
-		  itemText: [ :each | each printString ];
-		  send: [ :each | each ];
+		  itemText: [ :each | self textForRow: each ];
+		  send: [ :each | self valueOfRow: each ];
 		  yourself
+]
+
+{ #category : 'collecting' }
+SwpViewCollector class >> textForRow: anItem [
+	"The inspection presenters hand out nodes that name a slot and hold its
+	value, rather than the value itself."
+
+	((anItem respondsTo: #label) and: [ anItem respondsTo: #value ]) ifTrue: [
+		^ anItem label asString , ': ' , anItem value printString ].
+	^ anItem printString
+]
+
+{ #category : 'collecting' }
+SwpViewCollector class >> valueOfRow: anItem [
+	^ (anItem respondsTo: #rawValue)
+		  ifTrue: [ anItem rawValue ]
+		  ifFalse: [ anItem ]
 ]
 
 { #category : 'collecting' }
