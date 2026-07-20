@@ -29,18 +29,15 @@ jobs:
         env:
           PLATFORM: ${{ matrix.platform }}
 
+      # A framework carries symlinks, which the artifact upload does not keep.
+      - name: Archive slice
+        run: tar -czf slice.tar.gz -C artifacts/slices .
+
       - name: Upload slice
         uses: actions/upload-artifact@v7
         with:
           name: slice-${{ matrix.platform }}
-          path: artifacts/slices/
-
-      - name: Upload plugins
-        if: matrix.platform == 'macos'
-        uses: actions/upload-artifact@v7
-        with:
-          name: plugins-${{ matrix.platform }}
-          path: artifacts/PharoVMPlugins-*.zip
+          path: slice.tar.gz
 
   xcframework:
     needs: slice
@@ -53,15 +50,14 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           pattern: slice-*
-          path: artifacts/slices/
-          merge-multiple: true
+          path: archives/
 
-      - name: Download plugins
-        uses: actions/download-artifact@v8
-        with:
-          pattern: plugins-*
-          path: artifacts/
-          merge-multiple: true
+      - name: Unpack slices
+        run: |
+          mkdir -p artifacts/slices
+          for archive in archives/*/slice.tar.gz; do
+            tar -xzf "${archive}" -C artifacts/slices
+          done
 
       - name: Create xcframework
         run: tools/make-xcframework.sh | tee artifacts.txt
@@ -77,6 +73,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           body_path: artifacts.txt
-          files: |
-            artifacts/PharoVM.xcframework.zip
-            artifacts/PharoVMPlugins-*.zip
+          files: artifacts/PharoVM.xcframework.zip
