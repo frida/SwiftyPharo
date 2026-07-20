@@ -1,5 +1,7 @@
 "
 Hands the embedding host a C function pointer it can call to run a request.
+The host boots the image with an argument that installs this once startup has
+finished; building the callback from a startup handler is not dependable.
 The runner is bound when the callback is built: assigning it afterwards leaves
 calls arriving on a foreign thread hanging.
 "
@@ -11,7 +13,7 @@ Class {
 		'session',
 		'worker'
 	],
-	#classVariables : [
+	#classVars : [
 		'Installed'
 	],
 	#category : 'SwiftyPharo',
@@ -21,24 +23,6 @@ Class {
 { #category : 'installing' }
 SwpBridge class >> install [
 	^ Installed ifNil: [ Installed := self new install ]
-]
-
-{ #category : 'installing' }
-SwpBridge class >> installOnStartUp [
-	"Registration is explicit: a class-side initialize would run whenever the
-	package is loaded, including in the plain VM that builds the image, where
-	there is no host to hand a thunk to."
-
-	SessionManager default registerUserClassNamed: self name
-]
-
-{ #category : 'installing' }
-SwpBridge class >> startUp: isImageStarting [
-	"Thunks do not survive a snapshot, so the callback is rebuilt every boot."
-
-	isImageStarting ifTrue: [
-		Installed := nil.
-		self install ]
 ]
 
 { #category : 'installing' }
@@ -70,7 +54,7 @@ SwpBridge >> registerThunk [
 { #category : 'requests' }
 SwpBridge >> respondTo: aRequestAddress into: aResponseAddress capacity: aCapacity [
 	| answer |
-	answer := [ session handleRequestJson: aRequestAddress readString ]
+	answer := [ session handleRequestJson: aRequestAddress readString utf8Decoded ]
 		on: Error
 		do: [ :e | '{"error":"', e class name, '"}' ].
 	^ self write: answer to: aResponseAddress capacity: aCapacity

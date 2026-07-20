@@ -58,6 +58,14 @@ swifty_pharo_state(void)
     return currentState;
 }
 
+// Runs once the image has finished starting, where the callback runner is
+// dependable; building the thunk from a startup handler is not. The script
+// never returns, so the image stays up serving requests.
+static const char *bridgeStartup[] = {
+    "eval",
+    "SwpBridge install. [ (Delay forSeconds: 3600) wait ] repeat",
+};
+
 // Heap-allocated because the interpreter thread outlives swifty_pharo_boot().
 static VMParameters *
 newInterpreterParameters(const char *imagePath, int argc, const char **argv, const char **environment)
@@ -65,6 +73,7 @@ newInterpreterParameters(const char *imagePath, int argc, const char **argv, con
     VMParameters *parameters = calloc(1, sizeof(VMParameters));
 
     vm_parameters_init(parameters);
+    vm_parameter_vector_insert_from(&parameters->imageParameters, 2, bridgeStartup);
     parameters->imageFileName = strdup(imagePath);
     parameters->isDefaultImage = false;
     parameters->defaultImageFound = true;
