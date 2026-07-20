@@ -243,6 +243,7 @@ report() {
 	echo "slice:    ${slice_dir}"
 	echo
 	echo "Run make-xcframework.sh to combine the staged slices."
+	echo "Unpack the plugins beside libPharoVMCore; the image loads them from there."
 }
 
 sync_checkout
