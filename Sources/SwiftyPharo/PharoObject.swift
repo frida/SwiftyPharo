@@ -36,6 +36,14 @@ public struct PharoCell: Sendable, Decodable {
     public let png: Data?
 }
 
+extension PharoCell: CustomStringConvertible {
+    public var description: String {
+        if let text { return text }
+        if let png { return "<png \(png.count) bytes>" }
+        return ""
+    }
+}
+
 public enum PharoRequestError: Error, Sendable {
     case imageFailed(String)
     case bridgeUnavailable

@@ -38,7 +38,8 @@ struct Probe {
                 }
 
                 let page = try await runtime.items(of: probe, view: "gtNumbersFor:", from: 2, count: 2)
-                print("items: total=\(page.total) window=\(page.items)")
+                let window = page.items.map { row in row.map(\.description).joined(separator: " | ") }
+                print("items: total=\(page.total) window=\(window)")
 
                 let element = try await runtime.drillInto(probe, view: "gtNumbersFor:", index: 3)
                 print("drilled: handle=\(element.handle) \(element.printString)")
