@@ -29,6 +29,13 @@ public struct PharoItemsPage: Sendable, Decodable {
     public let items: [[PharoCell]]
 }
 
+/// Candidates for the token the cursor sits in, which starts at `tokenStart`
+/// so a caller knows how much of its source each candidate replaces.
+public struct PharoCompletions: Sendable, Decodable {
+    public let tokenStart: Int
+    public let completions: [String]
+}
+
 /// Either words or a picture, which is as much as a column can hold. `png`
 /// arrives base64 encoded, which is what Data decodes from by default.
 public struct PharoCell: Sendable, Decodable {

@@ -35,6 +35,10 @@ extension PharoRuntime {
         try await send(["op": "send", "handle": anObject.handle, "view": view, "index": index])
     }
 
+    public func completions(for source: String, at position: Int) async throws -> PharoCompletions {
+        try await send(["op": "complete", "source": source, "position": position])
+    }
+
     public func release(_ anObject: PharoObject) async throws {
         let _: PharoReleased = try await send(["op": "release", "handle": anObject.handle])
     }

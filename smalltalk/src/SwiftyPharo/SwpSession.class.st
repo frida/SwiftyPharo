@@ -57,6 +57,7 @@ SwpSession >> handleRequest: aDictionary [
 	operation = 'items' ifTrue: [ ^ self itemsOf: aDictionary ].
 	operation = 'send' ifTrue: [ ^ self sendOf: aDictionary ].
 	operation = 'release' ifTrue: [ ^ self releaseOf: (aDictionary at: #handle) ].
+	operation = 'complete' ifTrue: [ ^ self completeOf: aDictionary ].
 	^ self error: 'unknown op: ', operation
 ]
 
@@ -93,6 +94,23 @@ SwpSession >> sendOf: aDictionary [
 SwpSession >> releaseOf: aHandle [
 	self release: aHandle.
 	^ Dictionary new at: #released put: aHandle; yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> completeOf: aDictionary [
+	| cursor context |
+	cursor := SwpCompletionCursor
+		source: (aDictionary at: #source)
+		position: (aDictionary at: #position).
+	context := CoCompletionContext
+		engine: cursor
+		class: Object
+		source: (aDictionary at: #source)
+		position: (aDictionary at: #position).
+	^ Dictionary new
+		at: #tokenStart put: cursor completionTokenStart;
+		at: #completions put: ((context entries collect: [ :each | each contents asString ]) asArray);
+		yourself
 ]
 
 { #category : 'requests' }
