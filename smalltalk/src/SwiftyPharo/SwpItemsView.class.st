@@ -38,8 +38,8 @@ SwpItemsView >> itemsFrom: anIndex count: aCount [
 	items := self items.
 	last := (anIndex + aCount - 1) min: items size.
 	anIndex > last ifTrue: [ ^ #() ].
-	^ (anIndex to: last) collect: [ :position |
-		  self cellsFor: (items at: position) at: position ]
+	^ ((anIndex to: last) collect: [ :position |
+		   self cellsFor: (items at: position) at: position ]) asArray
 ]
 
 { #category : 'building' }
@@ -82,7 +82,7 @@ SwpItemsView >> cellsFor: anItem at: anIndex [
 	it declares none. A column that numbers the rows needs the position too."
 
 	cellBlocks ifNil: [ ^ { self textCellFor: anItem } ].
-	^ cellBlocks collect: [ :each | each value: anItem value: anIndex ]
+	^ (cellBlocks collect: [ :each | each value: anItem value: anIndex ]) asArray
 ]
 
 { #category : 'accessing' }
