@@ -29,6 +29,15 @@ public struct PharoItemsPage: Sendable, Decodable {
     public let items: [[PharoCell]]
 }
 
+/// A class named in a piece of source, and where it sits, so an editor can
+/// offer to open it without parsing Smalltalk itself. Positions are 1-based
+/// and inclusive, the way the image counts them.
+public struct PharoClassReference: Sendable, Decodable {
+    public let name: String
+    public let start: Int
+    public let stop: Int
+}
+
 /// Candidates for the token the cursor sits in, which starts at `tokenStart`
 /// so a caller knows how much of its source each candidate replaces.
 public struct PharoCompletions: Sendable, Decodable {
@@ -74,4 +83,8 @@ struct PharoFailure: Decodable {
 
 struct PharoViewList: Decodable {
     let views: [PharoViewDeclaration]
+}
+
+struct PharoClassReferenceList: Decodable {
+    let references: [PharoClassReference]
 }

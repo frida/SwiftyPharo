@@ -58,6 +58,7 @@ SwpSession >> handleRequest: aDictionary [
 	operation = 'send' ifTrue: [ ^ self sendOf: aDictionary ].
 	operation = 'release' ifTrue: [ ^ self releaseOf: (aDictionary at: #handle) ].
 	operation = 'complete' ifTrue: [ ^ self completeOf: aDictionary ].
+	operation = 'classReferences' ifTrue: [ ^ self classReferencesOf: (aDictionary at: #source) ].
 	^ self error: 'unknown op: ', operation
 ]
 
@@ -111,6 +112,31 @@ SwpSession >> completeOf: aDictionary [
 		at: #tokenStart put: cursor completionTokenStart;
 		at: #completions put: ((context entries collect: [ :each | each contents asString ]) asArray);
 		yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> classReferencesOf: aString [
+	| references |
+	references := Dictionary new.
+	(OCParser parseFaultyExpression: aString) allChildren
+		select: [ :node | self classReferredToBy: node ]
+		thenDo: [ :node |
+			references
+				at: node start
+				put: (Dictionary new
+					at: #name put: node name asString;
+					at: #start put: node start;
+					at: #stop put: node stop;
+					yourself) ].
+	^ Dictionary new
+		at: #references put: (references keys asSortedCollection collect: [ :start | references at: start ]) asArray;
+		yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> classReferredToBy: aNode [
+	aNode isVariable ifFalse: [ ^ false ].
+	^ (Smalltalk globals at: aNode name asSymbol ifAbsent: [ nil ]) isBehavior
 ]
 
 { #category : 'requests' }

@@ -39,6 +39,11 @@ extension PharoRuntime {
         try await send(["op": "complete", "source": source, "position": position])
     }
 
+    public func classReferences(in source: String) async throws -> [PharoClassReference] {
+        let found: PharoClassReferenceList = try await send(["op": "classReferences", "source": source])
+        return found.references
+    }
+
     public func release(_ anObject: PharoObject) async throws {
         let _: PharoReleased = try await send(["op": "release", "handle": anObject.handle])
     }
