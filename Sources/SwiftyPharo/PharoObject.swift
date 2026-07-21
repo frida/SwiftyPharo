@@ -25,7 +25,15 @@ public struct PharoViewDeclaration: Sendable, Decodable {
 
 public struct PharoItemsPage: Sendable, Decodable {
     public let total: Int
-    public let items: [String]
+    /// A row per item, a cell per column the view declares.
+    public let items: [[PharoCell]]
+}
+
+/// Either words or a picture, which is as much as a column can hold. `png`
+/// arrives base64 encoded, which is what Data decodes from by default.
+public struct PharoCell: Sendable, Decodable {
+    public let text: String?
+    public let png: Data?
 }
 
 public enum PharoRequestError: Error, Sendable {

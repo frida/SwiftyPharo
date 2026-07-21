@@ -108,9 +108,9 @@ SwpViewCollector class >> viewOfPresenter: aPresenter [
 	superclass worth naming here."
 
 	(aPresenter respondsTo: #items) ifTrue: [
-		^ self listViewOfItems: aPresenter items ].
+		^ self listViewOf: aPresenter items in: aPresenter ].
 	(aPresenter respondsTo: #roots) ifTrue: [
-		^ self listViewOfItems: aPresenter roots ].
+		^ self listViewOf: aPresenter roots in: aPresenter ].
 	(aPresenter respondsTo: #text) ifTrue: [
 		^ SwpTextView new
 			  text: aPresenter text asString;
@@ -130,13 +130,48 @@ SwpViewCollector class >> viewOfComposedPresenter: aPresenter [
 ]
 
 { #category : 'collecting' }
-SwpViewCollector class >> listViewOfItems: aCollection [
-	| items |
+SwpViewCollector class >> listViewOf: aCollection in: aPresenter [
+	| items view columns |
 	items := aCollection asOrderedCollection.
-	^ SwpListView new
-		  items: [ items ];
-		  itemText: [ :each | self textForRow: each ];
-		  send: [ :each | self valueOfRow: each ];
+	view := SwpListView new
+		        items: [ items ];
+		        itemText: [ :each | self textForRow: each ];
+		        send: [ :each | self valueOfRow: each ];
+		        yourself.
+
+	columns := (aPresenter respondsTo: #columns)
+		           ifTrue: [ aPresenter columns ]
+		           ifFalse: [ #() ].
+	columns ifNotEmpty: [
+		view cellBlocks: (columns collect: [ :each | self cellBlockOf: each ]) ].
+	^ view
+]
+
+{ #category : 'collecting' }
+SwpViewCollector class >> cellBlockOf: aColumn [
+	"An image column is how both Pharo and Glamorous Toolkit say a cell shows
+	a picture rather than words."
+
+	(aColumn isKindOf: SpIndexTableColumn) ifTrue: [
+		^ [ :item :index |
+		  Dictionary new
+			  at: 'text' put: index printString;
+			  yourself ] ].
+	(aColumn isKindOf: SpImageTableColumn) ifTrue: [
+		^ [ :item :index | self imageCellOf: (aColumn evaluateObject: item) ] ].
+	^ [ :item :index |
+	  Dictionary new
+		  at: 'text' put: (aColumn evaluateObject: item) asString;
+		  yourself ]
+]
+
+{ #category : 'collecting' }
+SwpViewCollector class >> imageCellOf: aForm [
+	| png |
+	png := ByteArray streamContents: [ :stream |
+		       PNGReadWriter putForm: aForm onStream: stream ].
+	^ Dictionary new
+		  at: 'png' put: png base64Encoded;
 		  yourself
 ]
 

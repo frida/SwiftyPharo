@@ -9,7 +9,8 @@ Class {
 		'itemsBlock',
 		'itemTextBlock',
 		'sendBlock',
-		'computedItems'
+		'computedItems',
+		'cellBlocks'
 	],
 	#category : 'SwiftyPharo',
 	#package : 'SwiftyPharo'
@@ -37,7 +38,8 @@ SwpItemsView >> itemsFrom: anIndex count: aCount [
 	items := self items.
 	last := (anIndex + aCount - 1) min: items size.
 	anIndex > last ifTrue: [ ^ #() ].
-	^ (items copyFrom: anIndex to: last) collect: [ :each | self textFor: each ]
+	^ (anIndex to: last) collect: [ :position |
+		  self cellsFor: (items at: position) at: position ]
 ]
 
 { #category : 'building' }
@@ -67,4 +69,25 @@ SwpItemsView >> totalItems [
 { #category : 'testing' }
 SwpItemsView >> isEmpty [
 	^ self totalItems = 0
+]
+
+{ #category : 'building' }
+SwpItemsView >> cellBlocks: anArray [
+	cellBlocks := anArray
+]
+
+{ #category : 'accessing' }
+SwpItemsView >> cellsFor: anItem at: anIndex [
+	"A row is as many cells as the view declares columns, and one of text when
+	it declares none. A column that numbers the rows needs the position too."
+
+	cellBlocks ifNil: [ ^ { self textCellFor: anItem } ].
+	^ cellBlocks collect: [ :each | each value: anItem value: anIndex ]
+]
+
+{ #category : 'accessing' }
+SwpItemsView >> textCellFor: anItem [
+	^ Dictionary new
+		  at: 'text' put: (self textFor: anItem);
+		  yourself
 ]
