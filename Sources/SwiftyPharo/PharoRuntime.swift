@@ -17,7 +17,10 @@ public enum PharoRuntimeError: Error, Sendable {
 public final class PharoRuntime: @unchecked Sendable {
     public static let shared = PharoRuntime()
 
-    static let requestQueue = DispatchQueue(label: "swiftypharo.requests", qos: .userInitiated)
+    /// The image serves requests from a thread of its own making, which runs at
+    /// the default quality of service. Asking from a higher one only inverts the
+    /// two, since the answer can come no sooner than that thread produces it.
+    static let requestQueue = DispatchQueue(label: "swiftypharo.requests", qos: .default)
 
     public var state: PharoRuntimeState {
         PharoRuntimeState(swifty_pharo_state())
