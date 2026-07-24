@@ -3,3 +3,7 @@
 *.xcframework
 *.xcframework.zip
 artifacts/
+
+# Pharo crash/debug output
+crash.dmp
+PharoDebug.log
