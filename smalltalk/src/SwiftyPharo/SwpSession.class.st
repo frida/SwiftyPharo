@@ -59,12 +59,26 @@ SwpSession >> handleRequest: aDictionary [
 	operation = 'release' ifTrue: [ ^ self releaseOf: (aDictionary at: #handle) ].
 	operation = 'complete' ifTrue: [ ^ self completeOf: aDictionary ].
 	operation = 'classReferences' ifTrue: [ ^ self classReferencesOf: (aDictionary at: #source) ].
+	operation = 'serialize' ifTrue: [ ^ self serializeOf: (aDictionary at: #handle) ].
+	operation = 'materialize' ifTrue: [ ^ self materializeOf: (aDictionary at: #data) ].
 	^ self error: 'unknown op: ', operation
 ]
 
 { #category : 'requests' }
 SwpSession >> evaluate: aString [
 	^ self describe: (Smalltalk compiler evaluate: aString)
+]
+
+{ #category : 'requests' }
+SwpSession >> serializeOf: aHandle [
+	^ Dictionary new
+		at: #data put: (FLSerializer serializeToByteArray: (self objectAt: aHandle)) base64Encoded;
+		yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> materializeOf: aString [
+	^ self describe: (FLMaterializer materializeFromByteArray: aString base64Decoded)
 ]
 
 { #category : 'requests' }

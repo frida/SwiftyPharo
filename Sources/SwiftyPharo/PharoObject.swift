@@ -88,3 +88,8 @@ struct PharoViewList: Decodable {
 struct PharoClassReferenceList: Decodable {
     let references: [PharoClassReference]
 }
+
+/// Fuel bytes, which arrive base64 encoded, which is what Data decodes from.
+struct PharoBlob: Decodable {
+    let data: Data
+}
