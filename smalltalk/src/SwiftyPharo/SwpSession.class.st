@@ -276,19 +276,24 @@ SwpSession >> distanceFrom: aString to: bString [
 
 { #category : 'requests' }
 SwpSession >> defineClassOf: aDictionary [
-	| superclass category class |
+	| superclass class |
 	superclass := Smalltalk globals at: (aDictionary at: #superclass) asSymbol ifAbsent: [ Object ].
-	category := (aDictionary at: #tag) isEmpty
-		ifTrue: [ aDictionary at: #package ]
-		ifFalse: [ (aDictionary at: #package), '-', (aDictionary at: #tag) ].
-	class := superclass
-		subclass: (aDictionary at: #name) asSymbol
-		instanceVariableNames: (aDictionary at: #instanceVariables)
-		classVariableNames: (aDictionary at: #classVariables)
-		category: category.
+	class := ShiftClassInstaller make: [ :builder |
+		builder
+			name: (aDictionary at: #name) asSymbol;
+			superclass: superclass;
+			slots: (self slotsFrom: (aDictionary at: #instanceVariables));
+			sharedVariables: (self slotsFrom: (aDictionary at: #classVariables));
+			package: (aDictionary at: #package).
+		(aDictionary at: #tag) ifNotEmpty: [ :tag | builder tag: tag ] ].
 	(aDictionary at: #classInstanceVariables) ifNotEmpty: [ :slots |
 		class class instanceVariableNames: slots ].
 	^ self describe: class
+]
+
+{ #category : 'requests' }
+SwpSession >> slotsFrom: aString [
+	^ aString substrings collect: [ :each | each asSymbol ]
 ]
 
 { #category : 'requests' }
