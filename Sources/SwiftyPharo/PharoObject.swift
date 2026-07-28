@@ -122,6 +122,7 @@ public struct PharoMethodReference: Sendable, Decodable, Identifiable {
     public let stop: Int
     public let className: String
     public let side: String
+    public let category: String
     public let source: String
 
     public var id: String { "\(className)>>\(side)>>\(selector)@\(stop)" }
@@ -131,6 +132,7 @@ public struct PharoMethodReference: Sendable, Decodable, Identifiable {
         case stop
         case className = "class"
         case side
+        case category
         case source
     }
 }

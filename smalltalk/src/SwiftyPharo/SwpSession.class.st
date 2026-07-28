@@ -209,6 +209,7 @@ SwpSession >> referenceOf: aMessage in: aSelfClass into: references [
 		at: #stop put: aMessage keywordsPositions last + aMessage selectorParts last size - 1;
 		at: #class put: method methodClass instanceSide name asString;
 		at: #side put: (method methodClass isMeta ifTrue: [ 'class' ] ifFalse: [ 'instance' ]);
+		at: #category put: method protocol name asString;
 		at: #source put: method sourceCode;
 		yourself)
 ]
