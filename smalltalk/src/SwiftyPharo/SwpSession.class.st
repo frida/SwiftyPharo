@@ -61,7 +61,7 @@ SwpSession >> handleRequest: aDictionary [
 	operation = 'classReferences' ifTrue: [ ^ self classReferencesOf: (aDictionary at: #source) ].
 	operation = 'methodReferences' ifTrue: [ ^ self methodReferencesOf: aDictionary ].
 	operation = 'undeclaredVariables' ifTrue: [ ^ self undeclaredVariablesOf: (aDictionary at: #source) ].
-	operation = 'createClass' ifTrue: [ ^ self createClassOf: (aDictionary at: #name) ].
+	operation = 'defineClass' ifTrue: [ ^ self defineClassOf: aDictionary ].
 	operation = 'serialize' ifTrue: [ ^ self serializeOf: (aDictionary at: #handle) ].
 	operation = 'materialize' ifTrue: [ ^ self materializeOf: (aDictionary at: #data) ].
 	operation = 'classBrowser' ifTrue: [ ^ self classBrowserOf: (aDictionary at: #handle) ].
@@ -275,12 +275,20 @@ SwpSession >> distanceFrom: aString to: bString [
 ]
 
 { #category : 'requests' }
-SwpSession >> createClassOf: aName [
-	^ self describe: (Object
-		subclass: aName asSymbol
-		instanceVariableNames: ''
-		classVariableNames: ''
-		package: 'Playground')
+SwpSession >> defineClassOf: aDictionary [
+	| superclass category class |
+	superclass := Smalltalk globals at: (aDictionary at: #superclass) asSymbol ifAbsent: [ Object ].
+	category := (aDictionary at: #tag) isEmpty
+		ifTrue: [ aDictionary at: #package ]
+		ifFalse: [ (aDictionary at: #package), '-', (aDictionary at: #tag) ].
+	class := superclass
+		subclass: (aDictionary at: #name) asSymbol
+		instanceVariableNames: (aDictionary at: #instanceVariables)
+		classVariableNames: (aDictionary at: #classVariables)
+		category: category.
+	(aDictionary at: #classInstanceVariables) ifNotEmpty: [ :slots |
+		class class instanceVariableNames: slots ].
+	^ self describe: class
 ]
 
 { #category : 'requests' }

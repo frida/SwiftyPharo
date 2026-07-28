@@ -62,8 +62,25 @@ extension PharoRuntime {
         return found.variables
     }
 
-    public func createClass(named name: String) async throws -> PharoObject {
-        try await send(["op": "createClass", "name": name])
+    public func defineClass(
+        name: String,
+        superclass: String,
+        package: String,
+        tag: String,
+        instanceVariables: String,
+        classVariables: String,
+        classInstanceVariables: String
+    ) async throws -> PharoObject {
+        try await send([
+            "op": "defineClass",
+            "name": name,
+            "superclass": superclass,
+            "package": package,
+            "tag": tag,
+            "instanceVariables": instanceVariables,
+            "classVariables": classVariables,
+            "classInstanceVariables": classInstanceVariables,
+        ])
     }
 
     public func classBrowser(of anObject: PharoObject) async throws -> PharoClassBrowserInfo {
