@@ -114,3 +114,27 @@ public struct PharoMethodInfo: Sendable, Decodable, Identifiable {
 
     public var id: String { "\(side)>>\(selector)" }
 }
+
+/// A method a piece of source sends, and where its selector ends, so an editor
+/// can offer to open the method sent there. Positions are 1-based, inclusive.
+public struct PharoMethodReference: Sendable, Decodable, Identifiable {
+    public let selector: String
+    public let stop: Int
+    public let className: String
+    public let side: String
+    public let source: String
+
+    public var id: String { "\(className)>>\(side)>>\(selector)@\(stop)" }
+
+    private enum CodingKeys: String, CodingKey {
+        case selector
+        case stop
+        case className = "class"
+        case side
+        case source
+    }
+}
+
+struct PharoMethodReferenceList: Decodable {
+    let references: [PharoMethodReference]
+}

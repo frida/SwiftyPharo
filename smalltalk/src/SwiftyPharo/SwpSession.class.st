@@ -59,6 +59,7 @@ SwpSession >> handleRequest: aDictionary [
 	operation = 'release' ifTrue: [ ^ self releaseOf: (aDictionary at: #handle) ].
 	operation = 'complete' ifTrue: [ ^ self completeOf: aDictionary ].
 	operation = 'classReferences' ifTrue: [ ^ self classReferencesOf: (aDictionary at: #source) ].
+	operation = 'methodReferences' ifTrue: [ ^ self methodReferencesOf: aDictionary ].
 	operation = 'serialize' ifTrue: [ ^ self serializeOf: (aDictionary at: #handle) ].
 	operation = 'materialize' ifTrue: [ ^ self materializeOf: (aDictionary at: #data) ].
 	operation = 'classBrowser' ifTrue: [ ^ self classBrowserOf: (aDictionary at: #handle) ].
@@ -183,6 +184,44 @@ SwpSession >> classReferencesOf: aString [
 	^ Dictionary new
 		at: #references put: (references keys asSortedCollection collect: [ :start | references at: start ]) asArray;
 		yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> methodReferencesOf: aDictionary [
+	| self_class references |
+	self_class := (aDictionary at: #selfClass ifAbsent: [ nil ])
+		ifNotNil: [ :name | Smalltalk globals at: name asSymbol ifAbsent: [ nil ] ].
+	references := OrderedCollection new.
+	(OCParser parseFaultyExpression: (aDictionary at: #source)) allChildren
+		do: [ :node | node isMessage ifTrue: [ self referenceOf: node in: self_class into: references ] ].
+	^ Dictionary new at: #references put: references asArray; yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> referenceOf: aMessage in: aSelfClass into: references [
+	| behavior method |
+	behavior := self receiverBehaviorOf: aMessage receiver in: aSelfClass.
+	behavior ifNil: [ ^ self ].
+	method := behavior lookupSelector: aMessage selector.
+	method ifNil: [ ^ self ].
+	references add: (Dictionary new
+		at: #selector put: aMessage selector asString;
+		at: #stop put: aMessage keywordsPositions last + aMessage selectorParts last size - 1;
+		at: #class put: method methodClass instanceSide name asString;
+		at: #side put: (method methodClass isMeta ifTrue: [ 'class' ] ifFalse: [ 'instance' ]);
+		at: #source put: method sourceCode;
+		yourself)
+]
+
+{ #category : 'requests' }
+SwpSession >> receiverBehaviorOf: aReceiver in: aSelfClass [
+	| name |
+	aReceiver isVariable ifFalse: [ ^ nil ].
+	name := aReceiver name asString.
+	(name = 'self' and: [ aSelfClass notNil ]) ifTrue: [ ^ aSelfClass ].
+	(name = 'super' and: [ aSelfClass notNil ]) ifTrue: [ ^ aSelfClass superclass ].
+	^ (Smalltalk globals at: name asSymbol ifAbsent: [ nil ])
+		ifNotNil: [ :global | global isBehavior ifTrue: [ global class ] ifFalse: [ nil ] ]
 ]
 
 { #category : 'requests' }

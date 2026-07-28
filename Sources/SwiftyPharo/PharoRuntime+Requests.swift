@@ -44,6 +44,17 @@ extension PharoRuntime {
         return found.references
     }
 
+    /// The methods a piece of source sends to a receiver whose class is known:
+    /// a class named outright, or self and super within a method of `selfClass`.
+    public func methodReferences(in source: String, selfClass: String?) async throws -> [PharoMethodReference] {
+        let found: PharoMethodReferenceList = try await send([
+            "op": "methodReferences",
+            "source": source,
+            "selfClass": selfClass as Any,
+        ])
+        return found.references
+    }
+
     public func classBrowser(of anObject: PharoObject) async throws -> PharoClassBrowserInfo {
         try await send(["op": "classBrowser", "handle": anObject.handle])
     }
