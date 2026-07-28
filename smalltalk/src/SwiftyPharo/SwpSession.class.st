@@ -191,5 +191,6 @@ SwpSession >> describe: anObject [
 		at: #handle put: (self handleFor: anObject);
 		at: #printString put: anObject printString;
 		at: #class put: anObject class name;
+		at: #isClass put: anObject isBehavior;
 		yourself
 ]

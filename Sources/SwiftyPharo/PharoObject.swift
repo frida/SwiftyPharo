@@ -5,11 +5,13 @@ public struct PharoObject: Sendable, Decodable {
     public let handle: Int
     public let printString: String
     public let className: String
+    public let isClass: Bool
 
     private enum CodingKeys: String, CodingKey {
         case handle
         case printString
         case className = "class"
+        case isClass
     }
 }
 
