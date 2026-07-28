@@ -62,6 +62,7 @@ SwpSession >> handleRequest: aDictionary [
 	operation = 'serialize' ifTrue: [ ^ self serializeOf: (aDictionary at: #handle) ].
 	operation = 'materialize' ifTrue: [ ^ self materializeOf: (aDictionary at: #data) ].
 	operation = 'classBrowser' ifTrue: [ ^ self classBrowserOf: (aDictionary at: #handle) ].
+	operation = 'compileMethod' ifTrue: [ ^ self compileMethodOf: aDictionary ].
 	^ self error: 'unknown op: ', operation
 ]
 
@@ -93,6 +94,19 @@ SwpSession >> classBrowserOf: aHandle [
 		at: #tag put: class swpTag;
 		at: #methods put: (class swpMethods collect: [ :method | self describeMethod: method ]) asArray;
 		yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> compileMethodOf: aDictionary [
+	| class target selector |
+	class := self objectAt: (aDictionary at: #handle).
+	target := (aDictionary at: #side) = 'class'
+		ifTrue: [ class class ]
+		ifFalse: [ class ].
+	selector := target
+		compile: (aDictionary at: #source)
+		classified: (aDictionary at: #category).
+	^ self describeMethod: (target >> selector)
 ]
 
 { #category : 'requests' }

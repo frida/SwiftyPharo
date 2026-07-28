@@ -48,6 +48,23 @@ extension PharoRuntime {
         try await send(["op": "classBrowser", "handle": anObject.handle])
     }
 
+    /// Compiles source into the class, on the side and under the category the
+    /// method belongs to, and answers the method as it now stands.
+    public func compileMethod(
+        in aClass: PharoObject,
+        side: String,
+        category: String,
+        source: String
+    ) async throws -> PharoMethodInfo {
+        try await send([
+            "op": "compileMethod",
+            "handle": aClass.handle,
+            "side": side,
+            "category": category,
+            "source": source,
+        ])
+    }
+
     /// Fuel bytes for the object, so a later session can bring it back to life.
     public func serialize(_ anObject: PharoObject) async throws -> Data {
         let blob: PharoBlob = try await send(["op": "serialize", "handle": anObject.handle])
