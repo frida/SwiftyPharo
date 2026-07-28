@@ -23,6 +23,22 @@ public struct PharoViewDeclaration: Sendable, Decodable {
     public let methodSelector: String
     public let columns: [String]?
     public let text: String?
+
+    public init(
+        viewName: String,
+        title: String,
+        priority: Int,
+        methodSelector: String,
+        columns: [String]? = nil,
+        text: String? = nil
+    ) {
+        self.viewName = viewName
+        self.title = title
+        self.priority = priority
+        self.methodSelector = methodSelector
+        self.columns = columns
+        self.text = text
+    }
 }
 
 public struct PharoItemsPage: Sendable, Decodable {
