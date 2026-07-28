@@ -269,7 +269,7 @@ SwpSession >> distanceFrom: aString to: bString [
 		1 to: bString size do: [ :j | | above cost |
 			above := row at: j + 1.
 			cost := (aString at: i) = (bString at: j) ifTrue: [ 0 ] ifFalse: [ 1 ].
-			row at: j + 1 put: (((row at: j) + 1) min: (above + 1)) min: previous + cost.
+			row at: j + 1 put: ((((row at: j) + 1) min: (above + 1)) min: (previous + cost)).
 			previous := above ] ].
 	^ row last
 ]
