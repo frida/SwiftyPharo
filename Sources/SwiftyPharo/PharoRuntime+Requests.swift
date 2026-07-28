@@ -44,6 +44,10 @@ extension PharoRuntime {
         return found.references
     }
 
+    public func classBrowser(of anObject: PharoObject) async throws -> PharoClassBrowserInfo {
+        try await send(["op": "classBrowser", "handle": anObject.handle])
+    }
+
     /// Fuel bytes for the object, so a later session can bring it back to life.
     public func serialize(_ anObject: PharoObject) async throws -> Data {
         let blob: PharoBlob = try await send(["op": "serialize", "handle": anObject.handle])

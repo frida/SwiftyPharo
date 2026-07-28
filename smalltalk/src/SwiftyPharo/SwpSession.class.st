@@ -61,6 +61,7 @@ SwpSession >> handleRequest: aDictionary [
 	operation = 'classReferences' ifTrue: [ ^ self classReferencesOf: (aDictionary at: #source) ].
 	operation = 'serialize' ifTrue: [ ^ self serializeOf: (aDictionary at: #handle) ].
 	operation = 'materialize' ifTrue: [ ^ self materializeOf: (aDictionary at: #data) ].
+	operation = 'classBrowser' ifTrue: [ ^ self classBrowserOf: (aDictionary at: #handle) ].
 	^ self error: 'unknown op: ', operation
 ]
 
@@ -79,6 +80,29 @@ SwpSession >> serializeOf: aHandle [
 { #category : 'requests' }
 SwpSession >> materializeOf: aString [
 	^ self describe: (FLMaterializer materializeFromByteArray: aString base64Decoded)
+]
+
+{ #category : 'requests' }
+SwpSession >> classBrowserOf: aHandle [
+	| class |
+	class := self objectAt: aHandle.
+	^ Dictionary new
+		at: #name put: class name asString;
+		at: #superclass put: (class superclass ifNil: [ '' ] ifNotNil: [ :s | s name asString ]);
+		at: #package put: class package name asString;
+		at: #tag put: class swpTag;
+		at: #methods put: (class swpMethods collect: [ :method | self describeMethod: method ]) asArray;
+		yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> describeMethod: aMethod [
+	^ Dictionary new
+		at: #selector put: aMethod selector asString;
+		at: #side put: (aMethod methodClass isMeta ifTrue: [ 'class' ] ifFalse: [ 'instance' ]);
+		at: #category put: aMethod protocol name asString;
+		at: #source put: aMethod sourceCode;
+		yourself
 ]
 
 { #category : 'requests' }

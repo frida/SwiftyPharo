@@ -17,3 +17,13 @@ Behavior >> swpMethods [
 	^ ((self methods , self class methods)
 		asSortedCollection: [ :a :b | a selector <= b selector ]) asArray
 ]
+
+{ #category : '*SwiftyPharo' }
+Behavior >> swpTag [
+	| category package |
+	category := self category ifNil: [ ^ '' ].
+	package := self package name.
+	^ category = package
+		ifTrue: [ '' ]
+		ifFalse: [ category allButFirst: package size + 1 ]
+]

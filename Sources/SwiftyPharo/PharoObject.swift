@@ -93,3 +93,22 @@ struct PharoClassReferenceList: Decodable {
 struct PharoBlob: Decodable {
     let data: Data
 }
+
+/// A class laid bare for browsing: where it sits, and every method it holds
+/// with the source to show when one is opened.
+public struct PharoClassBrowserInfo: Sendable, Decodable {
+    public let name: String
+    public let superclass: String
+    public let package: String
+    public let tag: String
+    public let methods: [PharoMethodInfo]
+}
+
+public struct PharoMethodInfo: Sendable, Decodable, Identifiable {
+    public let selector: String
+    public let side: String
+    public let category: String
+    public let source: String
+
+    public var id: String { "\(side)>>\(selector)" }
+}
