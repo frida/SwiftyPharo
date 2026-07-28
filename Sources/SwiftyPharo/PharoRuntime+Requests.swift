@@ -55,6 +55,17 @@ extension PharoRuntime {
         return found.references
     }
 
+    /// The capitalized names in the source that no global answers to, so an
+    /// editor can offer to create them or correct them to an existing class.
+    public func undeclaredVariables(in source: String) async throws -> [PharoUndeclaredVariable] {
+        let found: PharoUndeclaredVariableList = try await send(["op": "undeclaredVariables", "source": source])
+        return found.variables
+    }
+
+    public func createClass(named name: String) async throws -> PharoObject {
+        try await send(["op": "createClass", "name": name])
+    }
+
     public func classBrowser(of anObject: PharoObject) async throws -> PharoClassBrowserInfo {
         try await send(["op": "classBrowser", "handle": anObject.handle])
     }

@@ -140,3 +140,18 @@ public struct PharoMethodReference: Sendable, Decodable, Identifiable {
 struct PharoMethodReferenceList: Decodable {
     let references: [PharoMethodReference]
 }
+
+/// A capitalized name in a piece of source that no global answers to, with the
+/// nearest existing class names as corrections. Positions are 1-based, inclusive.
+public struct PharoUndeclaredVariable: Sendable, Decodable, Identifiable {
+    public let name: String
+    public let start: Int
+    public let stop: Int
+    public let suggestions: [String]
+
+    public var id: String { "\(name)@\(start)" }
+}
+
+struct PharoUndeclaredVariableList: Decodable {
+    let variables: [PharoUndeclaredVariable]
+}

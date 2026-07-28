@@ -60,6 +60,8 @@ SwpSession >> handleRequest: aDictionary [
 	operation = 'complete' ifTrue: [ ^ self completeOf: aDictionary ].
 	operation = 'classReferences' ifTrue: [ ^ self classReferencesOf: (aDictionary at: #source) ].
 	operation = 'methodReferences' ifTrue: [ ^ self methodReferencesOf: aDictionary ].
+	operation = 'undeclaredVariables' ifTrue: [ ^ self undeclaredVariablesOf: (aDictionary at: #source) ].
+	operation = 'createClass' ifTrue: [ ^ self createClassOf: (aDictionary at: #name) ].
 	operation = 'serialize' ifTrue: [ ^ self serializeOf: (aDictionary at: #handle) ].
 	operation = 'materialize' ifTrue: [ ^ self materializeOf: (aDictionary at: #data) ].
 	operation = 'classBrowser' ifTrue: [ ^ self classBrowserOf: (aDictionary at: #handle) ].
@@ -223,6 +225,62 @@ SwpSession >> receiverBehaviorOf: aReceiver in: aSelfClass [
 	(name = 'super' and: [ aSelfClass notNil ]) ifTrue: [ ^ aSelfClass superclass ].
 	^ (Smalltalk globals at: name asSymbol ifAbsent: [ nil ])
 		ifNotNil: [ :global | global isBehavior ifTrue: [ global class ] ifFalse: [ nil ] ]
+]
+
+{ #category : 'requests' }
+SwpSession >> undeclaredVariablesOf: aString [
+	| variables |
+	variables := OrderedCollection new.
+	(OCParser parseFaultyExpression: aString) allChildren do: [ :node |
+		(self isUndeclaredVariable: node) ifTrue: [
+			variables add: (Dictionary new
+				at: #name put: node name asString;
+				at: #start put: node start;
+				at: #stop put: node stop;
+				at: #suggestions put: (self suggestionsFor: node name asString) asArray;
+				yourself) ] ].
+	^ Dictionary new at: #variables put: variables asArray; yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> isUndeclaredVariable: aNode [
+	aNode isVariable ifFalse: [ ^ false ].
+	aNode name isEmpty ifTrue: [ ^ false ].
+	aNode name first isUppercase ifFalse: [ ^ false ].
+	^ (Smalltalk globals includesKey: aNode name asSymbol) not
+]
+
+{ #category : 'requests' }
+SwpSession >> suggestionsFor: aName [
+	| classes |
+	classes := Smalltalk globals keys select: [ :each | (Smalltalk globals at: each) isBehavior ].
+	^ ((classes asSortedCollection: [ :a :b |
+		(self distanceFrom: aName to: a asString) < (self distanceFrom: aName to: b asString) ])
+			asArray first: (classes size min: 5)) collect: [ :each | each asString ]
+]
+
+{ #category : 'requests' }
+SwpSession >> distanceFrom: aString to: bString [
+	| row previous |
+	row := (0 to: bString size) asArray.
+	1 to: aString size do: [ :i |
+		previous := row at: 1.
+		row at: 1 put: i.
+		1 to: bString size do: [ :j | | above cost |
+			above := row at: j + 1.
+			cost := (aString at: i) = (bString at: j) ifTrue: [ 0 ] ifFalse: [ 1 ].
+			row at: j + 1 put: (((row at: j) + 1) min: (above + 1)) min: previous + cost.
+			previous := above ] ].
+	^ row last
+]
+
+{ #category : 'requests' }
+SwpSession >> createClassOf: aName [
+	^ self describe: (Object
+		subclass: aName asSymbol
+		instanceVariableNames: ''
+		classVariableNames: ''
+		package: 'Playground')
 ]
 
 { #category : 'requests' }
