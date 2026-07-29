@@ -83,6 +83,16 @@ extension PharoRuntime {
         ])
     }
 
+    /// The coloured runs Glamorous Toolkit's coder would draw over the source.
+    public func styleSpans(in source: String, isMethod: Bool) async throws -> [PharoStyleSpan] {
+        let found: PharoStyleSpanList = try await send([
+            "op": "styleSource",
+            "source": source,
+            "isMethod": isMethod,
+        ])
+        return found.spans
+    }
+
     public func classBrowser(of anObject: PharoObject) async throws -> PharoClassBrowserInfo {
         try await send(["op": "classBrowser", "handle": anObject.handle])
     }

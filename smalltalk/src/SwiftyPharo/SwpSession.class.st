@@ -60,6 +60,7 @@ SwpSession >> handleRequest: aDictionary [
 	operation = 'complete' ifTrue: [ ^ self completeOf: aDictionary ].
 	operation = 'classReferences' ifTrue: [ ^ self classReferencesOf: (aDictionary at: #source) ].
 	operation = 'methodReferences' ifTrue: [ ^ self methodReferencesOf: aDictionary ].
+	operation = 'styleSource' ifTrue: [ ^ self styleSourceOf: aDictionary ].
 	operation = 'undeclaredVariables' ifTrue: [ ^ self undeclaredVariablesOf: (aDictionary at: #source) ].
 	operation = 'defineClass' ifTrue: [ ^ self defineClassOf: aDictionary ].
 	operation = 'serialize' ifTrue: [ ^ self serializeOf: (aDictionary at: #handle) ].
@@ -225,6 +226,106 @@ SwpSession >> receiverBehaviorOf: aReceiver in: aSelfClass [
 	(name = 'super' and: [ aSelfClass notNil ]) ifTrue: [ ^ aSelfClass superclass ].
 	^ (Smalltalk globals at: name asSymbol ifAbsent: [ nil ])
 		ifNotNil: [ :global | global isBehavior ifTrue: [ global class ] ifFalse: [ nil ] ]
+]
+
+{ #category : 'requests' }
+SwpSession >> styleSourceOf: aDictionary [
+	| ast spans |
+	ast := (aDictionary at: #isMethod)
+		ifTrue: [ OCParser parseFaultyMethod: (aDictionary at: #source) ]
+		ifFalse: [ OCParser parseFaultyExpression: (aDictionary at: #source) ].
+	spans := OrderedCollection new.
+	self styleNode: ast into: spans.
+	^ Dictionary new at: #spans put: spans asArray; yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> styleNode: aNode into: spans [
+	self spanOf: aNode into: spans.
+	self commentsOf: aNode into: spans.
+	aNode children do: [ :child | self styleNode: child into: spans ]
+]
+
+{ #category : 'requests' }
+SwpSession >> spanOf: aNode into: spans [
+	(aNode isKindOf: OCLiteralValueNode) ifTrue: [
+		^ spans add: (self spanFrom: aNode start to: aNode stop color: (self literalColorOf: aNode value)) ].
+	aNode isVariable ifTrue: [
+		^ (self variableColorOf: aNode name asString)
+			ifNotNil: [ :color | spans add: (self spanFrom: aNode start to: aNode stop color: color) ] ].
+	aNode isReturn ifTrue: [
+		^ spans add: (self spanFrom: aNode start to: aNode start color: self reservedColor) ].
+	(aNode isKindOf: OCPragmaNode) ifTrue: [
+		^ spans add: (self spanFrom: aNode start to: aNode stop color: self pragmaColor) ]
+]
+
+{ #category : 'requests' }
+SwpSession >> commentsOf: aNode into: spans [
+	aNode comments ifNil: [ ^ self ].
+	aNode comments do: [ :comment | | interval |
+		interval := (comment isKindOf: Interval)
+			ifTrue: [ comment ]
+			ifFalse: [ comment start to: comment stop ].
+		spans add: (self spanFrom: interval first to: interval last color: self commentColor) ]
+]
+
+{ #category : 'requests' }
+SwpSession >> literalColorOf: aValue [
+	aValue isSymbol ifTrue: [ ^ self literalColor ].
+	aValue isString ifTrue: [ ^ self literalColor ].
+	aValue isNumber ifTrue: [ ^ self scalarColor ].
+	aValue isCharacter ifTrue: [ ^ self scalarColor ].
+	(aValue isKindOf: Boolean) ifTrue: [ ^ self scalarColor ].
+	aValue isNil ifTrue: [ ^ self scalarColor ].
+	^ self literalColor
+]
+
+{ #category : 'requests' }
+SwpSession >> variableColorOf: aName [
+	(#('self' 'super' 'thisContext') includes: aName) ifTrue: [ ^ self reservedColor ].
+	aName first isUppercase ifTrue: [ ^ self globalColor ].
+	^ nil
+]
+
+{ #category : 'requests' }
+SwpSession >> spanFrom: aStart to: aStop color: aColorHex [
+	^ Dictionary new
+		at: #start put: aStart;
+		at: #stop put: aStop;
+		at: #color put: aColorHex;
+		yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> literalColor [ ^ self hexOf: Color magenta muchDarker ]
+
+{ #category : 'requests' }
+SwpSession >> scalarColor [ ^ self hexOf: Color red muchDarker ]
+
+{ #category : 'requests' }
+SwpSession >> globalColor [ ^ self hexOf: Color blue muchDarker ]
+
+{ #category : 'requests' }
+SwpSession >> reservedColor [ ^ self hexOf: Color cyan muchDarker ]
+
+{ #category : 'requests' }
+SwpSession >> pragmaColor [ ^ self hexOf: Color green muchDarker ]
+
+{ #category : 'requests' }
+SwpSession >> commentColor [ ^ self hexOf: Color gray darker ]
+
+{ #category : 'requests' }
+SwpSession >> hexOf: aColor [
+	^ (self hexByte: (aColor red * 255) rounded),
+	  (self hexByte: (aColor green * 255) rounded),
+	  (self hexByte: (aColor blue * 255) rounded)
+]
+
+{ #category : 'requests' }
+SwpSession >> hexByte: anInteger [
+	| hex |
+	hex := anInteger printStringBase: 16.
+	^ hex size < 2 ifTrue: [ '0', hex ] ifFalse: [ hex ]
 ]
 
 { #category : 'requests' }

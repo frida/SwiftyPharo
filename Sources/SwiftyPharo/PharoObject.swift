@@ -171,3 +171,15 @@ public struct PharoUndeclaredVariable: Sendable, Decodable, Identifiable {
 struct PharoUndeclaredVariableList: Decodable {
     let variables: [PharoUndeclaredVariable]
 }
+
+/// A run of source that gets a colour, the way Glamorous Toolkit's coder styles
+/// it. Positions are 1-based, inclusive; the colour is RRGGBB hex.
+public struct PharoStyleSpan: Sendable, Decodable {
+    public let start: Int
+    public let stop: Int
+    public let color: String
+}
+
+struct PharoStyleSpanList: Decodable {
+    let spans: [PharoStyleSpan]
+}
