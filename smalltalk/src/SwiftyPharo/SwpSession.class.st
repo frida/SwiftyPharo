@@ -290,7 +290,7 @@ SwpSession >> endOfQuoted: aString from: openIndex terminator: aCharacter [
 { #category : 'requests' }
 SwpSession >> parenthesesColors [
 	^ { Color blue. Color orange. Color cyan. Color green. Color pink. Color brown. Color purple. Color yellow. Color gray }
-		collect: [ :each | self hexOf: each twiceDarker ]
+		collect: [ :each | self both: (self hexOf: each twiceDarker) ]
 ]
 
 { #category : 'requests' }
@@ -317,7 +317,7 @@ SwpSession >> spanOf: aNode into: spans [
 		^ (self variableColorOf: aNode name asString)
 			ifNotNil: [ :color | spans add: (self spanFrom: aNode start to: aNode stop color: color) ] ].
 	aNode isReturn ifTrue: [
-		^ spans add: (self spanFrom: aNode start to: aNode start color: self reservedColor) ].
+		^ spans add: (self spanFrom: aNode start to: aNode start color: self returnColor) ].
 	(aNode isKindOf: OCPragmaNode) ifTrue: [
 		^ spans add: (self spanFrom: aNode start to: aNode stop color: self pragmaColor) ]
 ]
@@ -351,32 +351,39 @@ SwpSession >> variableColorOf: aName [
 ]
 
 { #category : 'requests' }
-SwpSession >> spanFrom: aStart to: aStop color: aColorHex [
+SwpSession >> spanFrom: aStart to: aStop color: aColorPair [
 	^ Dictionary new
 		at: #start put: aStart;
 		at: #stop put: aStop;
-		at: #color put: aColorHex;
+		at: #light put: aColorPair first;
+		at: #dark put: aColorPair last;
 		at: #bold put: false;
 		yourself
 ]
 
 { #category : 'requests' }
-SwpSession >> literalColor [ ^ self hexOf: Color magenta muchDarker ]
+SwpSession >> both: aHex [ ^ { aHex. aHex } ]
 
 { #category : 'requests' }
-SwpSession >> scalarColor [ ^ self hexOf: Color red muchDarker ]
+SwpSession >> literalColor [ ^ self both: (self hexOf: Color magenta muchDarker) ]
 
 { #category : 'requests' }
-SwpSession >> globalColor [ ^ self hexOf: Color blue muchDarker ]
+SwpSession >> scalarColor [ ^ self both: (self hexOf: Color red muchDarker) ]
 
 { #category : 'requests' }
-SwpSession >> reservedColor [ ^ self hexOf: Color cyan muchDarker ]
+SwpSession >> globalColor [ ^ { self hexOf: Color blue muchDarker. '5C7BD9' } ]
 
 { #category : 'requests' }
-SwpSession >> pragmaColor [ ^ self hexOf: Color green muchDarker ]
+SwpSession >> reservedColor [ ^ { self hexOf: Color cyan muchDarker. '5EEAD4' } ]
 
 { #category : 'requests' }
-SwpSession >> commentColor [ ^ self hexOf: Color gray darker ]
+SwpSession >> returnColor [ ^ self both: (self hexOf: Color cyan muchDarker) ]
+
+{ #category : 'requests' }
+SwpSession >> pragmaColor [ ^ self both: (self hexOf: Color green muchDarker) ]
+
+{ #category : 'requests' }
+SwpSession >> commentColor [ ^ self both: (self hexOf: Color gray darker) ]
 
 { #category : 'requests' }
 SwpSession >> hexOf: aColor [
