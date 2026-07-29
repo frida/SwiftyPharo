@@ -365,10 +365,10 @@ SwpSession >> spanFrom: aStart to: aStop color: aColorPair [
 SwpSession >> both: aHex [ ^ { aHex. aHex } ]
 
 { #category : 'requests' }
-SwpSession >> literalColor [ ^ self both: (self hexOf: Color magenta muchDarker) ]
+SwpSession >> literalColor [ ^ { self hexOf: Color magenta muchDarker. 'E879F9' } ]
 
 { #category : 'requests' }
-SwpSession >> scalarColor [ ^ self both: (self hexOf: Color red muchDarker) ]
+SwpSession >> scalarColor [ ^ { self hexOf: Color red muchDarker. 'F87171' } ]
 
 { #category : 'requests' }
 SwpSession >> globalColor [ ^ { self hexOf: Color blue muchDarker. '5C7BD9' } ]
@@ -377,10 +377,10 @@ SwpSession >> globalColor [ ^ { self hexOf: Color blue muchDarker. '5C7BD9' } ]
 SwpSession >> reservedColor [ ^ { self hexOf: Color cyan muchDarker. '5EEAD4' } ]
 
 { #category : 'requests' }
-SwpSession >> returnColor [ ^ self both: (self hexOf: Color cyan muchDarker) ]
+SwpSession >> returnColor [ ^ { self hexOf: Color cyan muchDarker. '5EEAD4' } ]
 
 { #category : 'requests' }
-SwpSession >> pragmaColor [ ^ self both: (self hexOf: Color green muchDarker) ]
+SwpSession >> pragmaColor [ ^ { self hexOf: Color green muchDarker. '4ADE80' } ]
 
 { #category : 'requests' }
 SwpSession >> commentColor [ ^ self both: (self hexOf: Color gray darker) ]
