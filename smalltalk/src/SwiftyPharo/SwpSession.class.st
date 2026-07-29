@@ -235,8 +235,71 @@ SwpSession >> styleSourceOf: aDictionary [
 		ifTrue: [ OCParser parseFaultyMethod: (aDictionary at: #source) ]
 		ifFalse: [ OCParser parseFaultyExpression: (aDictionary at: #source) ].
 	spans := OrderedCollection new.
+	(aDictionary at: #isMethod) ifTrue: [ self styleMethodPattern: ast into: spans ].
 	self styleNode: ast into: spans.
+	self styleBracketsOf: (aDictionary at: #source) into: spans.
 	^ Dictionary new at: #spans put: spans asArray; yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> styleMethodPattern: aMethodNode into: spans [
+	(aMethodNode isKindOf: OCMethodNode) ifFalse: [ ^ self ].
+	aMethodNode selectorParts with: aMethodNode keywordsPositions do: [ :part :position |
+		spans add: (self boldSpanFrom: position to: position + part size - 1) ]
+]
+
+{ #category : 'requests' }
+SwpSession >> styleBracketsOf: aString into: spans [
+	| palette depth index |
+	palette := self parenthesesColors.
+	depth := 0.
+	index := 1.
+	[ index <= aString size ] whileTrue: [
+		| character |
+		character := aString at: index.
+		('([{' includes: character)
+			ifTrue: [
+				depth := depth + 1.
+				spans add: (self spanFrom: index to: index color: (palette at: (depth - 1) \\ palette size + 1)) ]
+			ifFalse: [ (')]}' includes: character)
+				ifTrue: [
+					depth > 0 ifTrue: [
+						spans add: (self spanFrom: index to: index color: (palette at: (depth - 1) \\ palette size + 1)).
+						depth := depth - 1 ] ]
+				ifFalse: [ character = $'
+					ifTrue: [ index := self endOfQuoted: aString from: index terminator: $' ]
+					ifFalse: [ character = $"
+						ifTrue: [ index := self endOfQuoted: aString from: index terminator: $" ]
+						ifFalse: [ character = $$ ifTrue: [ index := index + 1 ] ] ] ] ].
+		index := index + 1 ]
+]
+
+{ #category : 'requests' }
+SwpSession >> endOfQuoted: aString from: openIndex terminator: aCharacter [
+	| index |
+	index := openIndex + 1.
+	[ index <= aString size ] whileTrue: [
+		(aString at: index) = aCharacter ifTrue: [
+			(index < aString size and: [ (aString at: index + 1) = aCharacter ])
+				ifTrue: [ index := index + 2 ]
+				ifFalse: [ ^ index ] ]
+		ifFalse: [ index := index + 1 ] ].
+	^ aString size
+]
+
+{ #category : 'requests' }
+SwpSession >> parenthesesColors [
+	^ { Color blue. Color orange. Color cyan. Color green. Color pink. Color brown. Color purple. Color yellow. Color gray }
+		collect: [ :each | self hexOf: each twiceDarker ]
+]
+
+{ #category : 'requests' }
+SwpSession >> boldSpanFrom: aStart to: aStop [
+	^ Dictionary new
+		at: #start put: aStart;
+		at: #stop put: aStop;
+		at: #bold put: true;
+		yourself
 ]
 
 { #category : 'requests' }
@@ -293,6 +356,7 @@ SwpSession >> spanFrom: aStart to: aStop color: aColorHex [
 		at: #start put: aStart;
 		at: #stop put: aStop;
 		at: #color put: aColorHex;
+		at: #bold put: false;
 		yourself
 ]
 

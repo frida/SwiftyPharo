@@ -177,7 +177,8 @@ struct PharoUndeclaredVariableList: Decodable {
 public struct PharoStyleSpan: Sendable, Decodable {
     public let start: Int
     public let stop: Int
-    public let color: String
+    public let color: String?
+    public let bold: Bool
 }
 
 struct PharoStyleSpanList: Decodable {
