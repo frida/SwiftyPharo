@@ -119,6 +119,8 @@ public struct PharoClassBrowserInfo: Sendable, Decodable {
     public let superclass: String
     public let package: String
     public let tag: String
+    public let definition: String
+    public let comment: String
     public let methods: [PharoMethodInfo]
 }
 

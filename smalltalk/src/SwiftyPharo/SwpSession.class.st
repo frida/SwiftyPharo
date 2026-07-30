@@ -66,6 +66,7 @@ SwpSession >> handleRequest: aDictionary [
 	operation = 'serialize' ifTrue: [ ^ self serializeOf: (aDictionary at: #handle) ].
 	operation = 'materialize' ifTrue: [ ^ self materializeOf: (aDictionary at: #data) ].
 	operation = 'classBrowser' ifTrue: [ ^ self classBrowserOf: (aDictionary at: #handle) ].
+	operation = 'classOf' ifTrue: [ ^ self classOf: (aDictionary at: #handle) ].
 	operation = 'compileMethod' ifTrue: [ ^ self compileMethodOf: aDictionary ].
 	^ self error: 'unknown op: ', operation
 ]
@@ -96,8 +97,15 @@ SwpSession >> classBrowserOf: aHandle [
 		at: #superclass put: (class superclass ifNil: [ '' ] ifNotNil: [ :s | s name asString ]);
 		at: #package put: class package name asString;
 		at: #tag put: class swpTag;
+		at: #definition put: class definitionString asString;
+		at: #comment put: (class comment ifNil: [ '' ]) asString;
 		at: #methods put: (class swpMethods collect: [ :method | self describeMethod: method ]) asArray;
 		yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> classOf: aHandle [
+	^ self describe: (self objectAt: aHandle) class
 ]
 
 { #category : 'requests' }

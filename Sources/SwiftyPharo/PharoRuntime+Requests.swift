@@ -93,6 +93,10 @@ extension PharoRuntime {
         return found.spans
     }
 
+    public func classObject(of anObject: PharoObject) async throws -> PharoObject {
+        try await send(["op": "classOf", "handle": anObject.handle])
+    }
+
     public func classBrowser(of anObject: PharoObject) async throws -> PharoClassBrowserInfo {
         try await send(["op": "classBrowser", "handle": anObject.handle])
     }
