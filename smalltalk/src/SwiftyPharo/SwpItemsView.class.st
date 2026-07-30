@@ -10,7 +10,8 @@ Class {
 		'itemTextBlock',
 		'sendBlock',
 		'computedItems',
-		'cellBlocks'
+		'cellBlocks',
+		'columnTitles'
 	],
 	#category : 'SwiftyPharo',
 	#package : 'SwiftyPharo'
@@ -77,12 +78,41 @@ SwpItemsView >> cellBlocks: anArray [
 ]
 
 { #category : 'accessing' }
-SwpItemsView >> cellsFor: anItem at: anIndex [
-	"A row is as many cells as the view declares columns, and one of text when
-	it declares none. A column that numbers the rows needs the position too."
+SwpItemsView >> columnTitles [
+	^ columnTitles ifNil: [ #( 'Item' ) ]
+]
 
+{ #category : 'building' }
+SwpItemsView >> columnTitles: anArray [
+	columnTitles := anArray
+]
+
+{ #category : 'converting' }
+SwpItemsView >> declaration [
+	^ super declaration
+		  at: #columns put: ({ 'Index' } , self columnTitles) asArray;
+		  yourself
+]
+
+{ #category : 'accessing' }
+SwpItemsView >> cellsFor: anItem at: anIndex [
+	"The framework numbers the rows, the way Glamorous Toolkit prepends an Index
+	column no view has to declare; the value cells follow."
+
+	^ { self indexCellFor: anIndex } , (self valueCellsFor: anItem at: anIndex)
+]
+
+{ #category : 'accessing' }
+SwpItemsView >> valueCellsFor: anItem at: anIndex [
 	cellBlocks ifNil: [ ^ { self textCellFor: anItem } ].
 	^ (cellBlocks collect: [ :each | each value: anItem value: anIndex ]) asArray
+]
+
+{ #category : 'accessing' }
+SwpItemsView >> indexCellFor: anIndex [
+	^ Dictionary new
+		  at: 'text' put: anIndex printString;
+		  yourself
 ]
 
 { #category : 'accessing' }

@@ -32,8 +32,8 @@ SwpColumnedListView >> column: aTitle showing: aKind by: aBlock [
 ]
 
 { #category : 'accessing' }
-SwpColumnedListView >> cellsFor: anItem at: anIndex [
-	columns ifNil: [ ^ super cellsFor: anItem at: anIndex ].
+SwpColumnedListView >> valueCellsFor: anItem at: anIndex [
+	columns ifNil: [ ^ super valueCellsFor: anItem at: anIndex ].
 	"JSON has no place for an OrderedCollection."
 
 	^ (columns collect: [ :each | self cellOf: each for: anItem ]) asArray
@@ -52,13 +52,6 @@ SwpColumnedListView >> cellOf: aColumn for: anItem [
 { #category : 'accessing' }
 SwpColumnedListView >> columnTitles [
 	^ (columns ifNil: [ #() ]) collect: [ :each | each at: #title ]
-]
-
-{ #category : 'accessing' }
-SwpColumnedListView >> declaration [
-	^ super declaration
-		at: #columns put: self columnTitles asArray;
-		yourself
 ]
 
 { #category : 'accessing' }

@@ -142,9 +142,18 @@ SwpViewCollector class >> listViewOf: aCollection in: aPresenter [
 	columns := (aPresenter respondsTo: #columns)
 		           ifTrue: [ aPresenter columns ]
 		           ifFalse: [ #() ].
+	columns := columns reject: [ :each | each isKindOf: SpIndexTableColumn ].
 	columns ifNotEmpty: [
-		view cellBlocks: (columns collect: [ :each | self cellBlockOf: each ]) ].
+		view cellBlocks: (columns collect: [ :each | self cellBlockOf: each ]).
+		view columnTitles: (columns collect: [ :each | self titleOf: each ]) ].
 	^ view
+]
+
+{ #category : 'collecting' }
+SwpViewCollector class >> titleOf: aColumn [
+	^ (aColumn respondsTo: #title)
+		  ifTrue: [ aColumn title ifNil: [ 'Item' ] ]
+		  ifFalse: [ 'Item' ]
 ]
 
 { #category : 'collecting' }
@@ -152,11 +161,6 @@ SwpViewCollector class >> cellBlockOf: aColumn [
 	"An image column is how both Pharo and Glamorous Toolkit say a cell shows
 	a picture rather than words."
 
-	(aColumn isKindOf: SpIndexTableColumn) ifTrue: [
-		^ [ :item :index |
-		  Dictionary new
-			  at: 'text' put: index printString;
-			  yourself ] ].
 	(aColumn isKindOf: SpImageTableColumn) ifTrue: [
 		^ [ :item :index | self imageCellOf: (aColumn evaluateObject: item) ] ].
 	^ [ :item :index |
