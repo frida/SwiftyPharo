@@ -6,12 +6,16 @@ public struct PharoObject: Sendable, Decodable {
     public let printString: String
     public let className: String
     public let isClass: Bool
+    /// How Glamorous Toolkit names the object beside its class: its print string
+    /// for most, an item count and elements for a collection.
+    public let display: String
 
     private enum CodingKeys: String, CodingKey {
         case handle
         case printString
         case className = "class"
         case isClass
+        case display
     }
 }
 

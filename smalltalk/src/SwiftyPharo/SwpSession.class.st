@@ -561,5 +561,19 @@ SwpSession >> describe: anObject [
 		at: #printString put: anObject printString;
 		at: #class put: anObject class name;
 		at: #isClass put: anObject isBehavior;
+		at: #display put: (self displayOf: anObject);
 		yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> displayOf: anObject [
+	| count |
+	(anObject isCollection and: [ anObject isString not ]) ifFalse: [ ^ '(', anObject printString, ')' ].
+	count := anObject size.
+	^ String streamContents: [ :stream |
+		stream nextPut: $[; print: count; nextPutAll: ' items] ('.
+		(anObject asOrderedCollection first: (count min: 100))
+			do: [ :each | stream print: each ] separatedBy: [ stream space ].
+		count > 100 ifTrue: [ stream nextPutAll: ' …' ].
+		stream nextPut: $) ]
 ]
