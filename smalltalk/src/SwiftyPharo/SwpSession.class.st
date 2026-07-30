@@ -163,17 +163,56 @@ SwpSession >> releaseOf: aHandle [
 
 { #category : 'requests' }
 SwpSession >> completeOf: aDictionary [
+	| source position cursor tokenStart token behavior selectors |
+	source := aDictionary at: #source.
+	position := aDictionary at: #position.
+	cursor := SwpCompletionCursor source: source position: position.
+	tokenStart := cursor completionTokenStart.
+	token := cursor completionToken.
+	behavior := self receiverBehaviorBeforeToken: tokenStart in: source.
+	(behavior notNil and: [ token notEmpty ]) ifTrue: [
+		selectors := self selectorsOf: behavior startingWith: token.
+		selectors ifNotEmpty: [
+			^ Dictionary new
+				at: #tokenStart put: tokenStart;
+				at: #completions put: selectors;
+				yourself ] ].
+	^ self anyCompletionOf: source position: position tokenStart: tokenStart
+]
+
+{ #category : 'requests' }
+SwpSession >> receiverBehaviorBeforeToken: tokenStart in: aString [
+	| message |
+	message := (OCParser parseFaultyExpression: aString) allChildren
+		detect: [ :node |
+			node isMessage and: [
+				node keywordsPositions notEmpty and: [ node keywordsPositions first = tokenStart ] ] ]
+		ifNone: [ ^ nil ].
+	^ self behaviorOfReceiver: message receiver
+]
+
+{ #category : 'requests' }
+SwpSession >> behaviorOfReceiver: aNode [
+	aNode isLiteralNode ifTrue: [ ^ aNode value class ].
+	aNode isVariable ifTrue: [
+		^ (Smalltalk globals at: aNode name asSymbol ifAbsent: [ nil ])
+			ifNotNil: [ :global | global isBehavior ifTrue: [ global class ] ] ].
+	^ nil
+]
+
+{ #category : 'requests' }
+SwpSession >> selectorsOf: aBehavior startingWith: aToken [
+	^ ((aBehavior allSelectors select: [ :selector | selector beginsWith: aToken ]) asSortedCollection
+		collect: [ :selector | selector asString ]) asArray
+]
+
+{ #category : 'requests' }
+SwpSession >> anyCompletionOf: aString position: aPosition tokenStart: tokenStart [
 	| cursor context |
-	cursor := SwpCompletionCursor
-		source: (aDictionary at: #source)
-		position: (aDictionary at: #position).
-	context := CoCompletionContext
-		engine: cursor
-		class: Object
-		source: (aDictionary at: #source)
-		position: (aDictionary at: #position).
+	cursor := SwpCompletionCursor source: aString position: aPosition.
+	context := CoCompletionContext engine: cursor class: Object source: aString position: aPosition.
 	^ Dictionary new
-		at: #tokenStart put: cursor completionTokenStart;
+		at: #tokenStart put: tokenStart;
 		at: #completions put: ((context entries collect: [ :each | each contents asString ]) asArray);
 		yourself
 ]
