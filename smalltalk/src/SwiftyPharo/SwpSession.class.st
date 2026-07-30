@@ -163,32 +163,56 @@ SwpSession >> releaseOf: aHandle [
 
 { #category : 'requests' }
 SwpSession >> completeOf: aDictionary [
-	| source position cursor tokenStart token behavior selectors |
+	| source position cursor tokenStart token selectors |
 	source := aDictionary at: #source.
 	position := aDictionary at: #position.
 	cursor := SwpCompletionCursor source: source position: position.
 	tokenStart := cursor completionTokenStart.
 	token := cursor completionToken.
-	behavior := self receiverBehaviorBeforeToken: tokenStart in: source.
-	(behavior notNil and: [ token notEmpty ]) ifTrue: [
-		selectors := self selectorsOf: behavior startingWith: token.
-		selectors ifNotEmpty: [
-			^ Dictionary new
-				at: #tokenStart put: tokenStart;
-				at: #completions put: selectors;
-				yourself ] ].
-	^ self anyCompletionOf: source position: position tokenStart: tokenStart
+	token isEmpty ifTrue: [ ^ self anyCompletionOf: source position: position tokenStart: tokenStart ].
+	selectors := Set new.
+	selectors addAll: (self unaryCompletionsAt: tokenStart token: token in: source).
+	selectors addAll: (self keywordCompletionsAt: tokenStart token: token in: source).
+	selectors isEmpty ifTrue: [ ^ self anyCompletionOf: source position: position tokenStart: tokenStart ].
+	^ Dictionary new
+		at: #tokenStart put: tokenStart;
+		at: #completions put: selectors asSortedCollection asArray;
+		yourself
 ]
 
 { #category : 'requests' }
-SwpSession >> receiverBehaviorBeforeToken: tokenStart in: aString [
-	| message |
+SwpSession >> unaryCompletionsAt: tokenStart token: aToken in: aString [
+	| message behavior |
 	message := (OCParser parseFaultyExpression: aString) allChildren
 		detect: [ :node |
 			node isMessage and: [
 				node keywordsPositions notEmpty and: [ node keywordsPositions first = tokenStart ] ] ]
-		ifNone: [ ^ nil ].
-	^ self behaviorOfReceiver: message receiver
+		ifNone: [ ^ #() ].
+	behavior := self behaviorOfReceiver: message receiver.
+	behavior ifNil: [ ^ #() ].
+	^ self selectorsOf: behavior startingWith: aToken
+]
+
+{ #category : 'requests' }
+SwpSession >> keywordCompletionsAt: tokenStart token: aToken in: aString [
+	| candidates message behavior accumulated next |
+	candidates := (OCParser parseFaultyExpression: aString) allChildren select: [ :node |
+		node isMessage and: [
+			node isKeyword and: [
+				node keywordsPositions last < tokenStart and: [
+					(self behaviorOfReceiver: node receiver) notNil ] ] ] ].
+	candidates isEmpty ifTrue: [ ^ #() ].
+	message := candidates detectMax: [ :each | each keywordsPositions last ].
+	behavior := self behaviorOfReceiver: message receiver.
+	accumulated := message selector asString.
+	next := Set new.
+	behavior allSelectors do: [ :selector | | rest keyword |
+		(selector beginsWith: accumulated) ifTrue: [
+			rest := selector asString allButFirst: accumulated size.
+			rest ifNotEmpty: [
+				keyword := (rest copyUpTo: $:) , ':'.
+				(keyword beginsWith: aToken) ifTrue: [ next add: keyword ] ] ] ].
+	^ next asArray
 ]
 
 { #category : 'requests' }
@@ -267,6 +291,7 @@ SwpSession >> referenceOf: aMessage in: aSelfClass into: references [
 { #category : 'requests' }
 SwpSession >> receiverBehaviorOf: aReceiver in: aSelfClass [
 	| name |
+	aReceiver isLiteralNode ifTrue: [ ^ aReceiver value class ].
 	aReceiver isVariable ifFalse: [ ^ nil ].
 	name := aReceiver name asString.
 	(name = 'self' and: [ aSelfClass notNil ]) ifTrue: [ ^ aSelfClass ].
