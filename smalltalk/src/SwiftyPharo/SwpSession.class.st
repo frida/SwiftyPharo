@@ -220,10 +220,9 @@ SwpSession >> keywordCompletionsAt: tokenStart token: aToken in: aString [
 { #category : 'requests' }
 SwpSession >> behaviorOfReceiver: aNode [
 	aNode isLiteralNode ifTrue: [ ^ aNode value class ].
-	aNode isVariable ifTrue: [
-		^ (Smalltalk globals at: aNode name asSymbol ifAbsent: [ nil ])
-			ifNotNil: [ :global | global isBehavior ifTrue: [ global class ] ] ].
-	^ nil
+	aNode isVariable ifFalse: [ ^ nil ].
+	^ (self globalBehaviorOf: aNode name asString)
+		ifNil: [ self workspaceBehaviorOf: aNode name asString ]
 ]
 
 { #category : 'requests' }
@@ -298,8 +297,19 @@ SwpSession >> receiverBehaviorOf: aReceiver in: aSelfClass [
 	name := aReceiver name asString.
 	(name = 'self' and: [ aSelfClass notNil ]) ifTrue: [ ^ aSelfClass ].
 	(name = 'super' and: [ aSelfClass notNil ]) ifTrue: [ ^ aSelfClass superclass ].
-	^ (Smalltalk globals at: name asSymbol ifAbsent: [ nil ])
-		ifNotNil: [ :global | global isBehavior ifTrue: [ global class ] ifFalse: [ nil ] ]
+	^ (self globalBehaviorOf: name) ifNil: [ self workspaceBehaviorOf: name ]
+]
+
+{ #category : 'requests' }
+SwpSession >> globalBehaviorOf: aName [
+	^ (Smalltalk globals at: aName asSymbol ifAbsent: [ nil ])
+		ifNotNil: [ :global | global isBehavior ifTrue: [ global class ] ]
+]
+
+{ #category : 'requests' }
+SwpSession >> workspaceBehaviorOf: aName [
+	(workspace bindings includesKey: aName) ifFalse: [ ^ nil ].
+	^ (workspace bindings at: aName) ifNotNil: [ :value | value class ]
 ]
 
 { #category : 'requests' }
