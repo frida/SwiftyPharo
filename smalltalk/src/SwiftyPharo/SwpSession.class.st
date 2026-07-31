@@ -7,7 +7,8 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'objectsByHandle',
-		'nextHandle'
+		'nextHandle',
+		'workspace'
 	],
 	#category : 'SwiftyPharo',
 	#package : 'SwiftyPharo'
@@ -17,7 +18,8 @@ Class {
 SwpSession >> initialize [
 	super initialize.
 	objectsByHandle := Dictionary new.
-	nextHandle := 0
+	nextHandle := 0.
+	workspace := SpCodeScriptingInteractionModel new
 ]
 
 { #category : 'handles' }
@@ -73,7 +75,7 @@ SwpSession >> handleRequest: aDictionary [
 
 { #category : 'requests' }
 SwpSession >> evaluate: aString [
-	^ self describe: (Smalltalk compiler evaluate: aString)
+	^ self describe: (Smalltalk compiler requestor: workspace; source: aString; evaluate)
 ]
 
 { #category : 'requests' }
