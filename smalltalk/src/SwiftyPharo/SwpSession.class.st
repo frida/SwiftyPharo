@@ -69,6 +69,7 @@ SwpSession >> handleRequest: aDictionary [
 	operation = 'styleSource' ifTrue: [ ^ self styleSourceOf: aDictionary ].
 	operation = 'undeclaredVariables' ifTrue: [ ^ self undeclaredVariablesOf: (aDictionary at: #source) ].
 	operation = 'format' ifTrue: [ ^ self formatOf: (aDictionary at: #source) ].
+	operation = 'browse' ifTrue: [ ^ self browseOf: aDictionary ].
 	operation = 'defineClass' ifTrue: [ ^ self defineClassOf: aDictionary ].
 	operation = 'serialize' ifTrue: [ ^ self serializeOf: (aDictionary at: #handle) ].
 	operation = 'materialize' ifTrue: [ ^ self materializeOf: (aDictionary at: #data) ].
@@ -242,6 +243,41 @@ SwpSession >> anyCompletionOf: aString position: aPosition tokenStart: tokenStar
 		at: #tokenStart put: tokenStart;
 		at: #completions put: ((context entries collect: [ :each | each contents asString ]) asArray);
 		yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> browseOf: aDictionary [
+	| selector methods |
+	selector := self selectorAt: (aDictionary at: #position)
+		            in: (aDictionary at: #source).
+	selector ifNil: [ ^ Dictionary new at: #selector put: nil; yourself ].
+	methods := (aDictionary at: #kind) = 'senders'
+		           ifTrue: [ SystemNavigation default allSendersOf: selector ]
+		           ifFalse: [ SystemNavigation default allImplementorsOf: selector ].
+	^ Dictionary new
+		at: #selector put: selector asString;
+		at: #result put: (self describe: (self methodsSorted: methods));
+		yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> selectorAt: aPosition in: aString [
+	| node selector |
+	aPosition < 1 ifTrue: [ ^ nil ].
+	node := (OCParser parseFaultyExpression: aString) bestNodeFor: (aPosition to: aPosition).
+	selector := nil.
+	[ node notNil and: [ selector isNil ] ] whileTrue: [
+		node isMessage ifTrue: [ selector := node selector ].
+		(node isLiteralNode and: [ node value isSymbol ]) ifTrue: [ selector := node value ].
+		node := node parent ].
+	^ selector
+]
+
+{ #category : 'requests' }
+SwpSession >> methodsSorted: aCollection [
+	^ aCollection asArray sort: [ :a :b |
+		  a methodClass name , ' ' , a selector
+		  <= (b methodClass name , ' ' , b selector) ]
 ]
 
 { #category : 'requests' }

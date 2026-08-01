@@ -47,6 +47,18 @@ extension PharoRuntime {
         return formatted.source
     }
 
+    /// The implementors or senders of the selector the cursor sits on, as a live
+    /// collection of methods the inspector can open. Answers no result when the
+    /// cursor is on no selector.
+    public func browse(_ kind: PharoBrowseKind, source: String, at position: Int) async throws -> PharoBrowseResult {
+        try await send([
+            "op": "browse",
+            "kind": kind.rawValue,
+            "source": source,
+            "position": position,
+        ])
+    }
+
     public func completions(for source: String, at position: Int) async throws -> PharoCompletions {
         try await send(["op": "complete", "source": source, "position": position])
     }
@@ -187,4 +199,14 @@ struct PharoReleased: Decodable {
 
 struct PharoFormattedSource: Decodable {
     let source: String
+}
+
+public enum PharoBrowseKind: String, Sendable {
+    case implementors
+    case senders
+}
+
+public struct PharoBrowseResult: Sendable, Decodable {
+    public let selector: String?
+    public let result: PharoObject?
 }
