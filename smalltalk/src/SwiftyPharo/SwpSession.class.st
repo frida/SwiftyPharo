@@ -19,7 +19,7 @@ SwpSession >> initialize [
 	super initialize.
 	objectsByHandle := Dictionary new.
 	nextHandle := 0.
-	workspace := SpCodeScriptingInteractionModel new
+	workspace := SwpWorkspace new
 ]
 
 { #category : 'handles' }
