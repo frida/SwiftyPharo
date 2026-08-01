@@ -44,10 +44,14 @@ SwpSession >> handleRequestJson: aString [
 	^ STONJSON toString: ([ self handleRequest: (STONJSON fromString: aString) ]
 		on: Error
 		do: [ :e |
-			Dictionary new
+			| failure |
+			failure := Dictionary new
 				at: #error put: e class name;
 				at: #message put: (e messageText ifNil: [ '' ]);
-				yourself ])
+				yourself.
+			(e isKindOf: SwpEvaluationError) ifTrue: [
+				failure at: #position put: e position ].
+			failure ])
 ]
 
 { #category : 'requests' }

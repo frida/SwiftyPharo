@@ -22,7 +22,7 @@ SwpWorkspace >> notify: aString at: anInteger in: aStream [
 	no editor to show it in, raise it instead, so the host sees the message the
 	editor would have -- not a failure reaching for a selection that is not there."
 
-	^ Error signal: ((aString endsWith: ' ->')
+	^ (SwpEvaluationError new position: anInteger) signal: ((aString endsWith: ' ->')
 			 ifTrue: [ aString allButLast: 3 ]
 			 ifFalse: [ aString ])
 ]

@@ -139,7 +139,7 @@ extension PharoRuntime {
 
         let payload = Data(reply.utf8)
         if let failure = try? JSONDecoder().decode(PharoFailure.self, from: payload) {
-            throw PharoRequestError.imageFailed(failure.message ?? failure.error)
+            throw PharoRequestError.imageFailed(failure.message ?? failure.error, position: failure.position)
         }
         return try JSONDecoder().decode(Answer.self, from: payload)
     }

@@ -83,14 +83,21 @@ extension PharoCell: CustomStringConvertible {
 }
 
 public enum PharoRequestError: Error, Sendable {
-    case imageFailed(String)
+    case imageFailed(String, position: Int? = nil)
     case bridgeUnavailable
+
+    /// Where in the evaluated source a compile error sits, 1-based, when the
+    /// image knew; nothing for a runtime error, which has no source spot.
+    public var sourcePosition: Int? {
+        if case .imageFailed(_, let position) = self { return position }
+        return nil
+    }
 }
 
 extension PharoRequestError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .imageFailed(let message):
+        case .imageFailed(let message, _):
             message
         case .bridgeUnavailable:
             "The image stopped answering"
@@ -101,6 +108,7 @@ extension PharoRequestError: LocalizedError {
 struct PharoFailure: Decodable {
     let error: String
     let message: String?
+    let position: Int?
 }
 
 struct PharoViewList: Decodable {
