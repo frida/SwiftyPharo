@@ -41,6 +41,12 @@ extension PharoRuntime {
         return try await send(request)
     }
 
+    /// The source as the image's formatter would lay it out.
+    public func format(source: String) async throws -> String {
+        let formatted: PharoFormattedSource = try await send(["op": "format", "source": source])
+        return formatted.source
+    }
+
     public func completions(for source: String, at position: Int) async throws -> PharoCompletions {
         try await send(["op": "complete", "source": source, "position": position])
     }
@@ -177,4 +183,8 @@ extension PharoRuntime {
 
 struct PharoReleased: Decodable {
     let released: Int
+}
+
+struct PharoFormattedSource: Decodable {
+    let source: String
 }

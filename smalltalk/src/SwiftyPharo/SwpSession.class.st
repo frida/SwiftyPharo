@@ -68,6 +68,7 @@ SwpSession >> handleRequest: aDictionary [
 	operation = 'methodReferences' ifTrue: [ ^ self methodReferencesOf: aDictionary ].
 	operation = 'styleSource' ifTrue: [ ^ self styleSourceOf: aDictionary ].
 	operation = 'undeclaredVariables' ifTrue: [ ^ self undeclaredVariablesOf: (aDictionary at: #source) ].
+	operation = 'format' ifTrue: [ ^ self formatOf: (aDictionary at: #source) ].
 	operation = 'defineClass' ifTrue: [ ^ self defineClassOf: aDictionary ].
 	operation = 'serialize' ifTrue: [ ^ self serializeOf: (aDictionary at: #handle) ].
 	operation = 'materialize' ifTrue: [ ^ self materializeOf: (aDictionary at: #data) ].
@@ -240,6 +241,16 @@ SwpSession >> anyCompletionOf: aString position: aPosition tokenStart: tokenStar
 	^ Dictionary new
 		at: #tokenStart put: tokenStart;
 		at: #completions put: ((context entries collect: [ :each | each contents asString ]) asArray);
+		yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> formatOf: aString [
+	| formatted |
+	formatted := (OCParser parseFaultyExpression: aString) formattedCode
+		             withUnixLineEndings.
+	^ Dictionary new
+		at: #source put: formatted;
 		yourself
 ]
 
