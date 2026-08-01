@@ -11,7 +11,9 @@ Class {
 		'sendBlock',
 		'computedItems',
 		'cellBlocks',
-		'columnTitles'
+		'columnTitles',
+		'filter',
+		'filteredItems'
 	],
 	#category : 'SwiftyPharo',
 	#package : 'SwiftyPharo'
@@ -36,11 +38,42 @@ SwpItemsView >> itemText: aBlock [
 { #category : 'accessing' }
 SwpItemsView >> itemsFrom: anIndex count: aCount [
 	| items last |
-	items := self items.
+	items := self presentedItems.
 	last := (anIndex + aCount - 1) min: items size.
 	anIndex > last ifTrue: [ ^ #() ].
 	^ ((anIndex to: last) collect: [ :position |
 		   self cellsFor: (items at: position) at: position ]) asArray
+]
+
+{ #category : 'building' }
+SwpItemsView >> filter: aString [
+	filter := (aString isNil or: [ aString isEmpty ])
+			  ifTrue: [ nil ]
+			  ifFalse: [ aString ].
+	filteredItems := nil
+]
+
+{ #category : 'accessing' }
+SwpItemsView >> presentedItems [
+	"The items a filter keeps, matched against the words their row shows, so a
+	frontend searches the whole collection rather than only what it has paged."
+
+	| needle result |
+	filter ifNil: [ ^ self items ].
+	filteredItems ifNotNil: [ ^ filteredItems ].
+	needle := filter asLowercase.
+	result := OrderedCollection new.
+	self items doWithIndex: [ :item :index |
+		((self searchTextFor: item at: index) asLowercase includesSubstring: needle)
+			ifTrue: [ result add: item ] ].
+	^ filteredItems := result
+]
+
+{ #category : 'accessing' }
+SwpItemsView >> searchTextFor: anItem at: anIndex [
+	^ String streamContents: [ :stream |
+		(self valueCellsFor: anItem at: anIndex) do: [ :cell |
+			stream nextPutAll: (cell at: 'text' ifAbsent: [ '' ]); space ] ]
 ]
 
 { #category : 'building' }
@@ -51,7 +84,7 @@ SwpItemsView >> send: aBlock [
 { #category : 'accessing' }
 SwpItemsView >> sentItemAt: anIndex [
 	| item |
-	item := self items at: anIndex.
+	item := self presentedItems at: anIndex.
 	^ sendBlock ifNil: [ item ] ifNotNil: [ sendBlock value: item ]
 ]
 
@@ -64,7 +97,7 @@ SwpItemsView >> textFor: anItem [
 
 { #category : 'accessing' }
 SwpItemsView >> totalItems [
-	^ self items size
+	^ self presentedItems size
 ]
 
 { #category : 'testing' }

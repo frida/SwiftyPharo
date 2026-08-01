@@ -581,10 +581,13 @@ SwpSession >> classReferredToBy: aNode [
 
 { #category : 'requests' }
 SwpSession >> viewOf: aDictionary [
-	| object |
+	| object view |
 	object := self objectAt: (aDictionary at: #handle).
-	^ (SwpViewCollector viewsFor: object)
-		detect: [ :each | each methodSelector = (aDictionary at: #view) asSymbol ]
+	view := (SwpViewCollector viewsFor: object)
+		detect: [ :each | each methodSelector = (aDictionary at: #view) asSymbol ].
+	(view respondsTo: #filter:) ifTrue: [
+		view filter: (aDictionary at: #filter ifAbsent: [ nil ]) ].
+	^ view
 ]
 
 { #category : 'requests' }

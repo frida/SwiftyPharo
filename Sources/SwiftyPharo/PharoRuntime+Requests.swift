@@ -16,23 +16,29 @@ extension PharoRuntime {
         of anObject: PharoObject,
         view: String,
         from: Int,
-        count: Int
+        count: Int,
+        filter: String? = nil
     ) async throws -> PharoItemsPage {
-        try await send([
+        var request: [String: Any] = [
             "op": "items",
             "handle": anObject.handle,
             "view": view,
             "from": from,
             "count": count,
-        ])
+        ]
+        if let filter, !filter.isEmpty { request["filter"] = filter }
+        return try await send(request)
     }
 
     public func drillInto(
         _ anObject: PharoObject,
         view: String,
-        index: Int
+        index: Int,
+        filter: String? = nil
     ) async throws -> PharoObject {
-        try await send(["op": "send", "handle": anObject.handle, "view": view, "index": index])
+        var request: [String: Any] = ["op": "send", "handle": anObject.handle, "view": view, "index": index]
+        if let filter, !filter.isEmpty { request["filter"] = filter }
+        return try await send(request)
     }
 
     public func completions(for source: String, at position: Int) async throws -> PharoCompletions {
