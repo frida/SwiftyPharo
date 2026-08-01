@@ -223,10 +223,7 @@ SwpSession >> keywordCompletionsAt: tokenStart token: aToken in: aString [
 
 { #category : 'requests' }
 SwpSession >> behaviorOfReceiver: aNode [
-	aNode isLiteralNode ifTrue: [ ^ aNode value class ].
-	aNode isVariable ifFalse: [ ^ nil ].
-	^ (self globalBehaviorOf: aNode name asString)
-		ifNil: [ self workspaceBehaviorOf: aNode name asString ]
+	^ self receiverBehaviorOf: aNode in: nil
 ]
 
 { #category : 'requests' }
@@ -297,11 +294,23 @@ SwpSession >> referenceOf: aMessage in: aSelfClass into: references [
 SwpSession >> receiverBehaviorOf: aReceiver in: aSelfClass [
 	| name |
 	aReceiver isLiteralNode ifTrue: [ ^ aReceiver value class ].
+	aReceiver isMessage ifTrue: [ ^ self behaviorOfSend: aReceiver in: aSelfClass ].
 	aReceiver isVariable ifFalse: [ ^ nil ].
 	name := aReceiver name asString.
 	(name = 'self' and: [ aSelfClass notNil ]) ifTrue: [ ^ aSelfClass ].
 	(name = 'super' and: [ aSelfClass notNil ]) ifTrue: [ ^ aSelfClass superclass ].
 	^ (self globalBehaviorOf: name) ifNil: [ self workspaceBehaviorOf: name ]
+]
+
+{ #category : 'requests' }
+SwpSession >> behaviorOfSend: aMessage in: aSelfClass [
+	"A send whose selector makes an instance answers one of its receiver class,
+	so `ZnClient new get: url` finds get: on ZnClient. Other sends answer nothing,
+	since a return type is not ours to know."
+
+	(#( new new: basicNew basicNew: ) includes: aMessage selector) ifFalse: [ ^ nil ].
+	^ (self receiverBehaviorOf: aMessage receiver in: aSelfClass) ifNotNil: [ :behavior |
+		  behavior isMeta ifTrue: [ behavior instanceSide ] ]
 ]
 
 { #category : 'requests' }
