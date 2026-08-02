@@ -20,6 +20,11 @@ SwpEmptyView >> isEmpty [
 ]
 
 { #category : 'building' }
+SwpEmptyView >> explicit [
+	^ SwpExplicitView new
+]
+
+{ #category : 'building' }
 SwpEmptyView >> forward [
 	^ SwpForwardView new
 ]

@@ -39,7 +39,8 @@ SwpVisualStub class >> stubbedGlobals [
 	     BlArrowheadCustomShape BrLabel BrText BrEditor BrButton BrFrame
 	     BrHorizontalPane BrVerticalPane BrGlamorousLabelAptitude
 	     BrGlamorousEditorAptitude BrGlamorousButtonWithIconAptitude
-	     BrShadowAptitude BrGlamorousVectorIcons )
+	     BrShadowAptitude BrGlamorousVectorIcons GtPlotterLinearScale
+	     GtPlotterDurationScale GtPlotterLogarithmicScale GtPlotterScale )
 ]
 
 { #category : 'capturing' }

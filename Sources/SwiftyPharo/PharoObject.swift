@@ -28,6 +28,7 @@ public struct PharoViewDeclaration: Sendable, Decodable {
     public let columns: [String]?
     public let text: String?
     public let graph: PharoGraph?
+    public let chart: PharoChart?
 
     public init(
         viewName: String,
@@ -36,7 +37,8 @@ public struct PharoViewDeclaration: Sendable, Decodable {
         methodSelector: String,
         columns: [String]? = nil,
         text: String? = nil,
-        graph: PharoGraph? = nil
+        graph: PharoGraph? = nil,
+        chart: PharoChart? = nil
     ) {
         self.viewName = viewName
         self.title = title
@@ -45,7 +47,21 @@ public struct PharoViewDeclaration: Sendable, Decodable {
         self.columns = columns
         self.text = text
         self.graph = graph
+        self.chart = chart
     }
+}
+
+/// A bar chart a GtPlotter view draws: a bar per element with a label and a
+/// value, laid out along or up the frame. Clicking a bar drills into the
+/// element behind it.
+public struct PharoChart: Sendable, Decodable {
+    public let orientation: String
+    public let bars: [PharoChartBar]
+}
+
+public struct PharoChartBar: Sendable, Decodable {
+    public let label: String
+    public let value: Double
 }
 
 /// A graph a `mondrian` view paints: nodes, the directed edges between them by
