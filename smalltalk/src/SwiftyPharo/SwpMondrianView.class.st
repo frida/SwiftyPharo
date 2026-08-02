@@ -1,8 +1,3 @@
-"
-A graph an object paints with mondrian. It runs the painting once, against a
-recorder that keeps the nodes, edges, and layout, and hands the frontend that
-structure to draw natively. A click on a node drills into the model behind it.
-"
 Class {
 	#name : 'SwpMondrianView',
 	#superclass : 'SwpView',
@@ -26,8 +21,6 @@ SwpMondrianView >> captured [
 
 { #category : 'building' }
 SwpMondrianView >> capturedMondrian: aMondrian [
-	"A mondrian already painted stands in for a painting block, so a graph built
-	by hand shows itself."
 
 	captured := aMondrian
 ]

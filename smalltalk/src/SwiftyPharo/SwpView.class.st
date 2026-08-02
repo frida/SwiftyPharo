@@ -50,8 +50,6 @@ SwpView >> title: aString [
 
 { #category : 'actions' }
 SwpView >> actionUpdateButton [
-	"A view's buttons ride on Bloc icons the shim has no canvas for; a view that
-	asks for one keeps the rest of itself rather than falling out whole."
 ]
 
 { #category : 'actions' }

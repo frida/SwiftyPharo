@@ -1,10 +1,3 @@
-"
-Stands in for the Bloc and Brick elements a mondrian stencil builds. It cannot
-draw, so it absorbs every message a stencil sends and answers itself, but it
-remembers the text a node is labelled with, so the label a painting intended
-survives even though the element around it does not. The element class names a
-stencil reaches for are bound to this class, so the stencil runs.
-"
 Class {
 	#name : 'SwpVisualStub',
 	#superclass : 'Object',
@@ -22,8 +15,6 @@ SwpVisualStub class >> initialize [
 
 { #category : 'class initialization' }
 SwpVisualStub class >> install [
-	"Bind the element names a stencil names, so a stencil written for Glamorous
-	Toolkit compiles against the stub and runs."
 
 	self stubbedGlobals do: [ :name |
 		(Smalltalk globals includesKey: name) ifFalse: [
@@ -60,8 +51,6 @@ SwpVisualStub class >> captureText: anObject [
 
 { #category : 'instance creation' }
 SwpVisualStub class >> doesNotUnderstand: aMessage [
-	"A class-side constructor -- BlBorder paint:width:, BlInsets all: -- answers a
-	stub to keep the stencil flowing."
 
 	^ self new
 ]

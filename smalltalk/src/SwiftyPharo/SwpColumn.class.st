@@ -1,8 +1,3 @@
-"
-One column of a columned list, configured the way Glamorous Toolkit configures
-a GtPhlowColumn: a title and a block that yields each cell. It writes through to
-the dictionary the view keeps, so however it is configured the view sees it.
-"
 Class {
 	#name : 'SwpColumn',
 	#superclass : 'Object',
@@ -61,10 +56,8 @@ SwpColumn >> noWidth [
 
 { #category : 'building' }
 SwpColumn >> background: aBlock [
-	"The shim draws no cell backgrounds."
 ]
 
 { #category : 'building' }
 SwpColumn >> titleStencil: aBlock [
-	"Nor custom header elements."
 ]

@@ -15,7 +15,6 @@ SwpTreeView >> children: aBlock [
 
 { #category : 'building' }
 SwpTreeView >> expandUpTo: aNumber [
-	"How deep to open on show; the shim lists the roots and drills on demand."
 ]
 
 { #category : 'building' }

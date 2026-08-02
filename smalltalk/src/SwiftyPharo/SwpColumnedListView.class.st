@@ -43,8 +43,6 @@ SwpColumnedListView >> column: aTitle icon: aBlock width: aWidth [
 
 { #category : 'building' }
 SwpColumnedListView >> column: aTitle [
-	"Glamorous Toolkit's object form: a column configured after the fact."
-
 	^ SwpColumn new spec: (self addColumn: aTitle kind: #text block: [ :each | each ])
 ]
 

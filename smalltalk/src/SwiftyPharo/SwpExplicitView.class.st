@@ -1,8 +1,3 @@
-"
-An explicit view builds a Bloc element by hand, which has nowhere to draw here.
-When that element is a GtPlotter chart, though, the view shows it as a native
-chart; otherwise the view has nothing to show and drops out.
-"
 Class {
 	#name : 'SwpExplicitView',
 	#superclass : 'SwpView',

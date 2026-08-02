@@ -1,8 +1,3 @@
-"
-Several charts overlaid on one frame, standing in for GtPlotterCompositeChart. It
-gathers each plot's series and models in turn, so the whole reads as one chart a
-point still drills through.
-"
 Class {
 	#name : 'SwpCompositeChart',
 	#superclass : 'SwpChart',

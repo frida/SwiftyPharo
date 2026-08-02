@@ -1,10 +1,3 @@
-"
-The edge builder a mondrian painting configures, standing in for
-GtMondrianEdgeBuilder. Each connect message names how to reach the far end of an
-edge from a node -- a block or a symbol -- and the builder resolves those to the
-directed pairs the graph draws. The anchors and Bloc line shapes it is handed
-are ignored, since the frontend draws the edges itself.
-"
 Class {
 	#name : 'SwpMondrianEdges',
 	#superclass : 'Object',

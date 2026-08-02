@@ -1,9 +1,3 @@
-"
-The node builder a mondrian painting configures, standing in for
-GtMondrianNodeBuilder. It takes the collection a graph draws and remembers a
-label for each; the Bloc shapes it is handed have nowhere to draw and are
-ignored.
-"
 Class {
 	#name : 'SwpMondrianNodes',
 	#superclass : 'Object',
@@ -40,8 +34,6 @@ SwpMondrianNodes >> labelled: aBlock [
 
 { #category : 'building' }
 SwpMondrianNodes >> shape: aBlock [
-	"A node's Bloc element cannot be drawn, but running it captures the label the
-	painting meant the node to carry."
 
 	stencilBlock := aBlock
 ]

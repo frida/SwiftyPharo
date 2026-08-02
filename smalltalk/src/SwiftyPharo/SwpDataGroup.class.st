@@ -1,7 +1,3 @@
-"
-The data a chart draws, standing in for GtPlotterDataGroup: the collection of
-elements and the block that labels each one.
-"
 Class {
 	#name : 'SwpDataGroup',
 	#superclass : 'Object',
@@ -30,7 +26,6 @@ SwpDataGroup >> sorted: aBlock [
 
 { #category : 'building' }
 SwpDataGroup >> doesNotUnderstand: aMessage [
-	"A group's colours and other trimmings have nowhere to draw."
 
 	^ self
 ]

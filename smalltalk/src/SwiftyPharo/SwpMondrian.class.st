@@ -1,10 +1,3 @@
-"
-Records a mondrian painting as plain structure a native frontend can draw: the
-node models and their labels, the directed edges between them by index, and the
-chosen layout. It stands in for GtMondrian, so painting code written for
-Glamorous Toolkit runs against it unchanged; the Bloc shapes it would draw are
-ignored, since the frontend draws the nodes itself.
-"
 Class {
 	#name : 'SwpMondrian',
 	#superclass : 'Object',
@@ -21,8 +14,6 @@ Class {
 
 { #category : 'class initialization' }
 SwpMondrian class >> initialize [
-	"Offer the builder under a short name, so a playground paints a graph the
-	way Glamorous Toolkit reaches for GtMondrian."
 
 	(Smalltalk globals includesKey: #Mondrian) ifFalse: [
 		Smalltalk globals at: #Mondrian put: self ]
@@ -104,8 +95,6 @@ SwpMondrian >> displayFor: aModel [
 
 { #category : 'building' }
 SwpMondrian >> forEach: aBlock [
-	"Draw each node's own sub-graph flat, joining a node to the children its
-	painting adds so the nesting reads as edges."
 
 	nodeModels copy doWithIndex: [ :parent :ignored |
 		| firstChild |

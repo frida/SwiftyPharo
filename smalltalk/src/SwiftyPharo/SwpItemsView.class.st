@@ -37,15 +37,11 @@ SwpItemsView >> itemText: aBlock [
 
 { #category : 'building' }
 SwpItemsView >> display: aBlock [
-	"Glamorous Toolkit's older name for the collection."
-
 	self items: aBlock
 ]
 
 { #category : 'building' }
 SwpItemsView >> itemFormat: aBlock [
-	"And its older name for the row text."
-
 	self itemText: aBlock
 ]
 
@@ -56,7 +52,6 @@ SwpItemsView >> format: aBlock [
 
 { #category : 'building' }
 SwpItemsView >> itemStencil: aBlock [
-	"A row's own element cannot be drawn without Bloc; the row keeps its text."
 ]
 
 { #category : 'building' }
@@ -107,9 +102,6 @@ SwpItemsView >> filter: aString [
 
 { #category : 'accessing' }
 SwpItemsView >> presentedItems [
-	"The items a filter keeps, matched against the words their row shows, so a
-	frontend searches the whole collection rather than only what it has paged."
-
 	| needle result |
 	filter ifNil: [ ^ self items ].
 	filteredItems ifNotNil: [ ^ filteredItems ].

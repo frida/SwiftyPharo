@@ -1,8 +1,3 @@
-"
-A view that shows another object's view in this object's place, the way
-Glamorous Toolkit's forward view delegates. It resolves its target lazily and
-hands every request on to that target's view.
-"
 Class {
 	#name : 'SwpForwardView',
 	#superclass : 'SwpView',
@@ -17,7 +12,6 @@ Class {
 
 { #category : 'building' }
 SwpForwardView >> object: aValue [
-	"The object to forward to, or a block answering it once the tab is opened."
 
 	objectSource := aValue
 ]

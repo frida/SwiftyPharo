@@ -1,9 +1,3 @@
-"
-The layout builder a mondrian painting configures, standing in for
-GtMondrianLayoutBuilder. It records which arrangement the graph asked for and
-maps the many Glamorous Toolkit layouts onto the handful a native frontend
-draws. Distance and other tuning it is handed are ignored.
-"
 Class {
 	#name : 'SwpMondrianLayout',
 	#superclass : 'Object',

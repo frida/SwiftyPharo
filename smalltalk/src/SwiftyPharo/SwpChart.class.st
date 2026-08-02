@@ -1,9 +1,3 @@
-"
-The base of the GtPlotter charts a frontend draws natively. A chart answers its
-series -- each a run of points with a label and an x and a y -- and the kind of
-scale each axis carries, and stands in for the Bloc bars, lines, and dots a
-GtPlotter would draw. A point drills into the element behind it.
-"
 Class {
 	#name : 'SwpChart',
 	#superclass : 'Object',
@@ -52,7 +46,6 @@ SwpChart >> create [
 
 { #category : 'building' }
 SwpChart >> doesNotUnderstand: aMessage [
-	"A chart's ticks, titles, gaps, and Bloc shapes have nowhere to draw."
 
 	^ self
 ]

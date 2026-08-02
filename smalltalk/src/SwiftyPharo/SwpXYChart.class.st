@@ -1,8 +1,3 @@
-"
-The base of the charts plotted against two axes, standing in for GtPlotterXYChart.
-Each point's x and y come from the chart's own blocks over the data group, and
-each axis carries its own scale.
-"
 Class {
 	#name : 'SwpXYChart',
 	#superclass : 'SwpChart',

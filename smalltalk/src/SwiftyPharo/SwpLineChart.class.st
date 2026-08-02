@@ -1,6 +1,3 @@
-"
-A line chart, standing in for GtPlotterLineChart.
-"
 Class {
 	#name : 'SwpLineChart',
 	#superclass : 'SwpXYChart',

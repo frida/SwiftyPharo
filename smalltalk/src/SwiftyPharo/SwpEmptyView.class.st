@@ -46,8 +46,6 @@ SwpEmptyView >> text [
 
 { #category : 'building' }
 SwpEmptyView >> textEditor [
-	"Editable text has no editor here; it reads the same as a text view."
-
 	^ SwpTextView new
 ]
 

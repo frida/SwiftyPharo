@@ -1,8 +1,3 @@
-"
-A bar chart, standing in for GtPlotterHorizontalBarChart. Each bar's value comes
-from the chart's data block and its label from the data group. The value runs
-along the frame; a vertical bar chart stands it up instead.
-"
 Class {
 	#name : 'SwpBarChart',
 	#superclass : 'SwpChart',

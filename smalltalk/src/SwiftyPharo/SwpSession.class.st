@@ -115,10 +115,6 @@ SwpSession >> classBrowserOf: aHandle [
 
 { #category : 'requests' }
 SwpSession >> examplesOf: aClass [
-	"The methods that hand back something to look at -- a sample instance, a
-	worked example -- so a browser can offer to run them. The demo methods that
-	only paint on screen are left out; they have nowhere to run here."
-
 	| examples |
 	examples := OrderedCollection new.
 	{ aClass class -> 'class'. aClass -> 'instance' } do: [ :each |

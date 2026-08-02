@@ -1,8 +1,3 @@
-"
-The container a chart is built through, standing in for GtPlotter. It hands out
-bar charts to configure and answers them as its element: the one chart when there
-is a single plot, and a composite when there are several.
-"
 Class {
 	#name : 'SwpPlotter',
 	#superclass : 'Object',
