@@ -48,6 +48,68 @@ SwpView >> title: aString [
 	title := aString
 ]
 
+{ #category : 'actions' }
+SwpView >> actionUpdateButton [
+	"A view's buttons ride on Bloc icons the shim has no canvas for; a view that
+	asks for one keeps the rest of itself rather than falling out whole."
+]
+
+{ #category : 'actions' }
+SwpView >> actionUpdateButtonTooltip: aString [
+]
+
+{ #category : 'actions' }
+SwpView >> actionButtonIcon: anIcon tooltip: aString action: aBlock [
+]
+
+{ #category : 'actions' }
+SwpView >> actionButtonIcon: anIcon label: aString action: aBlock [
+]
+
+{ #category : 'actions' }
+SwpView >> actionButtonIcon: anIcon action: aBlock [
+]
+
+{ #category : 'actions' }
+SwpView >> actionButtonLabel: aString action: aBlock [
+]
+
+{ #category : 'actions' }
+SwpView >> actionButtonLabel: aString tooltip: aTooltip action: aBlock [
+]
+
+{ #category : 'actions' }
+SwpView >> actionButtonDo: aBlock [
+]
+
+{ #category : 'actions' }
+SwpView >> actionDropdownButtonIcon: anIcon tooltip: aString content: aBlock [
+]
+
+{ #category : 'actions' }
+SwpView >> actionDropdownButtonLabel: aString content: aBlock [
+]
+
+{ #category : 'actions' }
+SwpView >> actionStencil: aBlock [
+]
+
+{ #category : 'actions' }
+SwpView >> action: aBlock [
+]
+
+{ #category : 'actions' }
+SwpView >> addAutoUpdate: aBlock [
+]
+
+{ #category : 'actions' }
+SwpView >> updateWhen: anAnnouncement in: anAnnouncer [
+]
+
+{ #category : 'actions' }
+SwpView >> buildContext: aContext [
+]
+
 { #category : 'converting' }
 SwpView >> declaration [
 	^ Dictionary new

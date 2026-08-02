@@ -35,6 +35,58 @@ SwpItemsView >> itemText: aBlock [
 	itemTextBlock := aBlock
 ]
 
+{ #category : 'building' }
+SwpItemsView >> display: aBlock [
+	"Glamorous Toolkit's older name for the collection."
+
+	self items: aBlock
+]
+
+{ #category : 'building' }
+SwpItemsView >> itemFormat: aBlock [
+	"And its older name for the row text."
+
+	self itemText: aBlock
+]
+
+{ #category : 'building' }
+SwpItemsView >> format: aBlock [
+	self itemText: aBlock
+]
+
+{ #category : 'building' }
+SwpItemsView >> itemStencil: aBlock [
+	"A row's own element cannot be drawn without Bloc; the row keeps its text."
+]
+
+{ #category : 'building' }
+SwpItemsView >> itemStencil: aBlock dataBinder: aBinder [
+]
+
+{ #category : 'building' }
+SwpItemsView >> itemDataBinder: aBlock [
+]
+
+{ #category : 'building' }
+SwpItemsView >> itemType: aBlock [
+]
+
+{ #category : 'building' }
+SwpItemsView >> rowDataBinder: aBlock [
+]
+
+{ #category : 'building' }
+SwpItemsView >> withMultipleSelection [
+]
+
+{ #category : 'building' }
+SwpItemsView >> withoutMultipleSelection [
+]
+
+{ #category : 'building' }
+SwpItemsView >> withHorizontalScrolling [
+]
+
 { #category : 'accessing' }
 SwpItemsView >> itemsFrom: anIndex count: aCount [
 	| items last |

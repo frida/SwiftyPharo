@@ -20,12 +20,24 @@ SwpEmptyView >> isEmpty [
 ]
 
 { #category : 'building' }
+SwpEmptyView >> forward [
+	^ SwpForwardView new
+]
+
+{ #category : 'building' }
 SwpEmptyView >> list [
 	^ SwpListView new
 ]
 
 { #category : 'building' }
 SwpEmptyView >> text [
+	^ SwpTextView new
+]
+
+{ #category : 'building' }
+SwpEmptyView >> textEditor [
+	"Editable text has no editor here; it reads the same as a text view."
+
 	^ SwpTextView new
 ]
 

@@ -13,7 +13,15 @@ Class {
 
 { #category : 'collecting' }
 SwpViewCollector class >> declarationsFor: anObject [
-	^ ((self viewsFor: anObject) collect: [ :each | each declaration ]) asArray
+	"A view whose declaration cannot build itself -- a block that raises, a
+	message the shim does not answer -- costs only itself, not the object's
+	other views."
+
+	^ Array streamContents: [ :stream |
+		  (self viewsFor: anObject) do: [ :each |
+			  [ stream nextPut: each declaration ]
+				  on: Error
+				  do: [ :error | nil ] ] ]
 ]
 
 { #category : 'collecting' }
@@ -26,8 +34,9 @@ SwpViewCollector class >> viewsFor: anObject [
 
 { #category : 'collecting' }
 SwpViewCollector class >> gtViewsFor: anObject [
-	^ (self gtViewSelectorsFor: anObject) collect: [ :selector |
-		  self viewOf: anObject bySending: selector ]
+	^ (self gtViewSelectorsFor: anObject)
+		  collect: [ :selector | self viewOf: anObject bySending: selector ]
+		  thenSelect: [ :view | view notNil ]
 ]
 
 { #category : 'collecting' }
@@ -44,10 +53,14 @@ SwpViewCollector class >> gtViewSelectorsFor: anObject [
 
 { #category : 'collecting' }
 SwpViewCollector class >> viewOf: anObject bySending: aSelector [
-	| view |
-	view := anObject perform: aSelector with: SwpEmptyView new.
-	view methodSelector: aSelector.
-	^ view
+	"A <gtView> that reaches past the shim -- a Bloc canvas, an action the shim
+	does not model -- drops out here rather than failing the whole collection."
+
+	^ [
+	  | view |
+	  view := anObject perform: aSelector with: SwpEmptyView new.
+	  view methodSelector: aSelector.
+	  view ] on: Error do: [ :error | nil ]
 ]
 
 { #category : 'collecting' }

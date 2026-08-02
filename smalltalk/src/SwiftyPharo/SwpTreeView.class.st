@@ -13,6 +13,27 @@ SwpTreeView >> children: aBlock [
 	childrenBlock := aBlock
 ]
 
+{ #category : 'building' }
+SwpTreeView >> expandUpTo: aNumber [
+	"How deep to open on show; the shim lists the roots and drills on demand."
+]
+
+{ #category : 'building' }
+SwpTreeView >> expandAll [
+]
+
+{ #category : 'building' }
+SwpTreeView >> expandOneLevel [
+]
+
+{ #category : 'building' }
+SwpTreeView >> expandSuchThat: aBlock [
+]
+
+{ #category : 'building' }
+SwpTreeView >> collapseAll [
+]
+
 { #category : 'accessing' }
 SwpTreeView >> childrenOf: anItem [
 	^ childrenBlock ifNil: [ #() ] ifNotNil: [ (childrenBlock value: anItem) asOrderedCollection ]
