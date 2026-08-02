@@ -19,6 +19,23 @@ Class {
 	#package : 'SwiftyPharo'
 }
 
+{ #category : 'class initialization' }
+SwpMondrian class >> initialize [
+	"Offer the builder under a short name, so a playground paints a graph the
+	way Glamorous Toolkit reaches for GtMondrian."
+
+	(Smalltalk globals includesKey: #Mondrian) ifFalse: [
+		Smalltalk globals at: #Mondrian put: self ]
+]
+
+{ #category : 'views' }
+SwpMondrian >> gtGraphFor: aView [
+	<gtView>
+	^ aView mondrian
+		  title: 'Graph';
+		  capturedMondrian: self
+]
+
 { #category : 'initialization' }
 SwpMondrian >> initialize [
 	super initialize.

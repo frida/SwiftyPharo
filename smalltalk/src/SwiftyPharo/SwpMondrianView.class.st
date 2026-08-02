@@ -24,6 +24,14 @@ SwpMondrianView >> captured [
 	^ captured ifNil: [ captured := self capture ]
 ]
 
+{ #category : 'building' }
+SwpMondrianView >> capturedMondrian: aMondrian [
+	"A mondrian already painted stands in for a painting block, so a graph built
+	by hand shows itself."
+
+	captured := aMondrian
+]
+
 { #category : 'accessing' }
 SwpMondrianView >> capture [
 	| mondrian |
