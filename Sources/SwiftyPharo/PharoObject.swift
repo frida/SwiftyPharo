@@ -27,6 +27,7 @@ public struct PharoViewDeclaration: Sendable, Decodable {
     public let methodSelector: String
     public let columns: [String]?
     public let text: String?
+    public let graph: PharoGraph?
 
     public init(
         viewName: String,
@@ -34,7 +35,8 @@ public struct PharoViewDeclaration: Sendable, Decodable {
         priority: Int,
         methodSelector: String,
         columns: [String]? = nil,
-        text: String? = nil
+        text: String? = nil,
+        graph: PharoGraph? = nil
     ) {
         self.viewName = viewName
         self.title = title
@@ -42,7 +44,26 @@ public struct PharoViewDeclaration: Sendable, Decodable {
         self.methodSelector = methodSelector
         self.columns = columns
         self.text = text
+        self.graph = graph
     }
+}
+
+/// A graph a `mondrian` view paints: nodes, the directed edges between them by
+/// index, and the layout that arranges them. Clicking a node drills into the
+/// object behind it, the way it drills into a list row.
+public struct PharoGraph: Sendable, Decodable {
+    public let layout: String
+    public let nodes: [PharoGraphNode]
+    public let edges: [PharoGraphEdge]
+}
+
+public struct PharoGraphNode: Sendable, Decodable {
+    public let label: String
+}
+
+public struct PharoGraphEdge: Sendable, Decodable {
+    public let from: Int
+    public let to: Int
 }
 
 public struct PharoItemsPage: Sendable, Decodable {

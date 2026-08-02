@@ -30,6 +30,11 @@ SwpEmptyView >> list [
 ]
 
 { #category : 'building' }
+SwpEmptyView >> mondrian [
+	^ SwpMondrianView new
+]
+
+{ #category : 'building' }
 SwpEmptyView >> text [
 	^ SwpTextView new
 ]
