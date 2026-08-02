@@ -9,7 +9,8 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'mondrian',
-		'labelBlock'
+		'labelBlock',
+		'stencilBlock'
 	],
 	#category : 'SwiftyPharo',
 	#package : 'SwiftyPharo'
@@ -22,14 +23,14 @@ SwpMondrianNodes >> mondrian: aMondrian [
 
 { #category : 'building' }
 SwpMondrianNodes >> with: aCollection [
-	aCollection do: [ :model | mondrian addNode: model labelBlock: labelBlock ]
+	aCollection do: [ :model |
+		mondrian addNode: model labelBlock: labelBlock stencil: stencilBlock ]
 ]
 
 { #category : 'building' }
 SwpMondrianNodes >> with: aCollection forEach: aBlock [
-	"Nested sub-graphs are flattened away; the top-level nodes are drawn."
-
-	self with: aCollection
+	self with: aCollection.
+	mondrian forEach: aBlock
 ]
 
 { #category : 'building' }
@@ -39,11 +40,15 @@ SwpMondrianNodes >> labelled: aBlock [
 
 { #category : 'building' }
 SwpMondrianNodes >> shape: aBlock [
-	"A node's Bloc element cannot be drawn here; its label comes from the model."
+	"A node's Bloc element cannot be drawn, but running it captures the label the
+	painting meant the node to carry."
+
+	stencilBlock := aBlock
 ]
 
 { #category : 'building' }
 SwpMondrianNodes >> stencil: aBlock [
+	stencilBlock := aBlock
 ]
 
 { #category : 'building' }
@@ -60,8 +65,10 @@ SwpMondrianNodes >> umlClassShapeWithName: aBlock andTextAttributes: anotherBloc
 
 { #category : 'building' }
 SwpMondrianNodes >> forEach: aBlock [
+	mondrian forEach: aBlock
 ]
 
 { #category : 'building' }
 SwpMondrianNodes >> forEach: aBlock in: aSymbol [
+	mondrian forEach: aBlock
 ]

@@ -62,30 +62,57 @@ SwpMondrian >> layout [
 ]
 
 { #category : 'building' }
-SwpMondrian >> addNode: aModel labelBlock: aBlock [
+SwpMondrian >> addNode: aModel labelBlock: aLabelBlock stencil: aStencilBlock [
 	(indexMap includesKey: aModel) ifTrue: [ ^ self ].
+	nodeModels size >= self nodeLimit ifTrue: [ ^ self ].
 	nodeModels add: aModel.
-	nodeLabels add: (self labelFor: aModel with: aBlock).
+	nodeLabels add: (self labelFor: aModel with: aLabelBlock stencil: aStencilBlock).
 	indexMap at: aModel put: nodeModels size
 ]
 
 { #category : 'building' }
-SwpMondrian >> labelFor: aModel with: aBlock [
-	| text |
-	text := aBlock
-		        ifNil: [ self displayFor: aModel ]
-		        ifNotNil: [
-			        [ (aBlock value: aModel) asString ]
-				        on: Error
-				        do: [ :error | self displayFor: aModel ] ].
-	^ (text size > 100)
-		  ifTrue: [ (text first: 99) , (String with: Character value: 8230) ]
-		  ifFalse: [ text ]
+SwpMondrian >> nodeLimit [
+	^ 2000
+]
+
+{ #category : 'building' }
+SwpMondrian >> labelFor: aModel with: aLabelBlock stencil: aStencilBlock [
+	aLabelBlock ifNotNil: [
+		^ self truncate:
+			  ([ (aLabelBlock value: aModel) asString ]
+				   on: Error
+				   do: [ :error | self displayFor: aModel ]) ].
+	aStencilBlock ifNotNil: [
+		SwpVisualStub resetCapture.
+		[ aStencilBlock value: aModel ] on: Error do: [ :error | nil ].
+		SwpVisualStub capturedLabel ifNotNil: [ :text |
+			^ self truncate: text ] ].
+	^ self truncate: (self displayFor: aModel)
+]
+
+{ #category : 'building' }
+SwpMondrian >> truncate: aString [
+	^ aString size > 100
+		  ifTrue: [ (aString first: 99) , (String with: Character value: 8230) ]
+		  ifFalse: [ aString ]
 ]
 
 { #category : 'building' }
 SwpMondrian >> displayFor: aModel [
 	^ [ aModel displayString ] on: Error do: [ :error | aModel printString ]
+]
+
+{ #category : 'building' }
+SwpMondrian >> forEach: aBlock [
+	"Draw each node's own sub-graph flat, joining a node to the children its
+	painting adds so the nesting reads as edges."
+
+	nodeModels copy doWithIndex: [ :parent :ignored |
+		| firstChild |
+		firstChild := nodeModels size + 1.
+		aBlock value: parent.
+		firstChild to: nodeModels size do: [ :child |
+			edgePairs add: (indexMap at: parent) -> child ] ]
 ]
 
 { #category : 'building' }
