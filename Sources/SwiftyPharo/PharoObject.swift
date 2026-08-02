@@ -56,6 +56,8 @@ public struct PharoViewDeclaration: Sendable, Decodable {
 public struct PharoChart: Sendable, Decodable {
     public let scaleX: String
     public let scaleY: String
+    public let titleX: String
+    public let titleY: String
     public let series: [PharoChartSeries]
 }
 

@@ -6,7 +6,9 @@ Class {
 		'xData',
 		'yData',
 		'xScale',
-		'yScale'
+		'yScale',
+		'titleX',
+		'titleY'
 	],
 	#category : 'SwiftyPharo',
 	#package : 'SwiftyPharo'
@@ -35,6 +37,26 @@ SwpXYChart >> scaleX: aScale [
 { #category : 'building' }
 SwpXYChart >> scaleY: aScale [
 	yScale := aScale
+]
+
+{ #category : 'building' }
+SwpXYChart >> titleX: aString [
+	titleX := aString
+]
+
+{ #category : 'building' }
+SwpXYChart >> titleY: aString [
+	titleY := aString
+]
+
+{ #category : 'accessing' }
+SwpXYChart >> titleX [
+	^ titleX ifNil: [ '' ]
+]
+
+{ #category : 'accessing' }
+SwpXYChart >> titleY [
+	^ titleY ifNil: [ '' ]
 ]
 
 { #category : 'accessing' }

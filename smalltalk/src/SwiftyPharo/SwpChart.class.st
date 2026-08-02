@@ -71,6 +71,16 @@ SwpChart >> series [
 ]
 
 { #category : 'converting' }
+SwpChart >> titleX [
+	^ ''
+]
+
+{ #category : 'converting' }
+SwpChart >> titleY [
+	^ ''
+]
+
+{ #category : 'converting' }
 SwpChart >> scaleXKind [
 	^ 'linear'
 ]
@@ -107,6 +117,8 @@ SwpChart >> chartDeclaration [
 	^ Dictionary new
 		  at: #scaleX put: self scaleXKind;
 		  at: #scaleY put: self scaleYKind;
+		  at: #titleX put: self titleX asString;
+		  at: #titleY put: self titleY asString;
 		  at: #series put: self series asArray;
 		  yourself
 ]

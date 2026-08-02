@@ -37,6 +37,16 @@ SwpCompositeChart >> series [
 ]
 
 { #category : 'converting' }
+SwpCompositeChart >> titleX [
+	^ plots ifEmpty: [ '' ] ifNotEmpty: [ plots first titleX ]
+]
+
+{ #category : 'converting' }
+SwpCompositeChart >> titleY [
+	^ plots ifEmpty: [ '' ] ifNotEmpty: [ plots first titleY ]
+]
+
+{ #category : 'converting' }
 SwpCompositeChart >> scaleXKind [
 	^ plots
 		  ifEmpty: [ 'linear' ]
