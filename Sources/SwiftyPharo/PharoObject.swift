@@ -53,7 +53,7 @@ public struct PharoViewDeclaration: Sendable, Decodable {
 
 /// A GtPlotter chart: one or more series over a shared pair of axes, each axis
 /// linear or logarithmic. Clicking a point drills into the element behind it.
-public struct PharoChart: Sendable, Codable {
+public struct PharoChart: Sendable, Codable, Equatable {
     public let scaleX: String
     public let scaleY: String
     public let titleX: String
@@ -63,13 +63,13 @@ public struct PharoChart: Sendable, Codable {
 
 /// One run of points drawn one way -- bars along or up the frame, a line, or
 /// scattered dots.
-public struct PharoChartSeries: Sendable, Codable {
+public struct PharoChartSeries: Sendable, Codable, Equatable {
     public let kind: String
     public let orientation: String
     public let points: [PharoChartPoint]
 }
 
-public struct PharoChartPoint: Sendable, Codable {
+public struct PharoChartPoint: Sendable, Codable, Equatable {
     public let label: String
     public let x: Double
     public let y: Double
@@ -78,17 +78,17 @@ public struct PharoChartPoint: Sendable, Codable {
 /// A graph a `mondrian` view paints: nodes, the directed edges between them by
 /// index, and the layout that arranges them. Clicking a node drills into the
 /// object behind it, the way it drills into a list row.
-public struct PharoGraph: Sendable, Codable {
+public struct PharoGraph: Sendable, Codable, Equatable {
     public let layout: String
     public let nodes: [PharoGraphNode]
     public let edges: [PharoGraphEdge]
 }
 
-public struct PharoGraphNode: Sendable, Codable {
+public struct PharoGraphNode: Sendable, Codable, Equatable {
     public let label: String
 }
 
-public struct PharoGraphEdge: Sendable, Codable {
+public struct PharoGraphEdge: Sendable, Codable, Equatable {
     public let from: Int
     public let to: Int
 }
