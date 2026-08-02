@@ -40,7 +40,7 @@ SwpExplicitView >> runStencil [
 
 { #category : 'testing' }
 SwpExplicitView >> isEmpty [
-	^ self chart isNil or: [ self chart bars isEmpty ]
+	^ self chart isNil or: [ self chart isEmpty ]
 ]
 
 { #category : 'accessing' }

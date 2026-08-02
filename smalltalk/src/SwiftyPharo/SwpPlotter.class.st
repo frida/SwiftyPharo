@@ -1,40 +1,57 @@
 "
 The container a chart is built through, standing in for GtPlotter. It hands out
-a bar chart to configure and answers that chart as its element.
+bar charts to configure and answers them as its element: the one chart when there
+is a single plot, and a composite when there are several.
 "
 Class {
 	#name : 'SwpPlotter',
 	#superclass : 'Object',
 	#instVars : [
-		'chart'
+		'plots'
 	],
 	#category : 'SwiftyPharo',
 	#package : 'SwiftyPharo'
 }
 
+{ #category : 'initialization' }
+SwpPlotter >> initialize [
+	super initialize.
+	plots := OrderedCollection new
+]
+
 { #category : 'building' }
 SwpPlotter >> horizontalBarChart [
-	^ chart := SwpChart new
+	| chart |
+	chart := SwpBarChart new.
+	plots add: chart.
+	^ chart
 ]
 
 { #category : 'building' }
 SwpPlotter >> verticalBarChart [
-	^ chart := SwpChartVertical new
+	| chart |
+	chart := SwpVerticalBarChart new.
+	plots add: chart.
+	^ chart
 ]
 
 { #category : 'building' }
 SwpPlotter >> addPlot: aChart [
-	chart := aChart
+	plots add: aChart
 ]
 
 { #category : 'building' }
 SwpPlotter >> asElement [
-	^ chart
+	plots size = 1 ifTrue: [ ^ plots first ].
+	plots isEmpty ifTrue: [ ^ nil ].
+	^ SwpCompositeChart new
+		  addAll: plots;
+		  yourself
 ]
 
 { #category : 'building' }
 SwpPlotter >> create [
-	^ chart
+	^ self asElement
 ]
 
 { #category : 'building' }

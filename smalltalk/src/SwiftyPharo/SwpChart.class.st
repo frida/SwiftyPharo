@@ -1,18 +1,12 @@
 "
-Records a GtPlotter bar chart as plain structure a native frontend can draw: a
-bar per element, each with a label and a value. It stands in for
-GtPlotterHorizontalBarChart, so chart code written for Glamorous Toolkit runs
-against it unchanged; the value comes from the chart's data block, the label
-from the data group, and the Bloc bars it would draw are ignored.
+The base of the GtPlotter charts a frontend draws natively. A chart answers its
+series -- each a run of points with a label and an x and a y -- and the kind of
+scale each axis carries, and stands in for the Bloc bars, lines, and dots a
+GtPlotter would draw. A point drills into the element behind it.
 "
 Class {
 	#name : 'SwpChart',
 	#superclass : 'Object',
-	#instVars : [
-		'dataGroup',
-		'widthData',
-		'heightData'
-	],
 	#category : 'SwiftyPharo',
 	#package : 'SwiftyPharo'
 }
@@ -28,9 +22,13 @@ SwpChart class >> initialize [
 SwpChart class >> bindings [
 	^ Dictionary new
 		  at: #GtPlotter put: SwpPlotter;
-		  at: #GtPlotterHorizontalBarChart put: SwpChart;
-		  at: #GtPlotterVerticalBarChart put: SwpChartVertical;
+		  at: #GtPlotterHorizontalBarChart put: SwpBarChart;
+		  at: #GtPlotterVerticalBarChart put: SwpVerticalBarChart;
+		  at: #GtPlotterLineChart put: SwpLineChart;
+		  at: #GtPlotterScatterChart put: SwpScatterChart;
+		  at: #GtPlotterCompositeChart put: SwpCompositeChart;
 		  at: #GtPlotterDataGroup put: SwpDataGroup;
+		  at: #GtPlotterLogarithmicScale put: SwpLogScale;
 		  yourself
 ]
 
@@ -40,21 +38,6 @@ SwpChart >> gtChartFor: aView [
 	^ aView explicit
 		  title: 'Chart';
 		  stencil: [ self ]
-]
-
-{ #category : 'building' }
-SwpChart >> with: aDataGroup [
-	dataGroup := aDataGroup
-]
-
-{ #category : 'building' }
-SwpChart >> barWidthData: aBlock [
-	widthData := aBlock
-]
-
-{ #category : 'building' }
-SwpChart >> barHeightData: aBlock [
-	heightData := aBlock
 ]
 
 { #category : 'building' }
@@ -69,19 +52,14 @@ SwpChart >> create [
 
 { #category : 'building' }
 SwpChart >> doesNotUnderstand: aMessage [
-	"A chart's scales, ticks, gaps, and Bloc bar shapes have nowhere to draw."
+	"A chart's ticks, titles, gaps, and Bloc shapes have nowhere to draw."
 
 	^ self
 ]
 
 { #category : 'accessing' }
-SwpChart >> orientation [
-	^ 'horizontal'
-]
-
-{ #category : 'accessing' }
 SwpChart >> models [
-	^ dataGroup ifNil: [ #() ] ifNotNil: [ dataGroup values ]
+	^ #(  )
 ]
 
 { #category : 'accessing' }
@@ -89,25 +67,38 @@ SwpChart >> modelAt: anIndex [
 	^ self models at: anIndex
 ]
 
-{ #category : 'converting' }
-SwpChart >> bars [
-	| valueBlock |
-	valueBlock := self valueBlock.
-	^ self models collect: [ :each |
-		  Dictionary new
-			  at: #label put: (dataGroup labelFor: each) asString;
-			  at: #value
-			  put: (valueBlock
-					   ifNil: [ 0 ]
-					   ifNotNil: [ self numberFrom: (valueBlock value: each) ]);
-			  yourself ]
+{ #category : 'testing' }
+SwpChart >> isEmpty [
+	^ self models isEmpty
 ]
 
 { #category : 'converting' }
-SwpChart >> valueBlock [
-	^ self orientation = 'horizontal'
-		  ifTrue: [ widthData ifNil: [ heightData ] ]
-		  ifFalse: [ heightData ifNil: [ widthData ] ]
+SwpChart >> series [
+	^ #(  )
+]
+
+{ #category : 'converting' }
+SwpChart >> scaleXKind [
+	^ 'linear'
+]
+
+{ #category : 'converting' }
+SwpChart >> scaleYKind [
+	^ 'linear'
+]
+
+{ #category : 'converting' }
+SwpChart >> kindOfScale: aScale [
+	^ (aScale isKindOf: SwpLogScale) ifTrue: [ 'log' ] ifFalse: [ 'linear' ]
+]
+
+{ #category : 'converting' }
+SwpChart >> pointLabel: aLabel x: anX y: aY [
+	^ Dictionary new
+		  at: #label put: aLabel asString;
+		  at: #x put: anX;
+		  at: #y put: aY;
+		  yourself
 ]
 
 { #category : 'converting' }
@@ -121,7 +112,8 @@ SwpChart >> numberFrom: aValue [
 { #category : 'converting' }
 SwpChart >> chartDeclaration [
 	^ Dictionary new
-		  at: #orientation put: self orientation;
-		  at: #bars put: self bars asArray;
+		  at: #scaleX put: self scaleXKind;
+		  at: #scaleY put: self scaleYKind;
+		  at: #series put: self series asArray;
 		  yourself
 ]

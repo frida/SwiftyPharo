@@ -125,6 +125,16 @@ extension PharoRuntime {
         try await send(["op": "classBrowser", "handle": anObject.handle])
     }
 
+    /// Runs one of a class's example methods and answers what it produced.
+    public func runExample(_ example: PharoExampleMethod, of aClass: PharoObject) async throws -> PharoObject {
+        try await send([
+            "op": "runExample",
+            "handle": aClass.handle,
+            "selector": example.selector,
+            "side": example.side,
+        ])
+    }
+
     /// Compiles source into the class, on the side and under the category the
     /// method belongs to, and answers the method as it now stands.
     public func compileMethod(

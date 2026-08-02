@@ -51,17 +51,26 @@ public struct PharoViewDeclaration: Sendable, Decodable {
     }
 }
 
-/// A bar chart a GtPlotter view draws: a bar per element with a label and a
-/// value, laid out along or up the frame. Clicking a bar drills into the
-/// element behind it.
+/// A GtPlotter chart: one or more series over a shared pair of axes, each axis
+/// linear or logarithmic. Clicking a point drills into the element behind it.
 public struct PharoChart: Sendable, Decodable {
-    public let orientation: String
-    public let bars: [PharoChartBar]
+    public let scaleX: String
+    public let scaleY: String
+    public let series: [PharoChartSeries]
 }
 
-public struct PharoChartBar: Sendable, Decodable {
+/// One run of points drawn one way -- bars along or up the frame, a line, or
+/// scattered dots.
+public struct PharoChartSeries: Sendable, Decodable {
+    public let kind: String
+    public let orientation: String
+    public let points: [PharoChartPoint]
+}
+
+public struct PharoChartPoint: Sendable, Decodable {
     public let label: String
-    public let value: Double
+    public let x: Double
+    public let y: Double
 }
 
 /// A graph a `mondrian` view paints: nodes, the directed edges between them by
@@ -171,6 +180,16 @@ public struct PharoClassBrowserInfo: Sendable, Decodable {
     public let definition: String
     public let comment: String
     public let methods: [PharoMethodInfo]
+    public let examples: [PharoExampleMethod]
+}
+
+/// A method that hands back something worth looking at -- a sample instance or a
+/// worked example -- which a browser can run with one click.
+public struct PharoExampleMethod: Sendable, Decodable, Identifiable {
+    public let selector: String
+    public let side: String
+
+    public var id: String { "\(side)>>\(selector)" }
 }
 
 public struct PharoMethodInfo: Sendable, Decodable, Identifiable {

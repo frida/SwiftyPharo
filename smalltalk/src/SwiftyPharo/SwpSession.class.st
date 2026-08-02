@@ -74,6 +74,7 @@ SwpSession >> handleRequest: aDictionary [
 	operation = 'serialize' ifTrue: [ ^ self serializeOf: (aDictionary at: #handle) ].
 	operation = 'materialize' ifTrue: [ ^ self materializeOf: (aDictionary at: #data) ].
 	operation = 'classBrowser' ifTrue: [ ^ self classBrowserOf: (aDictionary at: #handle) ].
+	operation = 'runExample' ifTrue: [ ^ self runExampleOf: aDictionary ].
 	operation = 'classOf' ifTrue: [ ^ self classOf: (aDictionary at: #handle) ].
 	operation = 'compileMethod' ifTrue: [ ^ self compileMethodOf: aDictionary ].
 	^ self error: 'unknown op: ', operation
@@ -108,7 +109,44 @@ SwpSession >> classBrowserOf: aHandle [
 		at: #definition put: class definitionString asString;
 		at: #comment put: (class comment ifNil: [ '' ]) asString;
 		at: #methods put: (class swpMethods collect: [ :method | self describeMethod: method ]) asArray;
+		at: #examples put: (self examplesOf: class);
 		yourself
+]
+
+{ #category : 'requests' }
+SwpSession >> examplesOf: aClass [
+	"The methods that hand back something to look at -- a sample instance, a
+	worked example -- so a browser can offer to run them. The demo methods that
+	only paint on screen are left out; they have nowhere to run here."
+
+	| examples |
+	examples := OrderedCollection new.
+	{ aClass class -> 'class'. aClass -> 'instance' } do: [ :each |
+		(each key methods
+			 select: [ :method | self isExampleMethod: method ])
+			do: [ :method |
+				examples add: (Dictionary new
+						 at: #selector put: method selector asString;
+						 at: #side put: each value;
+						 yourself) ] ].
+	^ (examples asSortedCollection: [ :a :b | (a at: #selector) <= (b at: #selector) ]) asArray
+]
+
+{ #category : 'requests' }
+SwpSession >> isExampleMethod: aMethod [
+	^ aMethod numArgs = 0 and: [
+		  aMethod pragmas anySatisfy: [ :pragma |
+			  #( #sampleInstance #gtExample ) includes: pragma keyword ] ]
+]
+
+{ #category : 'requests' }
+SwpSession >> runExampleOf: aDictionary [
+	| class receiver |
+	class := self objectAt: (aDictionary at: #handle).
+	receiver := (aDictionary at: #side) = 'class'
+		            ifTrue: [ class ]
+		            ifFalse: [ class new ].
+	^ self describe: (receiver perform: (aDictionary at: #selector) asSymbol)
 ]
 
 { #category : 'requests' }
