@@ -26,9 +26,13 @@ SwpViewCollector class >> declarationsFor: anObject [
 
 { #category : 'collecting' }
 SwpViewCollector class >> viewsFor: anObject [
+	"A view the method described but left without content still earns its tab,
+	the way Glamorous Toolkit shows an empty list; only one that described
+	nothing -- leaving the builder untouched -- is dropped."
+
 	| views |
 	views := (self gtViewsFor: anObject) , (self inspectorViewsFor: anObject).
-	views := views reject: [ :each | each isEmpty ].
+	views := views reject: [ :each | each isKindOf: SwpEmptyView ].
 	^ views asSortedCollection: [ :a :b | a priority <= b priority ]
 ]
 
