@@ -29,6 +29,7 @@ public struct PharoViewDeclaration: Sendable, Decodable {
     public let text: String?
     public let graph: PharoGraph?
     public let chart: PharoChart?
+    public let canvas: PharoCanvasReference?
 
     public init(
         viewName: String,
@@ -38,7 +39,8 @@ public struct PharoViewDeclaration: Sendable, Decodable {
         columns: [String]? = nil,
         text: String? = nil,
         graph: PharoGraph? = nil,
-        chart: PharoChart? = nil
+        chart: PharoChart? = nil,
+        canvas: PharoCanvasReference? = nil
     ) {
         self.viewName = viewName
         self.title = title
@@ -48,6 +50,17 @@ public struct PharoViewDeclaration: Sendable, Decodable {
         self.text = text
         self.graph = graph
         self.chart = chart
+        self.canvas = canvas
+    }
+}
+
+/// A view the host draws itself, from a scene it already holds. Only which
+/// scene travels: the drawing never enters the image.
+public struct PharoCanvasReference: Sendable, Codable, Equatable {
+    public let scene: Int
+
+    public init(scene: Int) {
+        self.scene = scene
     }
 }
 

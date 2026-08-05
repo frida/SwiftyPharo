@@ -35,6 +35,11 @@ SwpEmptyView >> list [
 ]
 
 { #category : 'building' }
+SwpEmptyView >> canvas [
+	^ SwpCanvasView new
+]
+
+{ #category : 'building' }
 SwpEmptyView >> mondrian [
 	^ SwpMondrianView new
 ]
