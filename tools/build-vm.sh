@@ -359,7 +359,8 @@ stage_prefix() {
 }
 
 # pharo-vm publishes no pkg-config file, and the Linux manifest asks for one by
-# name.
+# name. LSB_FIRST is a compile definition rather than anything config.h records,
+# and unix/sqConfig.h refuses to compile without it.
 write_pkgconfig() {
 	if [ "${PLATFORM}" = "windows" ]; then
 		return
@@ -373,7 +374,7 @@ write_pkgconfig() {
 		Name: pharo-vm
 		Description: Pharo virtual machine core
 		Version: ${PHARO_VM_REF}
-		Cflags: -I\${includedir}
+		Cflags: -I\${includedir} -DLSB_FIRST=1
 		Libs: -L\${libdir} -Wl,-rpath,\${libdir} -lPharoVMCore
 	EOF
 }
