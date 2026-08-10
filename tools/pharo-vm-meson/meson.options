@@ -2,3 +2,5 @@ option('generated_dir', type: 'string',
   description: 'Where the Slang-generated interpreter and plugin sources are')
 option('flavour', type: 'combo', choices: ['CoInterpreter', 'StackVM'],
   value: 'CoInterpreter', description: 'Which interpreter to build')
+option('ios', type: 'boolean', value: false,
+  description: 'Target iOS rather than macOS')

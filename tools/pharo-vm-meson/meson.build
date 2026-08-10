@@ -15,6 +15,9 @@ project('pharo-vm', 'c',
 generated = get_option('generated_dir')
 generated_abs = meson.current_source_dir() / generated
 flavour = get_option('flavour')
+# A cross file says 'darwin' for both, and the two want different sources and
+# different frameworks.
+is_ios = get_option('ios')
 
 cc = meson.get_compiler('c')
 fs = import('fs')
@@ -75,8 +78,12 @@ apple_corefoundation = []
 platform_deps = []
 if is_darwin
   apple_corefoundation = [dependency('appleframeworks', modules: ['CoreFoundation'])]
-  platform_deps += dependency('appleframeworks',
-    modules: ['Foundation', 'CoreFoundation', 'AppKit'])
+  frameworks = ['Foundation', 'CoreFoundation']
+  if not is_ios
+    # For the save panel the file dialog puts up, which iOS has no equivalent of.
+    frameworks += 'AppKit'
+  endif
+  platform_deps += dependency('appleframeworks', modules: frameworks)
 endif
 
 dl_dep = cc.find_library('dl', required: false)
@@ -172,12 +179,14 @@ if is_windows
   platform_sources = files('src/win/aio.c', 'src/win/debugWin.c',
                            'src/win/memoryWin.c', 'src/win/fileDialogWin.c')
 elif is_darwin
-  # Apple ships the VM as a framework built by upstream's CMake; this is here so
-  # the build can be exercised on a Mac.
   add_languages('objc', 'objcpp', native: false)
   platform_sources = files('src/osx/aioOSX.c', 'src/osx/utilsMac.mm',
-                           'src/unix/debugUnix.c', 'src/osx/fileDialogMac.m',
-                           'src/parameters/parameters.m', 'src/unix/memoryUnix.c')
+                           'src/unix/debugUnix.c', 'src/parameters/parameters.m',
+                           'src/unix/memoryUnix.c')
+  # fileDialogUnix.c answers vm_file_dialog_is_nop as true, which is the only
+  # honest answer on a platform with no save panel.
+  platform_sources += is_ios ? files('src/unix/fileDialogUnix.c') \
+                             : files('src/osx/fileDialogMac.m')
 endif
 
 core_args = [

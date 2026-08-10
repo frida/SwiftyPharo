@@ -20,6 +20,9 @@ LIBFFI_REPO="${LIBFFI_REPO:-https://github.com/frida/libffi.git}"
 PLATFORM="${PLATFORM:-macos}"
 # pharo-vm hardcodes this; a newer libffi warns on every object.
 IOS_MINIMUM_VERSION="${IOS_MINIMUM_VERSION:-11.0}"
+# Left to itself the compiler stamps whichever SDK is installed, and a framework
+# asking for a newer macOS than the app does will not load.
+MACOS_MINIMUM_VERSION="${MACOS_MINIMUM_VERSION:-11.0}"
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 work_dir="${script_dir}/../.build/vm"
@@ -65,12 +68,12 @@ case "${PLATFORM}" in
 esac
 
 arch="${architectures//;/_}"
-build_dir="${checkout_dir}/build-${PLATFORM}-${flavour}"
 generated_dir="${checkout_dir}/generate-${flavour}"
 slice_dir="${output_dir}/slices/${PLATFORM}-${arch}"
 libffi_dir="${work_dir}/libffi"
 libffi_prefix="${work_dir}/libffi-${PLATFORM}"
 meson_build_dir="${checkout_dir}/build-${PLATFORM}-meson"
+staged_prefix="${work_dir}/staged-${PLATFORM}"
 
 # The host installs this tree over its own root, so the paths baked into the
 # pkg-config file have to be where it lands rather than where it was staged.
@@ -134,8 +137,6 @@ add_meson_build() {
 }
 
 add_ios_support() {
-	cp "${script_dir}/pharo-vm-ios/iOS.cmake" "${checkout_dir}/cmake/iOS.cmake"
-
 	# Unused — NSBundle is Foundation — and absent on iOS.
 	perl -ni -e 'print unless m{#import <Cocoa/Cocoa\.h>}' "${checkout_dir}/src/osx/utilsMac.mm"
 }
@@ -230,52 +231,92 @@ tolerate_relocated_regions() {
 	done
 }
 
+# Slang aside, every platform builds the same way; only the machine file and the
+# plugin set differ, and Meson takes both as arguments.
 configure_and_build() {
+	local architecture="$1"
+	local build_dir="${meson_build_dir}-${architecture}"
 	local options=(
-		-DCMAKE_BUILD_TYPE=Release
-		-DFLAVOUR="${flavour}"
-		-DPHARO_VM_IN_WORKER_THREAD=ON
-		-DPHARO_DEPENDENCIES_PREFER_DOWNLOAD_BINARIES=TRUE
-		-DGENERATE_SOURCES=FALSE
-		-DGENERATE_VMMAKER=FALSE
-		-DGENERATED_SOURCE_DIR="${generated_dir}"
-		"${trimmed_options[@]}"
+		--prefix "${PREFIX}"
+		--libdir "${LIBDIR#"${PREFIX}"/}"
+		--includedir "${INCLUDEDIR#"${PREFIX}"/}"
+		--buildtype release
+		-Dgenerated_dir="$(basename "${generated_dir}")/generated/64"
+		-Dflavour="${flavour}"
 	)
-	local targets=()
 
 	if [ "${staging}" = "framework" ]; then
-		options+=(-DCMAKE_OSX_ARCHITECTURES="${architectures}")
+		local machine_file="${work_dir}/${PLATFORM}-${architecture}.ini"
+		write_apple_machine_file "${machine_file}" "${architecture}"
+		if [ -n "${sysroot}" ]; then
+			options+=(
+				--cross-file "${machine_file}"
+				-Dios=true
+				--pkg-config-path "${libffi_prefix}/lib/pkgconfig"
+			)
+		else
+			options+=(--native-file "${machine_file}")
+		fi
 	fi
+
+	rm -rf "${build_dir}"
+	meson setup "${build_dir}" "${checkout_dir}" "${options[@]}"
+	meson compile -C "${build_dir}"
+}
+
+# One architecture at a time: clang refuses to preprocess for two at once, which
+# is how Meson asks a compiler what headers it has.
+write_apple_machine_file() {
+	local destination="$1"
+	local architecture="$2"
+	local flags="'-arch', '${architecture}', "
+
+	: > "${destination}"
 
 	if [ -n "${sysroot}" ]; then
-		options+=(
-			-DCMAKE_SYSTEM_NAME=iOS
-			-DCMAKE_SYSTEM_PROCESSOR="${architectures}"
-			-DCMAKE_OSX_SYSROOT="${sysroot}"
-			-DCMAKE_OSX_DEPLOYMENT_TARGET="${IOS_MINIMUM_VERSION}"
-			-DFFI_DIR="${libffi_prefix}"
-			# Cross-compiling otherwise confines find_* to the sysroot.
-			-DCMAKE_FIND_ROOT_PATH="${libffi_prefix}"
-			-DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=BOTH
-			-DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=BOTH
-		)
-		targets=(--target PharoVMCore)
-		for plugin in "${ios_plugins[@]}"; do
-			targets+=(--target "${plugin}")
-		done
+		flags="${flags}'-isysroot', '$(xcrun --sdk "${sysroot}" --show-sdk-path)', "
+		if [ "${PLATFORM}" = "ios" ]; then
+			flags="${flags}'-miphoneos-version-min=${IOS_MINIMUM_VERSION}'"
+		else
+			flags="${flags}'-mios-simulator-version-min=${IOS_MINIMUM_VERSION}'"
+		fi
+
+		cat > "${destination}" <<-EOF
+			[host_machine]
+			system = 'darwin'
+			subsystem = '${PLATFORM}'
+			kernel = 'xnu'
+			cpu_family = 'aarch64'
+			cpu = 'aarch64'
+			endian = 'little'
+
+		EOF
+	else
+		flags="${flags}'-mmacosx-version-min=${MACOS_MINIMUM_VERSION}'"
 	fi
 
-	cmake -S "${checkout_dir}" -B "${build_dir}" "${options[@]}"
-	# bash 3.2 counts an empty array as unbound under set -u.
-	cmake --build "${build_dir}" ${targets[@]+"${targets[@]}"} -j"$(cpu_count)"
+	cat >> "${destination}" <<-EOF
+		[binaries]
+		c = 'clang'
+		cpp = 'clang++'
+		objc = 'clang'
+		objcpp = 'clang++'
+		pkg-config = 'pkg-config'
+
+		[built-in options]
+		c_args = [${flags}]
+		cpp_args = [${flags}]
+		objc_args = [${flags}]
+		objcpp_args = [${flags}]
+		c_link_args = [${flags}]
+		cpp_link_args = [${flags}]
+		objc_link_args = [${flags}]
+		objcpp_link_args = [${flags}]
+	EOF
 }
 
 built_libraries_dir() {
-	if [ -n "${sysroot}" ]; then
-		echo "${build_dir}/build/vm"
-	else
-		echo "${build_dir}/build/vm/Debug/Pharo.app/Contents/MacOS/Plugins"
-	fi
+	echo "${staged_prefix}${LIBDIR}"
 }
 
 # A framework keeps the core and its plugins together as one embeddable piece.
@@ -343,38 +384,64 @@ sign_adhoc() {
 # Where there is no framework the manifest asks for a system library, which Meson
 # lays out and describes for itself -- a generated config header carrying the
 # endianness, and a .pc naming only what SwiftPM will accept from one.
-build_and_install_prefix() {
-	rm -rf "${destdir}" "${meson_build_dir}"
+# Every architecture is built and installed on its own, then made into the one
+# tree the staging reads: a Mac ships several in a single binary.
+build_and_stage() {
+	local architecture
+	local staged=()
 
-	meson setup "${meson_build_dir}" "${checkout_dir}" \
-		--prefix "${PREFIX}" \
-		--libdir "${LIBDIR#"${PREFIX}"/}" \
-		--includedir "${INCLUDEDIR#"${PREFIX}"/}" \
-		--buildtype release \
-		-Dgenerated_dir="$(basename "${generated_dir}")/generated/64" \
-		-Dflavour="${flavour}"
-	DESTDIR="${destdir}" meson install -C "${meson_build_dir}"
+	for architecture in ${architectures//;/ }; do
+		configure_and_build "${architecture}"
+		install_into "${meson_build_dir}-${architecture}" \
+			"${work_dir}/staged-${PLATFORM}-${architecture}"
+		staged+=("${work_dir}/staged-${PLATFORM}-${architecture}")
+	done
+
+	rm -rf "${staged_prefix}"
+	cp -R "${staged[0]}" "${staged_prefix}"
+	if [ "${#staged[@]}" -gt 1 ]; then
+		combine_architectures "${staged[@]}"
+	fi
 }
 
-# Headers reach for each other both unqualified and via "pharovm/..." paths,
-# which the VM's own build answers with a long -I list. Flattening them into one
-# directory and dropping the prefixes lets same-directory resolution do it all.
+combine_architectures() {
+	local library name slice
+	local inputs=()
+
+	for library in "${staged_prefix}${LIBDIR}"/*.dylib; do
+		name="$(basename "${library}")"
+		inputs=()
+		for slice in "$@"; do
+			inputs+=("${slice}${LIBDIR}/${name}")
+		done
+		lipo -create "${inputs[@]}" -output "${library}"
+	done
+}
+
+install_into() {
+	local build_dir="$1"
+	local destination="$2"
+
+	rm -rf "${destination}"
+	DESTDIR="${destination}" meson install -C "${build_dir}" --quiet
+}
+
+# A framework's headers are flat, and Meson installed them in upstream's own
+# layout, so flatten that and drop the directory from the paths they use to
+# reach each other. The platform's own headers land last: unix and osx both
+# carry an sqConfig.h, and on a framework the Apple one is the one that counts.
 stage_headers_into() {
 	local headers="$1"
-	local staged="${headers}.tree"
+	local installed="${staged_prefix}${INCLUDEDIR}/pharovm"
 
-	rm -rf "${headers}" "${staged}"
+	rm -rf "${headers}"
 	mkdir -p "${headers}"
-	cp -R "${checkout_dir}/include/pharovm" "${staged}"
-	cp "${build_dir}/build/include/pharovm/config.h" "${staged}/"
-	cp "${generated_dir}"/generated/64/vm/include/*.h "${staged}/"
 
-	find "${staged}" -name '*.h' \
-		-not -path '*/osx/*' -not -path '*/unix/*' -not -path '*/win/*' \
+	find "${installed}" -name '*.h' \
+		-not -path '*/win/*' -not -path '*/unix/*' -not -path '*/osx/*' \
 		-exec cp {} "${headers}/" \;
-	cp "${staged}/unix"/*.h "${headers}/"
-	cp "${staged}/osx"/*.h "${headers}/"
-	rm -rf "${staged}"
+	cp "${installed}/unix"/*.h "${headers}/"
+	cp "${installed}/osx"/*.h "${headers}/"
 
 	perl -pi -e 's|#include\s*"[^"]*/([^"/]+\.h)"|#include "$1"|' "${headers}"/*.h
 }
@@ -420,20 +487,18 @@ report() {
 }
 
 sync_checkout
-if [ "${staging}" = "framework" ]; then
-	add_ios_support
-else
-	add_meson_build
-fi
+add_meson_build
+add_ios_support
 if [ -n "${sysroot}" ]; then
 	build_libffi
 fi
 generate_sources
 tolerate_relocated_regions
+build_and_stage
 if [ "${staging}" = "framework" ]; then
-	configure_and_build
 	stage_framework
 else
-	build_and_install_prefix
+	rm -rf "${destdir}"
+	cp -R "${staged_prefix}" "${destdir}"
 fi
 report
