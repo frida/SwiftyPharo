@@ -58,6 +58,25 @@ trimmed_options=(
 	-DFEATURE_LIB_GIT2=OFF
 )
 
+# A desktop build makes every plugin by default; a cross build makes only what
+# it is asked for. These are the ones the image reaches for -- without them it
+# starts without files, without locales and without large integers, which is far
+# enough short of an image that the bridge never installs. SqueakSSL is not
+# among them: its Mac sources reach for keychain search keys iOS withholds.
+ios_plugins=(
+	FilePlugin
+	NewFilePlugin
+	FileAttributesPlugin
+	SocketPlugin
+	UUIDPlugin
+	LocalePlugin
+	LargeIntegers
+	MiscPrimitivePlugin
+	BitBltPlugin
+	SurfacePlugin
+	FloatArrayPlugin
+)
+
 sync_checkout() {
 	if [ -d "${checkout_dir}/.git" ]; then
 		git -C "${checkout_dir}" fetch --depth 1 origin "${PHARO_VM_REF}"
@@ -192,6 +211,9 @@ configure_and_build() {
 			-DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=BOTH
 		)
 		targets=(--target PharoVMCore)
+		for plugin in "${ios_plugins[@]}"; do
+			targets+=(--target "${plugin}")
+		done
 	fi
 
 	cmake -S "${checkout_dir}" -B "${build_dir}" "${options[@]}"
