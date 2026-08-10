@@ -359,8 +359,9 @@ stage_prefix() {
 }
 
 # pharo-vm publishes no pkg-config file, and the Linux manifest asks for one by
-# name. LSB_FIRST is a compile definition rather than anything config.h records,
-# and unix/sqConfig.h refuses to compile without it.
+# name. Only include and library paths belong here: SwiftPM rejects everything
+# else a .pc might carry, so the endianness define lives in the manifest and the
+# search path is the caller's to arrange.
 write_pkgconfig() {
 	if [ "${PLATFORM}" = "windows" ]; then
 		return
@@ -374,8 +375,8 @@ write_pkgconfig() {
 		Name: pharo-vm
 		Description: Pharo virtual machine core
 		Version: ${PHARO_VM_REF}
-		Cflags: -I\${includedir} -DLSB_FIRST=1
-		Libs: -L\${libdir} -Wl,-rpath,\${libdir} -lPharoVMCore
+		Cflags: -I\${includedir}
+		Libs: -L\${libdir} -lPharoVMCore
 	EOF
 }
 
