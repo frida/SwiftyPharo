@@ -11,7 +11,12 @@
 #include <pthread.h>
 #endif
 
+// Apple platforms link the framework, which answers to its own name.
+#ifdef __APPLE__
 #include <PharoVM/pharoClient.h>
+#else
+#include <pharovm/pharoClient.h>
+#endif
 
 extern int vmRunOnWorkerThread;
 extern void setProcessArguments(int argc, const char **argv);

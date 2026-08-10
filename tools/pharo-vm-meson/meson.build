@@ -1,0 +1,324 @@
+project('pharo-vm', 'c',
+  meson_version: '>=1.1',
+  version: '12.0.0',
+  default_options: [
+    'c_std=gnu11',
+    'warning_level=0',
+    'buildtype=release',
+  ],
+)
+
+# Slang runs a Pharo image to write the interpreter and the plugin primitives,
+# which no build system can do for itself; upstream's CMake makes them and this
+# build takes them as given.
+# Relative to this file: Meson refuses an absolute path into the source tree.
+generated = get_option('generated_dir')
+generated_abs = meson.current_source_dir() / generated
+flavour = get_option('flavour')
+
+cc = meson.get_compiler('c')
+fs = import('fs')
+pkg = import('pkgconfig')
+
+host_os = host_machine.system()
+is_darwin = host_os == 'darwin'
+is_windows = host_os == 'windows'
+platform_dir = 'unix'
+if is_darwin
+  platform_dir = 'osx'
+elif is_windows
+  platform_dir = 'win'
+endif
+
+# The endianness the VM was always given as a compile definition, which is what
+# left it out of the installed headers and stopped every consumer of them.
+lsb_first = host_machine.endian() == 'little' ? 1 : 0
+
+conf = configuration_data()
+# The template writes the quotes itself, so these go in bare.
+conf.set('VM_NAME', 'Pharo')
+conf.set('DEFAULT_IMAGE_NAME', 'Pharo.image')
+conf.set('OS_TYPE', is_windows ? 'Win32' : 'unix')
+conf.set('VM_TARGET', host_os)
+conf.set('VM_TARGET_CPU', host_machine.cpu_family())
+conf.set('VM_TARGET_OS', host_os)
+conf.set('BUILT_FROM', 'SwiftyPharo')
+conf.set('LSB_FIRST', lsb_first)
+conf.set('ALWAYS_INTERACTIVE', 0)
+conf.set('PharoVM_VERSION_MAJOR', 12)
+conf.set('PharoVM_VERSION_MINOR', 0)
+conf.set('PharoVM_VERSION_PATCH', 0)
+conf.set('PharoVM_VERSION_STRING', '12.0.0')
+conf.set('PHARO_VM_IN_WORKER_THREAD', 1)
+
+foreach header : ['dirent.h', 'features.h', 'unistd.h', 'ndir.h', 'sys/ndir.h',
+                  'sys/dir.h', 'sys/filio.h', 'sys/time.h', 'execinfo.h',
+                  'dlfcn.h', 'sys/uuid.h', 'uuid/uuid.h', 'uuid.h']
+  name = 'HAVE_' + header.to_upper().underscorify()
+  conf.set(name, cc.has_header(header) ? 1 : false)
+endforeach
+
+foreach function : ['bzero', 'getcontext']
+  conf.set('HAVE_' + function.to_upper(), cc.has_function(function) ? 1 : false)
+endforeach
+
+conf.set('HAVE_TM_GMTOFF',
+  cc.has_member('struct tm', 'tm_gmtoff', prefix: '#include <time.h>') ? 1 : false)
+
+foreach size : [['int', 'SIZEOF_INT'], ['long', 'SIZEOF_LONG'],
+                ['long long', 'SIZEOF_LONG_LONG'], ['void*', 'SIZEOF_VOID_P']]
+  conf.set(size[1], cc.sizeof(size[0]))
+endforeach
+
+# Two plugins reach for Core Foundation on Apple platforms, and nowhere else.
+apple_corefoundation = []
+platform_deps = []
+if is_darwin
+  apple_corefoundation = [dependency('appleframeworks', modules: ['CoreFoundation'])]
+  platform_deps += dependency('appleframeworks',
+    modules: ['Foundation', 'CoreFoundation', 'AppKit'])
+endif
+
+dl_dep = cc.find_library('dl', required: false)
+m_dep = cc.find_library('m', required: false)
+uuid_dep = cc.find_library('uuid', required: not (is_darwin or is_windows))
+thread_dep = dependency('threads')
+ffi_dep = dependency('libffi')
+
+conf.set('HAVE_LIBDL', dl_dep.found() ? 1 : false)
+conf.set('HAVE_UUID_GENERATE',
+  cc.has_function('uuid_generate', dependencies: uuid_dep) ? 1 : false)
+conf.set('HAVE_UUIDGEN',
+  cc.has_function('uuidgen', dependencies: uuid_dep) ? 1 : false)
+
+# Upstream's template with one entry added, read the way CMake reads it. The
+# addition is the endianness: see the comment beside it.
+config_h = configure_file(
+  input: 'swifty-config.h.in',
+  output: 'config.h',
+  configuration: conf,
+  format: 'cmake@',
+)
+
+# Installed under a name of its own: "config.h" is too common a thing to put on
+# every consumer's include path, and the path has to be there for the headers
+# that reach for each other unqualified.
+configure_file(
+  input: 'swifty-config.h.in',
+  output: 'pharovmConfig.h',
+  configuration: conf,
+  format: 'cmake@',
+  install: true,
+  install_dir: get_option('includedir') / 'pharovm',
+)
+
+core_includes = include_directories(
+  '.',
+  'include',
+  'include/pharovm',
+  'include/pharovm/common',
+  'include/pharovm/ffi',
+  'include/pharovm/semaphores',
+  'include/pharovm/' + platform_dir,
+  generated / 'vm/include',
+)
+
+interpreter_sources = flavour == 'CoInterpreter' \
+  ? [generated / 'vm/src/gcc3x-cointerp.c', generated / 'vm/src/cogit.c'] \
+  : [generated / 'vm/src/gcc3x-interp.c']
+
+support_sources = files(
+  'src/debug.c',
+  'src/utils.c',
+  'src/errorCode.c',
+  'src/externalPrimitives.c',
+  'src/client.c',
+  'src/pathUtilities.c',
+  'src/fileDialogCommon.c',
+  'src/stringUtilities.c',
+  'src/imageAccess.c',
+  'src/parameters/parameterVector.c',
+  'src/parameters/parameters.c',
+  'src/semaphores/platformSemaphore.c',
+  'src/common/heartbeat.c',
+  'src/common/sqHeapMap.c',
+  'src/common/sqVirtualMachine.c',
+  'src/common/sqNamedPrims.c',
+  'src/common/sqExternalSemaphores.c',
+  'src/common/sqTicker.c',
+)
+
+ffi_sources = files(
+  'src/ffi/functionDefinitionPrimitives.c',
+  'src/ffi/primitiveCalls.c',
+  'src/ffi/primitiveUtils.c',
+  'src/ffi/types.c',
+  'src/ffi/typesPrimitives.c',
+  'src/ffi/utils.c',
+  'src/ffi/sameThread/sameThread.c',
+  'src/ffi/callbacks/callbackPrimitives.c',
+  'src/ffi/callbacks/callbacks.c',
+  'src/semaphores/pharoSemaphore.c',
+  'src/threadSafeQueue/threadSafeQueue.c',
+  'src/ffi/pThreadedFFI.c',
+  'src/ffi/worker/worker.c',
+  'src/ffi/worker/workerPrimitives.c',
+  'src/ffi/worker/workerTask.c',
+)
+
+platform_sources = files('src/unix/aio.c', 'src/unix/debugUnix.c',
+                         'src/unix/memoryUnix.c', 'src/unix/fileDialogUnix.c')
+if is_windows
+  platform_sources = files('src/win/aio.c', 'src/win/debugWin.c',
+                           'src/win/memoryWin.c', 'src/win/fileDialogWin.c')
+elif is_darwin
+  # Apple ships the VM as a framework built by upstream's CMake; this is here so
+  # the build can be exercised on a Mac.
+  add_languages('objc', 'objcpp', native: false)
+  platform_sources = files('src/osx/aioOSX.c', 'src/osx/utilsMac.mm',
+                           'src/unix/debugUnix.c', 'src/osx/fileDialogMac.m',
+                           'src/parameters/parameters.m', 'src/unix/memoryUnix.c')
+endif
+
+core_args = [
+  '-DIMMUTABILITY=1',
+  '-DCOGMTVM=0',
+  '-DDEBUGVM=0',
+  '-D_FILE_OFFSET_BITS=64',
+  '-DSOURCE_PATH_SIZE=0',
+  '-DFEATURE_FFI=1',
+  '-DFEATURE_THREADED_FFI=1',
+  '-DLSB_FIRST=@0@'.format(lsb_first),
+]
+if flavour == 'CoInterpreter'
+  core_args += '-DASYNC_FFI_QUEUE=1'
+endif
+core_args += cc.get_supported_arguments(
+  '-Wno-int-conversion',
+  '-Wno-pointer-sign',
+  '-Wno-pointer-to-int-cast',
+  '-Wno-incompatible-pointer-types',
+  '-Wno-implicit-function-declaration',
+  '-Wno-sometimes-uninitialized',
+  '-Wno-unknown-pragmas',
+  '-Wno-deprecated-declarations',
+  '-Wno-compare-distinct-pointer-types',
+)
+
+core = shared_library('PharoVMCore',
+  support_sources, ffi_sources, platform_sources, interpreter_sources, config_h,
+  include_directories: core_includes,
+  c_args: core_args,
+  dependencies: [ffi_dep, thread_dep, dl_dep, m_dep] + platform_deps,
+  install: true,
+)
+
+core_dep = declare_dependency(
+  link_with: core,
+  include_directories: core_includes,
+  sources: config_h,
+)
+
+# Every plugin is the same shape: common sources, the platform's own, and for
+# some of them the primitives Slang wrote.
+# name, Slang wrote its primitives, takes the unix sources on Apple too, the
+# plugins it builds on, extras
+plugins = [
+  ['FilePlugin', true, true, [], apple_corefoundation],
+  ['NewFilePlugin', true, true, [], []],
+  ['FileAttributesPlugin', false, true, ['FilePlugin'], []],
+  ['SocketPlugin', false, false, [], []],
+  ['UUIDPlugin', false, false, [], [uuid_dep]],
+  ['LocalePlugin', false, true, [], apple_corefoundation],
+  ['LargeIntegers', false, false, [], []],
+  ['MiscPrimitivePlugin', false, false, [], []],
+  ['BitBltPlugin', false, false, [], []],
+  ['SurfacePlugin', true, false, [], []],
+  ['FloatArrayPlugin', true, false, [], []],
+]
+
+built_plugins = {}
+
+foreach plugin : plugins
+  name = plugin[0]
+  sources = []
+
+  # UUIDPlugin keeps its sources directly under common/, unlike every other.
+  common = fs.is_dir('plugins' / name / 'src/common') \
+    ? 'plugins' / name / 'src/common' \
+    : 'plugins' / name / 'common'
+
+  platform_dirs = [platform_dir]
+  if is_darwin and plugin[2]
+    platform_dirs += 'unix'
+  endif
+
+  source_dirs = [common]
+  foreach where : platform_dirs
+    source_dirs += 'plugins' / name / 'src' / where
+  endforeach
+
+  foreach dir : source_dirs
+    if fs.is_dir(dir)
+      sources += files(run_command(
+        'sh', '-c', 'ls @0@/*.c 2>/dev/null || true'.format(
+          meson.current_source_dir() / dir),
+        check: true).stdout().strip().split('\n'))
+    endif
+  endforeach
+
+  if plugin[1]
+    sources += generated / 'plugins/src' / name / (name + '.c')
+  endif
+
+  include_dirs = ['plugins' / name / 'include/common']
+  foreach where : platform_dirs
+    include_dirs += 'plugins' / name / 'include' / where
+  endforeach
+
+  plugin_includes = [core_includes]
+  foreach dir : include_dirs
+    if fs.is_dir(dir)
+      plugin_includes += include_directories(dir)
+    endif
+  endforeach
+
+  plugin_deps = [core_dep] + plugin[4]
+  foreach needed : plugin[3]
+    plugin_deps += built_plugins[needed]
+  endforeach
+
+  library = shared_library(name, sources,
+    include_directories: plugin_includes,
+    c_args: core_args,
+    dependencies: plugin_deps,
+    install: true,
+  )
+  built_plugins += {name: declare_dependency(
+    link_with: library, include_directories: plugin_includes)}
+endforeach
+
+# Upstream's own layout, kept as it stands: the headers reach for each other
+# both unqualified and through "pharovm/...", and both resolve against it. The
+# framework on Apple platforms flattens them instead and rewrites the paths,
+# which is a staging trick this build has no need of.
+install_subdir('include/pharovm',
+  install_dir: get_option('includedir'),
+  exclude_files: ['config.h.in'],
+)
+install_data(
+  run_command('sh', '-c', 'ls @0@/vm/include/*.h'.format(generated_abs),
+    check: true).stdout().strip().split('\n'),
+  install_dir: get_option('includedir') / 'pharovm',
+)
+
+meson.add_install_script('sh', '-c',
+  'cd "${MESON_INSTALL_DESTDIR_PREFIX}/include/pharovm" && ' +
+  'grep -rl \'#include "config.h"\' . | ' +
+  'xargs perl -pi -e \'s|#include\\s*"config\\.h"|#include "pharovmConfig.h"|\'')
+
+pkg.generate(core,
+  name: 'pharo-vm',
+  description: 'Pharo virtual machine core',
+  subdirs: ['.', 'pharovm', 'pharovm/common', 'pharovm/' + platform_dir],
+)

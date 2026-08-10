@@ -51,16 +51,12 @@ case "${PLATFORM}" in
 		flavour="${FLAVOUR:-CoInterpreter}"
 		sysroot=""
 		staging="prefix"
-		library_suffix="so"
-		host_headers="unix"
 		;;
 	windows)
 		architectures="$(uname -m)"
 		flavour="${FLAVOUR:-CoInterpreter}"
 		sysroot=""
 		staging="prefix"
-		library_suffix="dll"
-		host_headers="win"
 		;;
 	*)
 		echo "unknown PLATFORM: ${PLATFORM}" >&2
@@ -74,6 +70,7 @@ generated_dir="${checkout_dir}/generate-${flavour}"
 slice_dir="${output_dir}/slices/${PLATFORM}-${arch}"
 libffi_dir="${work_dir}/libffi"
 libffi_prefix="${work_dir}/libffi-${PLATFORM}"
+meson_build_dir="${checkout_dir}/build-${PLATFORM}-meson"
 
 # The host installs this tree over its own root, so the paths baked into the
 # pkg-config file have to be where it lands rather than where it was staged.
@@ -126,6 +123,14 @@ sync_checkout() {
 		mkdir -p "$(dirname "${checkout_dir}")"
 		git clone -q --depth 1 --branch "${PHARO_VM_REF}" "${PHARO_VM_REPO}" "${checkout_dir}"
 	fi
+}
+
+# The Meson build lives here rather than upstream, and wants to sit beside the
+# sources it names.
+add_meson_build() {
+	cp "${script_dir}/pharo-vm-meson/meson.build" \
+	   "${script_dir}/pharo-vm-meson/meson.options" "${checkout_dir}/"
+	cp "${script_dir}/pharo-vm-meson/config.h.in" "${checkout_dir}/swifty-config.h.in"
 }
 
 add_ios_support() {
@@ -266,17 +271,11 @@ configure_and_build() {
 }
 
 built_libraries_dir() {
-	case "${PLATFORM}" in
-		macos)
-			echo "${build_dir}/build/vm/Debug/Pharo.app/Contents/MacOS/Plugins"
-			;;
-		ios|iossimulator)
-			echo "${build_dir}/build/vm"
-			;;
-		*)
-			dirname "$(find "${build_dir}" -name "libPharoVMCore.${library_suffix}" -print -quit)"
-			;;
-	esac
+	if [ -n "${sysroot}" ]; then
+		echo "${build_dir}/build/vm"
+	else
+		echo "${build_dir}/build/vm/Debug/Pharo.app/Contents/MacOS/Plugins"
+	fi
 }
 
 # A framework keeps the core and its plugins together as one embeddable piece.
@@ -341,43 +340,20 @@ sign_adhoc() {
 	codesign --force --sign - "$1" 2>/dev/null
 }
 
-# Where there is no framework the manifest asks for a system library, so lay the
-# core, its plugins and its headers out the way a package manager would.
-stage_prefix() {
-	rm -rf "${destdir}"
-	mkdir -p "${destdir}${LIBDIR}"
+# Where there is no framework the manifest asks for a system library, which Meson
+# lays out and describes for itself -- a generated config header carrying the
+# endianness, and a .pc naming only what SwiftPM will accept from one.
+build_and_install_prefix() {
+	rm -rf "${destdir}" "${meson_build_dir}"
 
-	local built
-	built="$(built_libraries_dir)"
-	cp "${built}"/*."${library_suffix}" "${destdir}${LIBDIR}/"
-	if [ "${PLATFORM}" = "windows" ]; then
-		cp "${built}"/*.lib "${destdir}${LIBDIR}/"
-	fi
-
-	stage_headers_into "${destdir}${INCLUDEDIR}/PharoVM"
-	write_pkgconfig
-}
-
-# pharo-vm publishes no pkg-config file, and the Linux manifest asks for one by
-# name. Only include and library paths belong here: SwiftPM rejects everything
-# else a .pc might carry, so the endianness define lives in the manifest and the
-# search path is the caller's to arrange.
-write_pkgconfig() {
-	if [ "${PLATFORM}" = "windows" ]; then
-		return
-	fi
-
-	mkdir -p "${destdir}${LIBDIR}/pkgconfig"
-	cat > "${destdir}${LIBDIR}/pkgconfig/pharo-vm.pc" <<-EOF
-		includedir=${INCLUDEDIR}
-		libdir=${LIBDIR}
-
-		Name: pharo-vm
-		Description: Pharo virtual machine core
-		Version: ${PHARO_VM_REF}
-		Cflags: -I\${includedir}
-		Libs: -L\${libdir} -lPharoVMCore
-	EOF
+	meson setup "${meson_build_dir}" "${checkout_dir}" \
+		--prefix "${PREFIX}" \
+		--libdir "${LIBDIR#"${PREFIX}"/}" \
+		--includedir "${INCLUDEDIR#"${PREFIX}"/}" \
+		--buildtype release \
+		-Dgenerated_dir="$(basename "${generated_dir}")/generated/64" \
+		-Dflavour="${flavour}"
+	DESTDIR="${destdir}" meson install -C "${meson_build_dir}"
 }
 
 # Headers reach for each other both unqualified and via "pharovm/..." paths,
@@ -396,21 +372,11 @@ stage_headers_into() {
 	find "${staged}" -name '*.h' \
 		-not -path '*/osx/*' -not -path '*/unix/*' -not -path '*/win/*' \
 		-exec cp {} "${headers}/" \;
-	local platform_headers
-	for platform_headers in $(header_directories); do
-		cp "${staged}/${platform_headers}"/*.h "${headers}/"
-	done
+	cp "${staged}/unix"/*.h "${headers}/"
+	cp "${staged}/osx"/*.h "${headers}/"
 	rm -rf "${staged}"
 
 	perl -pi -e 's|#include\s*"[^"]*/([^"/]+\.h)"|#include "$1"|' "${headers}"/*.h
-}
-
-header_directories() {
-	if [ "${staging}" = "framework" ]; then
-		echo "unix osx"
-	else
-		echo "${host_headers}"
-	fi
 }
 
 write_framework_plist() {
@@ -456,16 +422,18 @@ report() {
 sync_checkout
 if [ "${staging}" = "framework" ]; then
 	add_ios_support
+else
+	add_meson_build
 fi
 if [ -n "${sysroot}" ]; then
 	build_libffi
 fi
 generate_sources
 tolerate_relocated_regions
-configure_and_build
 if [ "${staging}" = "framework" ]; then
+	configure_and_build
 	stage_framework
 else
-	stage_prefix
+	build_and_install_prefix
 fi
 report

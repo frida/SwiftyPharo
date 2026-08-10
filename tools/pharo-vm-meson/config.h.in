@@ -1,0 +1,85 @@
+#ifndef PHAROVM_CONFIG_H
+#define PHAROVM_CONFIG_H
+
+#pragma once
+
+/* Common configurations */
+#define VM_NAME "@VM_NAME@"
+#define DEFAULT_IMAGE_NAME "@DEFAULT_IMAGE_NAME@"
+
+/* Availability of Functions */
+
+#cmakedefine HAVE_DIRENT_H
+#cmakedefine HAVE_FEATURES_H
+#cmakedefine HAVE_UNISTD_H 1
+#cmakedefine HAVE_NDIR_H
+#cmakedefine HAVE_SYS_NDIR_H
+#cmakedefine HAVE_SYS_DIR_H
+#cmakedefine HAVE_SYS_FILIO_H
+#cmakedefine HAVE_SYS_TIME_H
+#cmakedefine HAVE_EXECINFO_H
+
+#cmakedefine AVE_DLFCN_H
+#cmakedefine HAVE_LIBDL
+#cmakedefine HAVE_DYLD
+#cmakedefine HAVE_BZERO
+#cmakedefine HAVE_GETCONTEXT
+#cmakedefine HAVE_TM_GMTOFF
+
+/* Endianness. Upstream passes this as a compile definition, which leaves it out
+ * of the installed headers and breaks every consumer of them; unix/sqConfig.h
+ * includes this file and then refuses to compile without it. */
+
+#define LSB_FIRST @LSB_FIRST@
+
+/* architecture */
+
+#define OS_TYPE "@OS_TYPE@"
+
+#define VM_HOST "@VM_TARGET@"
+#define VM_HOST_CPU "@VM_TARGET_CPU@"
+#define VM_HOST_OS "@VM_TARGET_OS@"
+#define VM_TARGET "@VM_TARGET@"
+#define VM_TARGET_CPU "@VM_TARGET_CPU@"
+#define VM_TARGET_OS "@VM_TARGET_OS@"
+
+/* widths of primitive types */
+
+#define SIZEOF_INT @SIZEOF_INT@
+#define SIZEOF_LONG @SIZEOF_LONG@
+#define SIZEOF_LONG_LONG @SIZEOF_LONG_LONG@
+#define SIZEOF_VOID_P @SIZEOF_VOID_P@
+
+#cmakedefine HAVE_SYS_UUID_H
+#cmakedefine HAVE_UUID_UUID_H
+#cmakedefine HAVE_UUID_H
+
+#cmakedefine HAVE_UUIDGEN
+#cmakedefine HAVE_UUID_GENERATE
+
+#cmakedefine PHARO_VM_IN_WORKER_THREAD
+
+#cmakedefine PharoVM_VERSION_MAJOR @PharoVM_VERSION_MAJOR@
+#cmakedefine PharoVM_VERSION_MINOR @PharoVM_VERSION_MINOR@
+#cmakedefine PharoVM_VERSION_PATCH @PharoVM_VERSION_PATCH@
+
+#if defined(_MSC_VER)
+#define VM_BUILD_STRING VM_NAME " @PharoVM_VERSION_STRING@ Compiler: Visual C"
+#define COMPILER_VERSION "Visual C"
+#else
+#define VM_BUILD_STRING VM_NAME " @PharoVM_VERSION_STRING@ Compiler: " __VERSION__
+#define COMPILER_VERSION __VERSION__
+#endif
+
+#define VM_BUILD_SOURCE_STRING "@BUILT_FROM@"
+
+#define ALWAYS_INTERACTIVE @ALWAYS_INTERACTIVE@
+
+/*
+ * We require that VM_LABEL does nothing.
+ * We should actually cleanup all the places where this is set/used in the VM
+ */
+
+#define VM_LABEL(foo)		0
+
+#endif //PHAROVM_CONFIG_H

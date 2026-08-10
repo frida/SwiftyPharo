@@ -1,1 +1,1 @@
-#include <PharoVM/pharoClient.h>
+#include <pharovm/pharoClient.h>

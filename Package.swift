@@ -47,13 +47,7 @@ let package = Package(
 
         .target(
             name: "CPharoVM",
-            dependencies: ["PharoVM"],
-            // pharo-vm sets this as a compile definition and records it in no
-            // header, so unix/sqConfig.h refuses to compile without it. The
-            // Apple headers read the endianness the compiler already declares.
-            cSettings: [
-                .define("LSB_FIRST", to: "1", .when(platforms: [.linux, .windows, .android]))
-            ]
+            dependencies: ["PharoVM"]
         ),
 
         .target(
