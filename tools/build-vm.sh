@@ -77,10 +77,12 @@ libffi_prefix="${work_dir}/libffi-${PLATFORM}"
 
 # The host installs this tree over its own root, so the paths baked into the
 # pkg-config file have to be where it lands rather than where it was staged.
+# Setting DESTDIR to nothing installs into PREFIX directly, which is what a
+# build from source wants.
 PREFIX="${PREFIX:-/usr}"
 LIBDIR="${LIBDIR:-${PREFIX}/lib}"
 INCLUDEDIR="${INCLUDEDIR:-${PREFIX}/include}"
-destdir="${output_dir}/destdir/${PLATFORM}-${arch}"
+destdir="${DESTDIR-${output_dir}/destdir/${PLATFORM}-${arch}}"
 
 trimmed_options=(
 	-DFEATURE_LIB_SDL2=OFF
@@ -372,7 +374,7 @@ write_pkgconfig() {
 		Description: Pharo virtual machine core
 		Version: ${PHARO_VM_REF}
 		Cflags: -I\${includedir}
-		Libs: -L\${libdir} -lPharoVMCore
+		Libs: -L\${libdir} -Wl,-rpath,\${libdir} -lPharoVMCore
 	EOF
 }
 
@@ -440,10 +442,12 @@ report() {
 		echo "slice:    ${slice_dir}"
 		echo
 		echo "Run make-xcframework.sh to combine the staged slices."
-	else
+	elif [ -n "${destdir}" ]; then
 		echo "destdir:  ${destdir}"
 		echo
 		echo "Copy its contents over ${PREFIX} to install."
+	else
+		echo "prefix:   ${PREFIX}"
 	fi
 }
 
