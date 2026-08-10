@@ -5,6 +5,8 @@ project('pharo-vm', 'c',
     'c_std=gnu11',
     'warning_level=0',
     'buildtype=release',
+    # Upstream builds at -O2, and an interpreter is a poor place to differ.
+    'optimization=2',
   ],
 )
 
@@ -75,15 +77,22 @@ endforeach
 
 # Two plugins reach for Core Foundation on Apple platforms, and nowhere else.
 apple_corefoundation = []
+apple_security = []
+openssl_deps = []
 platform_deps = []
 if is_darwin
   apple_corefoundation = [dependency('appleframeworks', modules: ['CoreFoundation'])]
-  frameworks = ['Foundation', 'CoreFoundation']
+  apple_security = [dependency('appleframeworks', modules: ['CoreFoundation', 'Security'])]
+  frameworks = ['Foundation', 'CoreFoundation', 'CoreGraphics']
   if not is_ios
     # For the save panel the file dialog puts up, which iOS has no equivalent of.
     frameworks += 'AppKit'
   endif
   platform_deps += dependency('appleframeworks', modules: frameworks)
+endif
+
+if not is_darwin and not is_windows
+  openssl_deps = [dependency('openssl')]
 endif
 
 dl_dep = cc.find_library('dl', required: false)
@@ -189,20 +198,20 @@ elif is_darwin
                              : files('src/osx/fileDialogMac.m')
 endif
 
-core_args = [
+# Upstream compiles these into everything, and the plugins are built against the
+# same headers as the core, so they have to agree.
+common_args = [
   '-DIMMUTABILITY=1',
   '-DCOGMTVM=0',
   '-DDEBUGVM=0',
   '-D_FILE_OFFSET_BITS=64',
   '-DSOURCE_PATH_SIZE=0',
-  '-DFEATURE_FFI=1',
-  '-DFEATURE_THREADED_FFI=1',
   '-DLSB_FIRST=@0@'.format(lsb_first),
 ]
 if flavour == 'CoInterpreter'
-  core_args += '-DASYNC_FFI_QUEUE=1'
+  common_args += '-DASYNC_FFI_QUEUE=1'
 endif
-core_args += cc.get_supported_arguments(
+common_args += cc.get_supported_arguments(
   '-Wno-int-conversion',
   '-Wno-pointer-sign',
   '-Wno-pointer-to-int-cast',
@@ -213,6 +222,24 @@ core_args += cc.get_supported_arguments(
   '-Wno-deprecated-declarations',
   '-Wno-compare-distinct-pointer-types',
 )
+
+# Upstream keeps these to the core alone. They decide how memory is reached and
+# what the FFI structures look like, so handing them to a plugin as well would
+# have the two disagree about the same headers.
+core_args = common_args + [
+  '-DFEATURE_FFI=1',
+  '-DFEATURE_THREADED_FFI=1',
+  '-DUSE_INLINE_MEMORY_ACCESSORS=1',
+  '-DFEATURE_JIT_SIMD=1',
+]
+
+# Apple Silicon will not have memory writable and executable at once, so the JIT
+# has to unprotect its code zone around every write. Without this the VM stores
+# straight into it and takes a bus error before the image is up. Harmless where
+# the rule is not enforced: the calls it turns on are no-ops there.
+if is_darwin
+  core_args += '-DREAD_ONLY_CODE_ZONE=1'
+endif
 
 core = shared_library('PharoVMCore',
   support_sources, ffi_sources, platform_sources, interpreter_sources, config_h,
@@ -245,6 +272,24 @@ plugins = [
   ['SurfacePlugin', true, false, [], []],
   ['FloatArrayPlugin', true, false, [], []],
 ]
+
+# iOS makes only what the image cannot start without: the rest are a desktop's
+# business, and SqueakSSL's Mac sources reach for keychain search keys iOS
+# withholds.
+if not is_ios
+  plugins += [
+    ['JPEGReaderPlugin', false, false, [], []],
+    ['JPEGReadWriter2Plugin', false, false, [], []],
+    ['DSAPrims', false, false, [], []],
+    ['B2DPlugin', false, false, [], []],
+    ['SqueakSSL', false, false, [], is_darwin ? apple_security : openssl_deps],
+  ]
+  if not is_windows
+    plugins += [['UnixOSProcessPlugin', false, false,
+                 ['FilePlugin', 'SocketPlugin'], []]]
+  endif
+endif
+
 
 built_plugins = {}
 
@@ -299,7 +344,7 @@ foreach plugin : plugins
 
   library = shared_library(name, sources,
     include_directories: plugin_includes,
-    c_args: core_args,
+    c_args: common_args,
     dependencies: plugin_deps,
     install: true,
   )

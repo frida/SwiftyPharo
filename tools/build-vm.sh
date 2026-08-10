@@ -356,22 +356,41 @@ stage_framework() {
 	sign_adhoc "${framework}"
 }
 
-# The plugins were linked against the core's own name, so point them at the
-# framework's binary.
+# Meson records every library by where it was installed, which inside a framework
+# is nowhere. Point each plugin at the framework's own binary and at its siblings
+# beside it: one that keeps pointing at the install prefix fails to load, and the
+# VM then answers a request for its primitives out of whichever plugin did load.
 stage_plugins_into() {
 	local destination="$1"
 	local install_name="$2"
-	local plugin
+	local plugin name staged recorded
 
 	for plugin in "$(built_libraries_dir)"/*.dylib; do
-		case "$(basename "${plugin}")" in
+		name="$(basename "${plugin}")"
+		case "${name}" in
 			libPharoVMCore.dylib) continue ;;
 		esac
 
-		cp "${plugin}" "${destination}/"
-		install_name_tool -change "@rpath/libPharoVMCore.dylib" "${install_name}" \
-			"${destination}/$(basename "${plugin}")"
-		sign_adhoc "${destination}/$(basename "${plugin}")"
+		staged="${destination}/${name}"
+		cp "${plugin}" "${staged}"
+		install_name_tool -id "@rpath/${name}" "${staged}"
+
+		# Only what this build produced: the install prefix is also where the
+		# system keeps libSystem, and pointing that at an rpath is fatal.
+		for recorded in $(otool -L "${staged}" | awk -v dir="${LIBDIR}/" \
+				'$1 ~ "^" dir { print $1 }'); do
+			[ -f "$(built_libraries_dir)/$(basename "${recorded}")" ] || continue
+
+			case "$(basename "${recorded}")" in
+				libPharoVMCore.dylib)
+					install_name_tool -change "${recorded}" "${install_name}" "${staged}" ;;
+				*)
+					install_name_tool -change "${recorded}" \
+						"@rpath/$(basename "${recorded}")" "${staged}" ;;
+			esac
+		done
+
+		sign_adhoc "${staged}"
 	done
 }
 
