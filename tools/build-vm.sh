@@ -560,6 +560,7 @@ if [ "${staging}" = "framework" ]; then
 	stage_framework
 else
 	rm -rf "${destdir}"
+	mkdir -p "$(dirname "${destdir}")"
 	cp -R "${staged_prefix}" "${destdir}"
 fi
 report
