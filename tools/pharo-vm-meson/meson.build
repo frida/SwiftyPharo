@@ -337,7 +337,9 @@ foreach plugin : plugins
     endif
   endforeach
 
-  plugin_deps = [core_dep] + plugin[4]
+  # A plugin that does its own arithmetic needs libm named on its own link line:
+  # off Darwin, an indirect shared library resolves nothing.
+  plugin_deps = [core_dep, m_dep] + plugin[4]
   foreach needed : plugin[3]
     plugin_deps += built_plugins[needed]
   endforeach
