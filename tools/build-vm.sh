@@ -84,13 +84,6 @@ LIBDIR="${LIBDIR:-${PREFIX}/lib}"
 INCLUDEDIR="${INCLUDEDIR:-${PREFIX}/include}"
 destdir="${DESTDIR-${output_dir}/destdir/${PLATFORM}-${arch}}"
 
-trimmed_options=(
-	-DFEATURE_LIB_SDL2=OFF
-	-DFEATURE_LIB_CAIRO=OFF
-	-DFEATURE_LIB_FREETYPE2=OFF
-	-DFEATURE_LIB_GIT2=OFF
-)
-
 # A desktop build makes every plugin by default; a cross build makes only what
 # it is asked for. These are the ones the image reaches for -- without them it
 # starts without files, without locales and without large integers, which is far
@@ -200,18 +193,67 @@ write_libffi_cross_file() {
 	EOF
 }
 
-# Slang runs a Pharo image, so generate on the host, once per flavour.
+# Slang runs a Pharo image to write the interpreter and the plugin primitives.
+# Upstream drives this from CMake; these are the same downloads it pins, and
+# doing it here is what lets the rest of the build be Meson alone.
+VMMAKER_VM_VERSION="${VMMAKER_VM_VERSION:-PharoVM-10.3.2-b8793dd2}"
+VMMAKER_IMAGE_URL="${VMMAKER_IMAGE_URL:-https://files.pharo.org/image/130/Pharo13.0-SNAPSHOT.build.732.sha.e84a2d15c7.arch.64bit.zip}"
+# installVMMaker.st reads the last two arguments: where the sources are, and
+# whether Iceberg reaches GitHub over SSH or HTTPS.
+ICEBERG_REMOTE="${ICEBERG_REMOTE:-httpsUrl}"
+
 generate_sources() {
 	if [ -d "${generated_dir}/generated" ]; then
 		return
 	fi
 
-	cmake -S "${checkout_dir}" -B "${generated_dir}" \
-		-DCMAKE_BUILD_TYPE=Release \
-		-DFLAVOUR="${flavour}" \
-		"${trimmed_options[@]}"
+	local vmmaker_dir="${work_dir}/vmmaker"
+	local vm="$(fetch_generation_vm "${vmmaker_dir}")"
+	local image="${vmmaker_dir}/image/VMMaker.image"
 
-	cmake --build "${generated_dir}" --target generate-sources -j"$(cpu_count)"
+	if [ ! -f "${image}" ]; then
+		fetch_and_unzip "${VMMAKER_IMAGE_URL}" "${vmmaker_dir}/image"
+		"${vm}" --headless "${vmmaker_dir}/image"/Pharo*.image \
+			--no-default-preferences save VMMaker
+		"${vm}" --headless "${image}" --no-default-preferences --save --quit \
+			"${checkout_dir}/scripts/installVMMaker.st" \
+			"${checkout_dir}" "${ICEBERG_REMOTE}"
+	fi
+
+	mkdir -p "${generated_dir}"
+	"${vm}" --headless "${image}" --no-default-preferences \
+		perform PharoVMMaker generate:outputDirectory: "${flavour}" "${generated_dir}"
+}
+
+# One headless VM per host, named the way files.pharo.org publishes them.
+fetch_generation_vm() {
+	local vmmaker_dir="$1"
+	local machine="$(uname -s)-$(uname -m)"
+	local binary="${vmmaker_dir}/vm/pharo"
+
+	case "${machine}" in
+		Darwin-*) binary="${vmmaker_dir}/vm/Pharo.app/Contents/MacOS/Pharo" ;;
+		MINGW*|MSYS*) machine="Windows-x86_64"; binary="${vmmaker_dir}/vm/PharoConsole.exe" ;;
+	esac
+
+	if [ ! -x "${binary}" ]; then
+		fetch_and_unzip \
+			"https://files.pharo.org/vm/pharo-spur64-headless/${machine}/${VMMAKER_VM_VERSION}-${machine}-bin.zip" \
+			"${vmmaker_dir}/vm" >&2
+	fi
+
+	echo "${binary}"
+}
+
+fetch_and_unzip() {
+	local url="$1"
+	local destination="$2"
+	local archive="${destination}.zip"
+
+	mkdir -p "${destination}"
+	curl -sSL "${url}" -o "${archive}"
+	unzip -qo "${archive}" -d "${destination}"
+	rm -f "${archive}"
 }
 
 # The VM asks for its code zone and stack pages at fixed addresses and gives up
