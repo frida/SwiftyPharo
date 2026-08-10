@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 #
-# Builds a trimmed Pharo VM and stages one xcframework slice, plus the plugins
-# the VM dlopens at runtime. Combine slices with make-xcframework.sh.
+# Builds a trimmed Pharo VM, plus the plugins the VM dlopens at runtime.
+#
+# Apple platforms get one xcframework slice each; combine them with
+# make-xcframework.sh. Elsewhere the manifest resolves a system library, so the
+# VM is staged into a DESTDIR tree the way radare2 and frida-core are.
 #
 #   PLATFORM=macos           tools/build-vm.sh
 #   PLATFORM=ios             tools/build-vm.sh
 #   PLATFORM=iossimulator    tools/build-vm.sh
+#   PLATFORM=linux           tools/build-vm.sh
+#   PLATFORM=windows         tools/build-vm.sh
 
 set -euo pipefail
 
@@ -27,16 +32,35 @@ case "${PLATFORM}" in
 		architectures="${MACOS_ARCHITECTURES:-arm64;x86_64}"
 		flavour="${FLAVOUR:-CoInterpreter}"
 		sysroot=""
+		staging="framework"
 		;;
 	ios)
 		architectures="arm64"
 		flavour="${FLAVOUR:-StackVM}"
 		sysroot="iphoneos"
+		staging="framework"
 		;;
 	iossimulator)
 		architectures="arm64"
 		flavour="${FLAVOUR:-StackVM}"
 		sysroot="iphonesimulator"
+		staging="framework"
+		;;
+	linux)
+		architectures="$(uname -m)"
+		flavour="${FLAVOUR:-CoInterpreter}"
+		sysroot=""
+		staging="prefix"
+		library_suffix="so"
+		host_headers="unix"
+		;;
+	windows)
+		architectures="$(uname -m)"
+		flavour="${FLAVOUR:-CoInterpreter}"
+		sysroot=""
+		staging="prefix"
+		library_suffix="dll"
+		host_headers="win"
 		;;
 	*)
 		echo "unknown PLATFORM: ${PLATFORM}" >&2
@@ -50,6 +74,13 @@ generated_dir="${checkout_dir}/generate-${flavour}"
 slice_dir="${output_dir}/slices/${PLATFORM}-${arch}"
 libffi_dir="${work_dir}/libffi"
 libffi_prefix="${work_dir}/libffi-${PLATFORM}"
+
+# The host installs this tree over its own root, so the paths baked into the
+# pkg-config file have to be where it lands rather than where it was staged.
+PREFIX="${PREFIX:-/usr}"
+LIBDIR="${LIBDIR:-${PREFIX}/lib}"
+INCLUDEDIR="${INCLUDEDIR:-${PREFIX}/include}"
+destdir="${output_dir}/destdir/${PLATFORM}-${arch}"
 
 trimmed_options=(
 	-DFEATURE_LIB_SDL2=OFF
@@ -77,6 +108,14 @@ ios_plugins=(
 	FloatArrayPlugin
 )
 
+cpu_count() {
+	if command -v nproc >/dev/null 2>&1; then
+		nproc
+	else
+		sysctl -n hw.ncpu
+	fi
+}
+
 sync_checkout() {
 	if [ -d "${checkout_dir}/.git" ]; then
 		git -C "${checkout_dir}" fetch --depth 1 origin "${PHARO_VM_REF}"
@@ -91,7 +130,7 @@ add_ios_support() {
 	cp "${script_dir}/pharo-vm-ios/iOS.cmake" "${checkout_dir}/cmake/iOS.cmake"
 
 	# Unused — NSBundle is Foundation — and absent on iOS.
-	sed -i '' '/#import <Cocoa\/Cocoa.h>/d' "${checkout_dir}/src/osx/utilsMac.mm"
+	perl -ni -e 'print unless m{#import <Cocoa/Cocoa\.h>}' "${checkout_dir}/src/osx/utilsMac.mm"
 }
 
 # iPhoneOS ships no libffi, and pharo's does not cross-compile.
@@ -164,7 +203,7 @@ generate_sources() {
 		-DFLAVOUR="${flavour}" \
 		"${trimmed_options[@]}"
 
-	cmake --build "${generated_dir}" --target generate-sources -j"$(sysctl -n hw.ncpu)"
+	cmake --build "${generated_dir}" --target generate-sources -j"$(cpu_count)"
 }
 
 # The VM asks for its code zone and stack pages at fixed addresses and gives up
@@ -193,10 +232,13 @@ configure_and_build() {
 		-DGENERATE_SOURCES=FALSE
 		-DGENERATE_VMMAKER=FALSE
 		-DGENERATED_SOURCE_DIR="${generated_dir}"
-		-DCMAKE_OSX_ARCHITECTURES="${architectures}"
 		"${trimmed_options[@]}"
 	)
 	local targets=()
+
+	if [ "${staging}" = "framework" ]; then
+		options+=(-DCMAKE_OSX_ARCHITECTURES="${architectures}")
+	fi
 
 	if [ -n "${sysroot}" ]; then
 		options+=(
@@ -218,15 +260,21 @@ configure_and_build() {
 
 	cmake -S "${checkout_dir}" -B "${build_dir}" "${options[@]}"
 	# bash 3.2 counts an empty array as unbound under set -u.
-	cmake --build "${build_dir}" ${targets[@]+"${targets[@]}"} -j"$(sysctl -n hw.ncpu)"
+	cmake --build "${build_dir}" ${targets[@]+"${targets[@]}"} -j"$(cpu_count)"
 }
 
 built_libraries_dir() {
-	if [ -n "${sysroot}" ]; then
-		echo "${build_dir}/build/vm"
-	else
-		echo "${build_dir}/build/vm/Debug/Pharo.app/Contents/MacOS/Plugins"
-	fi
+	case "${PLATFORM}" in
+		macos)
+			echo "${build_dir}/build/vm/Debug/Pharo.app/Contents/MacOS/Plugins"
+			;;
+		ios|iossimulator)
+			echo "${build_dir}/build/vm"
+			;;
+		*)
+			dirname "$(find "${build_dir}" -name "libPharoVMCore.${library_suffix}" -print -quit)"
+			;;
+	esac
 }
 
 # A framework keeps the core and its plugins together as one embeddable piece.
@@ -291,26 +339,74 @@ sign_adhoc() {
 	codesign --force --sign - "$1" 2>/dev/null
 }
 
+# Where there is no framework the manifest asks for a system library, so lay the
+# core, its plugins and its headers out the way a package manager would.
+stage_prefix() {
+	rm -rf "${destdir}"
+	mkdir -p "${destdir}${LIBDIR}"
+
+	local built
+	built="$(built_libraries_dir)"
+	cp "${built}"/*."${library_suffix}" "${destdir}${LIBDIR}/"
+	if [ "${PLATFORM}" = "windows" ]; then
+		cp "${built}"/*.lib "${destdir}${LIBDIR}/"
+	fi
+
+	stage_headers_into "${destdir}${INCLUDEDIR}/PharoVM"
+	write_pkgconfig
+}
+
+# pharo-vm publishes no pkg-config file, and the Linux manifest asks for one by
+# name.
+write_pkgconfig() {
+	if [ "${PLATFORM}" = "windows" ]; then
+		return
+	fi
+
+	mkdir -p "${destdir}${LIBDIR}/pkgconfig"
+	cat > "${destdir}${LIBDIR}/pkgconfig/pharo-vm.pc" <<-EOF
+		includedir=${INCLUDEDIR}
+		libdir=${LIBDIR}
+
+		Name: pharo-vm
+		Description: Pharo virtual machine core
+		Version: ${PHARO_VM_REF}
+		Cflags: -I\${includedir}
+		Libs: -L\${libdir} -lPharoVMCore
+	EOF
+}
+
 # Headers reach for each other both unqualified and via "pharovm/..." paths,
 # which the VM's own build answers with a long -I list. Flattening them into one
 # directory and dropping the prefixes lets same-directory resolution do it all.
 stage_headers_into() {
 	local headers="$1"
-	local staging="${headers}.tree"
+	local staged="${headers}.tree"
 
-	rm -rf "${headers}" "${staging}"
+	rm -rf "${headers}" "${staged}"
 	mkdir -p "${headers}"
-	cp -R "${checkout_dir}/include/pharovm" "${staging}"
-	cp "${build_dir}/build/include/pharovm/config.h" "${staging}/"
-	cp "${generated_dir}"/generated/64/vm/include/*.h "${staging}/"
+	cp -R "${checkout_dir}/include/pharovm" "${staged}"
+	cp "${build_dir}/build/include/pharovm/config.h" "${staged}/"
+	cp "${generated_dir}"/generated/64/vm/include/*.h "${staged}/"
 
-	rm -rf "${staging}/win"
-	find "${staging}" -name '*.h' -not -path '*/osx/*' -not -path '*/unix/*' -exec cp {} "${headers}/" \;
-	cp "${staging}/unix"/*.h "${headers}/"
-	cp "${staging}/osx"/*.h "${headers}/"
-	rm -rf "${staging}"
+	find "${staged}" -name '*.h' \
+		-not -path '*/osx/*' -not -path '*/unix/*' -not -path '*/win/*' \
+		-exec cp {} "${headers}/" \;
+	local platform_headers
+	for platform_headers in $(header_directories); do
+		cp "${staged}/${platform_headers}"/*.h "${headers}/"
+	done
+	rm -rf "${staged}"
 
-	sed -i '' -E 's|#include[[:space:]]*"[^"]*/([^"/]+\.h)"|#include "\1"|' "${headers}"/*.h
+	perl -pi -e 's|#include\s*"[^"]*/([^"/]+\.h)"|#include "$1"|' "${headers}"/*.h
+}
+
+header_directories() {
+	if [ "${staging}" = "framework" ]; then
+		echo "unix osx"
+	else
+		echo "${host_headers}"
+	fi
 }
 
 write_framework_plist() {
@@ -340,18 +436,30 @@ write_framework_plist() {
 
 report() {
 	echo "platform: ${PLATFORM}-${arch} (${flavour})"
-	echo "slice:    ${slice_dir}"
-	echo
-	echo "Run make-xcframework.sh to combine the staged slices."
+	if [ "${staging}" = "framework" ]; then
+		echo "slice:    ${slice_dir}"
+		echo
+		echo "Run make-xcframework.sh to combine the staged slices."
+	else
+		echo "destdir:  ${destdir}"
+		echo
+		echo "Copy its contents over ${PREFIX} to install."
+	fi
 }
 
 sync_checkout
-add_ios_support
+if [ "${staging}" = "framework" ]; then
+	add_ios_support
+fi
 if [ -n "${sysroot}" ]; then
 	build_libffi
 fi
 generate_sources
 tolerate_relocated_regions
 configure_and_build
-stage_framework
+if [ "${staging}" = "framework" ]; then
+	stage_framework
+else
+	stage_prefix
+fi
 report
