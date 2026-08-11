@@ -1,3 +1,111 @@
+diff --git a/include/pharovm/win/pthreadCompat.h b/include/pharovm/win/pthreadCompat.h
+new file mode 100644
+index 0000000..c397573
+--- /dev/null
++++ b/include/pharovm/win/pthreadCompat.h
+@@ -0,0 +1,102 @@
++/* MinGW ships winpthreads and MSVC ships nothing, so the few calls the VM
++ * makes are answered here on Win32 terms. A thread is its id, which is what
++ * sqOSThread is; identity is all the VM compares, and nothing ever joins one.
++ */
++#ifndef PHAROVM_WIN_PTHREAD_COMPAT_H
++#define PHAROVM_WIN_PTHREAD_COMPAT_H
++
++#include <errno.h>
++#include <stdlib.h>
++#include <windows.h>
++
++/* What a thread gets when nobody asked for more. */
++#define PHARO_DEFAULT_STACK_SIZE (1024 * 1024)
++
++typedef DWORD pthread_t;
++
++typedef struct {
++    size_t stackSize;
++} pthread_attr_t;
++
++typedef struct {
++    void *(*start)(void *);
++    void *argument;
++} PharoThreadStart;
++
++static DWORD WINAPI
++pharoThreadMain(LPVOID parameter)
++{
++    PharoThreadStart start = *(PharoThreadStart *)parameter;
++
++    free(parameter);
++    start.start(start.argument);
++
++    return 0;
++}
++
++static int
++pthread_attr_init(pthread_attr_t *attributes)
++{
++    attributes->stackSize = 0;
++    return 0;
++}
++
++static int
++pthread_attr_getstacksize(const pthread_attr_t *attributes, size_t *size)
++{
++    *size = attributes->stackSize != 0
++        ? attributes->stackSize
++        : PHARO_DEFAULT_STACK_SIZE;
++    return 0;
++}
++
++static int
++pthread_attr_setstacksize(pthread_attr_t *attributes, size_t size)
++{
++    attributes->stackSize = size;
++    return 0;
++}
++
++static int
++pthread_create(pthread_t *thread, const pthread_attr_t *attributes,
++               void *(*start)(void *), void *argument)
++{
++    PharoThreadStart *carried;
++    HANDLE handle;
++
++    carried = malloc(sizeof(*carried));
++    carried->start = start;
++    carried->argument = argument;
++
++    handle = CreateThread(NULL, attributes != NULL ? attributes->stackSize : 0,
++                          pharoThreadMain, carried, 0, thread);
++    if (handle == NULL) {
++        free(carried);
++        return EAGAIN;
++    }
++
++    /* Nothing joins these, so the handle goes now and detaching is done. */
++    CloseHandle(handle);
++
++    return 0;
++}
++
++static int
++pthread_detach(pthread_t thread)
++{
++    return 0;
++}
++
++static pthread_t
++pthread_self(void)
++{
++    return GetCurrentThreadId();
++}
++
++static int
++pthread_equal(pthread_t one, pthread_t other)
++{
++    return one == other;
++}
++
++#endif
 diff --git a/include/pharovm/win/sqPlatformSpecific.h b/include/pharovm/win/sqPlatformSpecific.h
 index 279c08d..ee9b911 100644
 --- a/include/pharovm/win/sqPlatformSpecific.h
@@ -25,65 +133,30 @@ index 279c08d..ee9b911 100644
  
  /* missing functions */
  #ifdef _MSC_VER
+diff --git a/src/client.c b/src/client.c
+index c7fdfd8..607cbe0 100644
+--- a/src/client.c
++++ b/src/client.c
+@@ -1,5 +1,8 @@
+ #include <sys/stat.h>
+ #include "pharovm/pharo.h"
++#ifdef _MSC_VER
++#   include "pharovm/win/pthreadCompat.h"
++#endif
+ #include "pharovm/pharoClient.h"
+ #include "pharovm/fileDialog.h"
+ #include "pharovm/pathUtilities.h"
 diff --git a/src/ffi/worker/worker.c b/src/ffi/worker/worker.c
-index 74860d6..ec6ee5b 100644
+index 74860d6..8295994 100644
 --- a/src/ffi/worker/worker.c
 +++ b/src/ffi/worker/worker.c
-@@ -3,7 +3,59 @@
+@@ -3,7 +3,11 @@
  
  #include <stdio.h>
  #include <ffi.h>
 -#include <pthread.h>
 +#ifdef _MSC_VER
-+/* MinGW ships winpthreads; MSVC ships nothing. A thread is its id here, which
-+ * is what sqOSThread is, and identity is all this file compares. */
-+#   include <windows.h>
-+
-+typedef DWORD pthread_t;
-+typedef void pthread_attr_t;
-+
-+typedef struct {
-+    void *(*start)(void *);
-+    void *argument;
-+} WorkerThreadStart;
-+
-+static DWORD WINAPI
-+worker_thread_main(LPVOID parameter)
-+{
-+    WorkerThreadStart start = *(WorkerThreadStart *)parameter;
-+
-+    free(parameter);
-+    start.start(start.argument);
-+
-+    return 0;
-+}
-+
-+static int
-+pthread_create(pthread_t *thread, const pthread_attr_t *attributes,
-+               void *(*start)(void *), void *argument)
-+{
-+    WorkerThreadStart *carried;
-+    HANDLE handle;
-+
-+    carried = malloc(sizeof(*carried));
-+    carried->start = start;
-+    carried->argument = argument;
-+
-+    handle = CreateThread(NULL, 0, worker_thread_main, carried, 0, thread);
-+    if (handle == NULL) {
-+        free(carried);
-+        return EAGAIN;
-+    }
-+
-+    /* Nothing joins these, so the handle goes now and detaching is done. */
-+    CloseHandle(handle);
-+
-+    return 0;
-+}
-+
-+static int pthread_detach(pthread_t thread) { return 0; }
-+static pthread_t pthread_self(void) { return GetCurrentThreadId(); }
-+static int pthread_equal(pthread_t one, pthread_t other) { return one == other; }
++#   include "pharovm/win/pthreadCompat.h"
 +#else
 +#   include <pthread.h>
 +#endif
