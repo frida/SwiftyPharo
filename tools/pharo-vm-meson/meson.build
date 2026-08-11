@@ -111,6 +111,13 @@ m_dep = cc.find_library('m', required: false)
 uuid_dep = cc.find_library('uuid', required: not (is_darwin or is_windows))
 thread_dep = dependency('threads')
 ffi_dep = dependency('libffi')
+# The VM's semaphores and its FFI worker call pthread_self whatever else is
+# turned off, and vcpkg's libffi describes itself in a .pc that names no
+# library at all -- both of which a MinGW build gets for free.
+if is_windows
+  ffi_dep = [ffi_dep, cc.find_library('ffi')]
+  thread_dep = [thread_dep, cc.find_library('pthreadVC3')]
+endif
 
 conf.set('HAVE_LIBDL', dl_dep.found() ? 1 : false)
 conf.set('HAVE_UUID_GENERATE',
