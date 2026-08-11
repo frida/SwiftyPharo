@@ -127,6 +127,7 @@ add_meson_build() {
 	cp "${script_dir}/pharo-vm-meson/meson.build" \
 	   "${script_dir}/pharo-vm-meson/meson.options" "${checkout_dir}/"
 	cp "${script_dir}/pharo-vm-meson/config.h.in" "${checkout_dir}/swifty-config.h.in"
+	cp -R "${script_dir}/pharo-vm-meson/msvc" "${checkout_dir}/swifty-msvc"
 }
 
 add_ios_support() {
