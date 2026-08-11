@@ -193,8 +193,10 @@ ffi_sources = files(
 platform_sources = files('src/unix/aio.c', 'src/unix/debugUnix.c',
                          'src/unix/memoryUnix.c', 'src/unix/fileDialogUnix.c')
 if is_windows
-  platform_sources = files('src/win/aio.c', 'src/win/debugWin.c',
-                           'src/win/memoryWin.c', 'src/win/fileDialogWin.c')
+  platform_sources = files('src/win/sqWin32SpurAlloc.c', 'src/win/aioWin.c',
+                           'src/win/winDebug.c', 'src/win/winDebugMenu.c',
+                           'src/win/winDebugWindow.c',
+                           'src/win/fileDialogWin32.c')
 elif is_darwin
   add_languages('objc', 'objcpp', native: false)
   platform_sources = files('src/osx/aioOSX.c', 'src/osx/utilsMac.mm',
@@ -276,7 +278,7 @@ core_dep = declare_dependency(
 # image build needs a VM of the very format it is about to ship.
 if not is_ios
   executable('Pharo',
-    files('src/unix/unixMain.c'),
+    is_windows ? files('src/win/win32Main.c') : files('src/unix/unixMain.c'),
     include_directories: core_includes,
     c_args: common_args,
     link_with: core,
