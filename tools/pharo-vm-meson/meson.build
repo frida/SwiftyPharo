@@ -62,10 +62,7 @@ conf.set('PharoVM_VERSION_MAJOR', 12)
 conf.set('PharoVM_VERSION_MINOR', 0)
 conf.set('PharoVM_VERSION_PATCH', 0)
 conf.set('PharoVM_VERSION_STRING', vm_version)
-# Upstream asks for this everywhere, and its Windows header then answers
-# ioCurrentOSThread() with pthread_self() while typing the thread as a DWORD.
-# GCC converts that with a warning; MSVC will not convert it at all.
-conf.set('PHARO_VM_IN_WORKER_THREAD', is_windows ? false : 1)
+conf.set('PHARO_VM_IN_WORKER_THREAD', 1)
 
 foreach header : ['dirent.h', 'features.h', 'unistd.h', 'ndir.h', 'sys/ndir.h',
                   'sys/dir.h', 'sys/filio.h', 'sys/time.h', 'execinfo.h',
@@ -111,12 +108,10 @@ m_dep = cc.find_library('m', required: false)
 uuid_dep = cc.find_library('uuid', required: not (is_darwin or is_windows))
 thread_dep = dependency('threads')
 ffi_dep = dependency('libffi')
-# The VM's semaphores and its FFI worker call pthread_self whatever else is
-# turned off, and vcpkg's libffi describes itself in a .pc that names no
-# library at all -- both of which a MinGW build gets for free.
+# vcpkg's libffi describes itself in a .pc that names no library at all, which
+# leaves meson with nothing to link.
 if is_windows
   ffi_dep = [ffi_dep, cc.find_library('ffi')]
-  thread_dep = [thread_dep, cc.find_library('pthreadVC3')]
 endif
 
 conf.set('HAVE_LIBDL', dl_dep.found() ? 1 : false)
