@@ -252,7 +252,13 @@ fetch_and_unzip() {
 
 	mkdir -p "${destination}"
 	curl -sSL "${url}" -o "${archive}"
-	unzip -qo "${archive}" -d "${destination}"
+	# Git for Windows is the bash a Windows build has, and it ships no unzip.
+	if command -v unzip >/dev/null 2>&1; then
+		unzip -qo "${archive}" -d "${destination}"
+	else
+		python -c "import sys, zipfile; zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])" \
+			"${archive}" "${destination}"
+	fi
 	rm -f "${archive}"
 }
 
