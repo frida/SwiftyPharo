@@ -150,7 +150,7 @@ core_includes = [include_directories(
   'include/pharovm/' + platform_dir,
   generated / 'vm/include',
 )]
-if cc.get_id() == 'msvc'
+if cc.get_argument_syntax() == 'msvc'
   core_includes += include_directories('swifty-msvc')
 endif
 
