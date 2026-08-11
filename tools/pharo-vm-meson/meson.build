@@ -228,6 +228,14 @@ common_args = [
 if flavour == 'CoInterpreter'
   common_args += '-DASYNC_FFI_QUEUE=1'
 endif
+# What upstream hands a Windows build, plus the WIN32 that MinGW predefines and
+# an MSVC-flavoured compiler leaves empty for '#if WIN32' to choke on.
+if is_windows
+  common_args += ['-DWIN32=1', '-DWIN64=1', '-DWIN32_LEAN_AND_MEAN',
+                  '-DNO_ISNAN', '-DAllocationCheckFiller=0xADD4E55',
+                  '-D_WIN32_WINNT=0x0600', '-DWINVER=0x0600',
+                  '-DNTDDI_VERSION=0x06000000']
+endif
 common_args += cc.get_supported_arguments(
   '-Wno-int-conversion',
   '-Wno-pointer-sign',
