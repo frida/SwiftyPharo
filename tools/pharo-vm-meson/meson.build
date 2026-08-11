@@ -109,9 +109,14 @@ uuid_dep = cc.find_library('uuid', required: not (is_darwin or is_windows))
 thread_dep = dependency('threads')
 ffi_dep = dependency('libffi')
 # vcpkg's libffi describes itself in a .pc that names no library at all, which
-# leaves meson with nothing to link.
+# leaves meson with nothing to link. Whoever builds has to have put the import
+# library where the linker looks, which on Windows is the LIB environment.
 if is_windows
-  ffi_dep = [ffi_dep, cc.find_library('ffi')]
+  ffi_library = cc.find_library('ffi', required: false)
+  if not ffi_library.found()
+    ffi_library = cc.find_library('libffi')
+  endif
+  ffi_dep = [ffi_dep, ffi_library]
 endif
 
 conf.set('HAVE_LIBDL', dl_dep.found() ? 1 : false)
