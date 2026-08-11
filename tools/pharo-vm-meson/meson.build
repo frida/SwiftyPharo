@@ -315,9 +315,15 @@ if not is_ios
   )
 endif
 
-# A DLL carries its own imports, so the sockets the core links say nothing about
-# the ones this plugin calls.
+# A DLL carries its own imports, so what the core links says nothing about what
+# a plugin calls. SqueakSSL speaks to SChannel where there is no OpenSSL.
 socket_deps = is_windows ? [cc.find_library('ws2_32')] : []
+tls_deps = openssl_deps
+if is_darwin
+  tls_deps = apple_security
+elif is_windows
+  tls_deps = [cc.find_library('crypt32'), cc.find_library('secur32')]
+endif
 
 # Every plugin is the same shape: common sources, the platform's own, and for
 # some of them the primitives Slang wrote.
@@ -346,7 +352,7 @@ if not is_ios
     ['JPEGReadWriter2Plugin', false, false, [], []],
     ['DSAPrims', false, false, [], []],
     ['B2DPlugin', false, false, [], []],
-    ['SqueakSSL', false, false, [], is_darwin ? apple_security : openssl_deps],
+    ['SqueakSSL', false, false, [], tls_deps],
   ]
   if not is_windows
     plugins += [['UnixOSProcessPlugin', false, false,
