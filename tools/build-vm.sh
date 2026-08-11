@@ -450,6 +450,17 @@ build_and_stage() {
 
 	for architecture in ${architectures//;/ }; do
 		configure_and_build "${architecture}"
+	done
+
+	# A prefix with a drive letter in it cannot be staged under a DESTDIR, since
+	# the colon is not a character a path may carry. Nothing there needs staging
+	# anyway: one architecture, and Meson knows where it goes.
+	if [ "${staging}" != "framework" ] && [ -z "${destdir}" ]; then
+		meson install -C "${meson_build_dir}-${arch}" --quiet
+		return
+	fi
+
+	for architecture in ${architectures//;/ }; do
 		install_into "${meson_build_dir}-${architecture}" \
 			"${work_dir}/staged-${PLATFORM}-${architecture}"
 		staged+=("${work_dir}/staged-${PLATFORM}-${architecture}")
@@ -595,7 +606,7 @@ else
 	if [ -n "${destdir}" ]; then
 		rm -rf "${destdir}"
 		mkdir -p "${destdir}"
+		cp -a "${staged_prefix}/." "${destdir}"
 	fi
-	cp -a "${staged_prefix}/." "${destdir:-/}"
 fi
 report
