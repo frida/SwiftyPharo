@@ -99,6 +99,14 @@ if is_darwin
   platform_deps += dependency('appleframeworks', modules: frameworks)
 endif
 
+# The sockets the VM selects on, the timers it arms, and the stack it walks
+# when it reports a crash.
+if is_windows
+  foreach name : ['winmm', 'ws2_32', 'dbghelp', 'ole32', 'comctl32']
+    platform_deps += cc.find_library(name)
+  endforeach
+endif
+
 if not is_darwin and not is_windows
   openssl_deps = [dependency('openssl')]
 endif
