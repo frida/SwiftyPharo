@@ -21,7 +21,7 @@ package_dir="$(cd "${script_dir}/.." && pwd)"
 work_dir="${package_dir}/.build/image"
 output_dir="${package_dir}/artifacts"
 image="${output_dir}/SwiftyPharo.image"
-built_vm="${package_dir}/.build/vm/pharo-vm/build-macos-CoInterpreter/build/vm/Debug/Pharo.app/Contents/MacOS/Pharo"
+built_vm="${package_dir}/.build/vm/staged-macos/usr/bin/Pharo"
 
 stage_base_image() {
 	local base="${BASE_IMAGE:-$(fetch_base_image)}"

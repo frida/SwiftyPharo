@@ -246,12 +246,16 @@ if is_darwin
   core_args += '-DREAD_ONLY_CODE_ZONE=1'
 endif
 
+# ioLoadModule() falls back to dlopen()ing a plugin by leaf name, which dyld
+# resolves through the rpaths of whoever called it -- the core. Naming itself
+# lets it find the plugins sitting beside it wherever the two are put.
 core = shared_library('PharoVMCore',
   support_sources, ffi_sources, platform_sources, interpreter_sources, config_h,
   include_directories: core_includes,
   c_args: core_args,
   dependencies: [ffi_dep, thread_dep, dl_dep, m_dep] + platform_deps,
   install: true,
+  install_rpath: is_darwin ? '@loader_path' : '',
 )
 
 core_dep = declare_dependency(
@@ -259,6 +263,19 @@ core_dep = declare_dependency(
   include_directories: core_includes,
   sources: config_h,
 )
+
+# The CLI that runs an image. iOS has no command line to run it from, and the
+# image build needs a VM of the very format it is about to ship.
+if not is_ios
+  executable('Pharo',
+    files('src/unix/unixMain.c'),
+    include_directories: core_includes,
+    c_args: common_args,
+    link_with: core,
+    install: true,
+    install_rpath: is_darwin ? '@executable_path/../lib' : '$ORIGIN/../lib',
+  )
+endif
 
 # Every plugin is the same shape: common sources, the platform's own, and for
 # some of them the primitives Slang wrote.
@@ -354,6 +371,7 @@ foreach plugin : plugins
     c_args: common_args,
     dependencies: plugin_deps,
     install: true,
+    install_rpath: is_darwin ? '@loader_path' : '',
   )
   built_plugins += {name: declare_dependency(
     link_with: library, include_directories: plugin_includes)}

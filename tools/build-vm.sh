@@ -378,10 +378,6 @@ stage_framework() {
 	cp "$(built_libraries_dir)/libPharoVMCore.dylib" "${contents}/PharoVM"
 	install_name_tool -id "${install_name}" "${contents}/PharoVM"
 
-	# ioLoadModule() falls back to dlopen()ing a plugin by leaf name, which dyld
-	# resolves through the rpaths of whoever called it. Naming itself lets the
-	# core find the plugins sitting beside it wherever the framework is dropped.
-	install_name_tool -add_rpath @loader_path "${contents}/PharoVM"
 	sign_adhoc "${contents}/PharoVM"
 
 	stage_plugins_into "${contents}" "${install_name}"
@@ -398,14 +394,15 @@ stage_framework() {
 	sign_adhoc "${framework}"
 }
 
-# Meson records every library by where it was installed, which inside a framework
-# is nowhere. Point each plugin at the framework's own binary and at its siblings
-# beside it: one that keeps pointing at the install prefix fails to load, and the
-# VM then answers a request for its primitives out of whichever plugin did load.
+# Inside a framework the core is the framework's own binary rather than a dylib
+# beside the plugins, so that one reference is rewritten. Everything else was
+# named by rpath when it was built: a plugin that keeps pointing at the install
+# prefix fails to load, and the VM then answers a request for its primitives out
+# of whichever plugin did load.
 stage_plugins_into() {
 	local destination="$1"
 	local install_name="$2"
-	local plugin name staged recorded
+	local plugin name staged
 
 	for plugin in "$(built_libraries_dir)"/*.dylib; do
 		name="$(basename "${plugin}")"
@@ -415,23 +412,8 @@ stage_plugins_into() {
 
 		staged="${destination}/${name}"
 		cp "${plugin}" "${staged}"
-		install_name_tool -id "@rpath/${name}" "${staged}"
-
-		# Only what this build produced: the install prefix is also where the
-		# system keeps libSystem, and pointing that at an rpath is fatal.
-		for recorded in $(otool -L "${staged}" | awk -v dir="${LIBDIR}/" \
-				'$1 ~ "^" dir { print $1 }'); do
-			[ -f "$(built_libraries_dir)/$(basename "${recorded}")" ] || continue
-
-			case "$(basename "${recorded}")" in
-				libPharoVMCore.dylib)
-					install_name_tool -change "${recorded}" "${install_name}" "${staged}" ;;
-				*)
-					install_name_tool -change "${recorded}" \
-						"@rpath/$(basename "${recorded}")" "${staged}" ;;
-			esac
-		done
-
+		install_name_tool -change "@rpath/libPharoVMCore.dylib" \
+			"${install_name}" "${staged}"
 		sign_adhoc "${staged}"
 	done
 }
@@ -463,6 +445,38 @@ build_and_stage() {
 	if [ "${#staged[@]}" -gt 1 ]; then
 		combine_architectures "${staged[@]}"
 	fi
+
+	if [ "${staging}" = "framework" ]; then
+		name_staged_libraries_by_rpath
+	fi
+}
+
+# Meson stamps every library with where it was installed, and an Apple build is
+# run from anywhere but there: from the staged tree while the image is built,
+# from inside the app once the framework is dropped in. Naming them by rpath
+# lets both work -- one that keeps pointing at the install prefix fails to load,
+# and the VM then answers a request for its primitives out of whichever plugin
+# did load.
+name_staged_libraries_by_rpath() {
+	local library name recorded
+
+	for library in "$(built_libraries_dir)"/*.dylib "${staged_prefix}${PREFIX}/bin/Pharo"; do
+		name="$(basename "${library}")"
+		case "${name}" in
+			*.dylib) install_name_tool -id "@rpath/${name}" "${library}" ;;
+		esac
+
+		# Only what this build produced: the install prefix is also where the
+		# system keeps libSystem, and pointing that at an rpath is fatal.
+		for recorded in $(otool -L "${library}" | awk -v dir="${LIBDIR}/" \
+				'$1 ~ "^" dir { print $1 }'); do
+			[ -f "$(built_libraries_dir)/$(basename "${recorded}")" ] || continue
+			install_name_tool -change "${recorded}" \
+				"@rpath/$(basename "${recorded}")" "${library}"
+		done
+
+		sign_adhoc "${library}"
+	done
 }
 
 combine_architectures() {
