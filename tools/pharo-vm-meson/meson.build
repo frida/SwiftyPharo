@@ -38,6 +38,7 @@ endif
 # The endianness the VM was always given as a compile definition, which is what
 # left it out of the installed headers and stopped every consumer of them.
 lsb_first = host_machine.endian() == 'little' ? 1 : 0
+vm_version = '12.0.0'
 
 conf = configuration_data()
 # The template writes the quotes itself, so these go in bare.
@@ -47,13 +48,20 @@ conf.set('OS_TYPE', is_windows ? 'Win32' : 'unix')
 conf.set('VM_TARGET', host_os)
 conf.set('VM_TARGET_CPU', host_machine.cpu_family())
 conf.set('VM_TARGET_OS', host_os)
-conf.set('BUILT_FROM', 'SwiftyPharo')
+# The image reads a date out of this to decide whether the VM is too old for
+# it, splitting on 'Date: ' and expecting ISO 8601 after it.
+vm_commit = run_command('git', '-C', meson.current_source_dir(),
+  'log', '-1', '--format=%H', check: true).stdout().strip()
+vm_commit_date = run_command('git', '-C', meson.current_source_dir(),
+  'log', '-1', '--format=%cI', check: true).stdout().strip()
+conf.set('BUILT_FROM', 'SwiftyPharo @0@ - Commit: @1@ - Date: @2@'.format(
+  vm_version, vm_commit, vm_commit_date))
 conf.set('LSB_FIRST', lsb_first)
 conf.set('ALWAYS_INTERACTIVE', 0)
 conf.set('PharoVM_VERSION_MAJOR', 12)
 conf.set('PharoVM_VERSION_MINOR', 0)
 conf.set('PharoVM_VERSION_PATCH', 0)
-conf.set('PharoVM_VERSION_STRING', '12.0.0')
+conf.set('PharoVM_VERSION_STRING', vm_version)
 conf.set('PHARO_VM_IN_WORKER_THREAD', 1)
 
 foreach header : ['dirent.h', 'features.h', 'unistd.h', 'ndir.h', 'sys/ndir.h',

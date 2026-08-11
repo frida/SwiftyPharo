@@ -460,7 +460,10 @@ build_and_stage() {
 name_staged_libraries_by_rpath() {
 	local library name recorded
 
+	# Only a desktop gets the CLI; iOS has no command line to run it from.
 	for library in "$(built_libraries_dir)"/*.dylib "${staged_prefix}${PREFIX}/bin/Pharo"; do
+		[ -f "${library}" ] || continue
+
 		name="$(basename "${library}")"
 		case "${name}" in
 			*.dylib) install_name_tool -id "@rpath/${name}" "${library}" ;;
