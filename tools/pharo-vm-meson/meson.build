@@ -140,7 +140,7 @@ configure_file(
 )
 
 # MSVC ships no unistd.h, and one source reaches for it with no guard at all.
-core_includes = include_directories(
+core_includes = [include_directories(
   '.',
   'include',
   'include/pharovm',
@@ -149,7 +149,7 @@ core_includes = include_directories(
   'include/pharovm/semaphores',
   'include/pharovm/' + platform_dir,
   generated / 'vm/include',
-)
+)]
 if cc.get_id() == 'msvc'
   core_includes += include_directories('swifty-msvc')
 endif
