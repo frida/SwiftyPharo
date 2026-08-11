@@ -230,8 +230,13 @@ core_args = common_args + [
   '-DFEATURE_FFI=1',
   '-DFEATURE_THREADED_FFI=1',
   '-DUSE_INLINE_MEMORY_ACCESSORS=1',
-  '-DFEATURE_JIT_SIMD=1',
 ]
+
+# iOS withholds writable-executable memory, so it takes the interpreter with no
+# code generator in it at all -- and the SIMD support is the JIT's.
+if flavour == 'CoInterpreter'
+  core_args += '-DFEATURE_JIT_SIMD=1'
+endif
 
 # Apple Silicon will not have memory writable and executable at once, so the JIT
 # has to unprotect its code zone around every write. Without this the VM stores
