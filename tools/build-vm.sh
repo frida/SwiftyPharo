@@ -115,6 +115,9 @@ sync_checkout() {
 	if [ -d "${checkout_dir}/.git" ]; then
 		git -C "${checkout_dir}" fetch --depth 1 origin "${PHARO_VM_REF}"
 		git -C "${checkout_dir}" checkout -q --force FETCH_HEAD
+		# What the patch adds is untracked, and a checkout leaves it behind for
+		# the next apply to trip over. Slang's output is expensive and stays.
+		git -C "${checkout_dir}" clean -qfd -e 'generate-*' -e 'build-*'
 	else
 		mkdir -p "$(dirname "${checkout_dir}")"
 		git clone -q --depth 1 --branch "${PHARO_VM_REF}" "${PHARO_VM_REPO}" "${checkout_dir}"
