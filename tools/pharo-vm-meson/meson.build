@@ -146,7 +146,6 @@ configure_file(
   install_dir: get_option('includedir') / 'pharovm',
 )
 
-# MSVC ships no unistd.h, and one source reaches for it with no guard at all.
 core_includes = [include_directories(
   '.',
   'include',
@@ -157,9 +156,6 @@ core_includes = [include_directories(
   'include/pharovm/' + platform_dir,
   generated / 'vm/include',
 )]
-if cc.get_argument_syntax() == 'msvc'
-  core_includes += include_directories('swifty-msvc')
-endif
 
 interpreter_sources = flavour == 'CoInterpreter' \
   ? [generated / 'vm/src/gcc3x-cointerp.c', generated / 'vm/src/cogit.c'] \

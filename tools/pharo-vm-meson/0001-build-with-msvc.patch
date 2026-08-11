@@ -1,0 +1,110 @@
+diff --git a/include/pharovm/win/sqPlatformSpecific.h b/include/pharovm/win/sqPlatformSpecific.h
+index 279c08d..ee9b911 100644
+--- a/include/pharovm/win/sqPlatformSpecific.h
++++ b/include/pharovm/win/sqPlatformSpecific.h
+@@ -19,15 +19,15 @@
+ 
+ # include <windows.h>
+ 
+-/* ioCurrentOSThread() below expands to pthread_self() unconditionally, so the
+- * header must be available even when PHARO_VM_IN_WORKER_THREAD is off. MinGW
+- * toolchains always ship winpthreads; only MSVC may lack pthread.h, and there
+- * the previous behavior is kept. */
+-#if defined(PHARO_VM_IN_WORKER_THREAD) || !defined(_MSC_VER)
++/* MinGW ships winpthreads and MSVC ships nothing, so a thread is named the way
++ * each toolchain can. Either answer is a DWORD, which is what sqOSThread is
++ * below. */
++#ifdef _MSC_VER
++# define ioCurrentOSThread() GetCurrentThreadId()
++#else
+ # include <pthread.h>
+-#endif
+-
+ # define ioCurrentOSThread() pthread_self()
++#endif
+ 
+ /* missing functions */
+ #ifdef _MSC_VER
+diff --git a/src/ffi/worker/worker.c b/src/ffi/worker/worker.c
+index 74860d6..ec6ee5b 100644
+--- a/src/ffi/worker/worker.c
++++ b/src/ffi/worker/worker.c
+@@ -3,7 +3,59 @@
+ 
+ #include <stdio.h>
+ #include <ffi.h>
+-#include <pthread.h>
++#ifdef _MSC_VER
++/* MinGW ships winpthreads; MSVC ships nothing. A thread is its id here, which
++ * is what sqOSThread is, and identity is all this file compares. */
++#   include <windows.h>
++
++typedef DWORD pthread_t;
++typedef void pthread_attr_t;
++
++typedef struct {
++    void *(*start)(void *);
++    void *argument;
++} WorkerThreadStart;
++
++static DWORD WINAPI
++worker_thread_main(LPVOID parameter)
++{
++    WorkerThreadStart start = *(WorkerThreadStart *)parameter;
++
++    free(parameter);
++    start.start(start.argument);
++
++    return 0;
++}
++
++static int
++pthread_create(pthread_t *thread, const pthread_attr_t *attributes,
++               void *(*start)(void *), void *argument)
++{
++    WorkerThreadStart *carried;
++    HANDLE handle;
++
++    carried = malloc(sizeof(*carried));
++    carried->start = start;
++    carried->argument = argument;
++
++    handle = CreateThread(NULL, 0, worker_thread_main, carried, 0, thread);
++    if (handle == NULL) {
++        free(carried);
++        return EAGAIN;
++    }
++
++    /* Nothing joins these, so the handle goes now and detaching is done. */
++    CloseHandle(handle);
++
++    return 0;
++}
++
++static int pthread_detach(pthread_t thread) { return 0; }
++static pthread_t pthread_self(void) { return GetCurrentThreadId(); }
++static int pthread_equal(pthread_t one, pthread_t other) { return one == other; }
++#else
++#   include <pthread.h>
++#endif
+ #include <errno.h>
+ #include <stdlib.h>
+ #include <string.h>
+diff --git a/src/parameters/parameters.c b/src/parameters/parameters.c
+index f6dc4c2..6bed286 100644
+--- a/src/parameters/parameters.c
++++ b/src/parameters/parameters.c
+@@ -3,7 +3,12 @@
+ #include "pharovm/debug.h"
+ #include "pharovm/pathUtilities.h"
+ #include <assert.h>
+-#include <unistd.h>
++#ifdef _WIN32
++#   include <direct.h>
++#   define chdir _chdir
++#else
++#   include <unistd.h>
++#endif
+ 
+ typedef VMErrorCode (*vm_parameter_process_function)(const char *argument, VMParameters* params);
+ 

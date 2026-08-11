@@ -127,7 +127,12 @@ add_meson_build() {
 	cp "${script_dir}/pharo-vm-meson/meson.build" \
 	   "${script_dir}/pharo-vm-meson/meson.options" "${checkout_dir}/"
 	cp "${script_dir}/pharo-vm-meson/config.h.in" "${checkout_dir}/swifty-config.h.in"
-	cp -R "${script_dir}/pharo-vm-meson/msvc" "${checkout_dir}/swifty-msvc"
+}
+
+# Upstream's Windows support is written for the toolchain it builds with there,
+# which is MinGW's; the one that goes with Swift is MSVC's.
+add_msvc_support() {
+	git -C "${checkout_dir}" apply "${script_dir}/pharo-vm-meson/0001-build-with-msvc.patch"
 }
 
 add_ios_support() {
@@ -573,6 +578,7 @@ report() {
 
 sync_checkout
 add_meson_build
+add_msvc_support
 add_ios_support
 if [ -n "${sysroot}" ]; then
 	build_libffi
