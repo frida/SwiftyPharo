@@ -242,7 +242,8 @@ endif
 # What upstream hands a Windows build, plus the WIN32 that MinGW predefines and
 # an MSVC-flavoured compiler leaves empty for '#if WIN32' to choke on.
 if is_windows
-  common_args += ['-DWIN32=1', '-DWIN64=1', '-DWIN32_LEAN_AND_MEAN',
+  common_args += ['-DUNICODE', '-D_UNICODE',
+                  '-DWIN32=1', '-DWIN64=1', '-DWIN32_LEAN_AND_MEAN',
                   '-DNO_ISNAN', '-DAllocationCheckFiller=0xADD4E55',
                   '-D_WIN32_WINNT=0x0600', '-DWINVER=0x0600',
                   '-DNTDDI_VERSION=0x06000000']
@@ -309,9 +310,14 @@ if not is_ios
     c_args: common_args,
     link_with: core,
     install: true,
+    win_subsystem: 'windows',
     install_rpath: is_darwin ? '@executable_path/../lib' : '$ORIGIN/../lib',
   )
 endif
+
+# A DLL carries its own imports, so the sockets the core links say nothing about
+# the ones this plugin calls.
+socket_deps = is_windows ? [cc.find_library('ws2_32')] : []
 
 # Every plugin is the same shape: common sources, the platform's own, and for
 # some of them the primitives Slang wrote.
@@ -321,7 +327,7 @@ plugins = [
   ['FilePlugin', true, true, [], apple_corefoundation],
   ['NewFilePlugin', true, true, [], []],
   ['FileAttributesPlugin', false, true, ['FilePlugin'], []],
-  ['SocketPlugin', false, false, [], []],
+  ['SocketPlugin', false, false, [], socket_deps],
   ['UUIDPlugin', false, false, [], [uuid_dep]],
   ['LocalePlugin', false, true, [], apple_corefoundation],
   ['LargeIntegers', false, false, [], []],
