@@ -210,19 +210,9 @@ VMMAKER_IMAGE_URL="${VMMAKER_IMAGE_URL:-https://files.pharo.org/image/130/Pharo1
 # installVMMaker.st reads the last two arguments: where the sources are, and
 # whether Iceberg reaches GitHub over SSH or HTTPS.
 ICEBERG_REMOTE="${ICEBERG_REMOTE:-httpsUrl}"
-GENERATED_SOURCES_BASE_URL="${GENERATED_SOURCES_BASE_URL:-https://github.com/frida/SwiftyPharo/releases/download/slang}"
 
-# Slang's output is a function of the pharo-vm revision and the flavour alone --
-# the same C whoever writes it, with a backend for every architecture and the
-# preprocessor choosing between them. So it is written once and published, and a
-# host that cannot run a Pharo image (Windows on ARM has no VM to run one with)
-# still gets to build the VM.
 generate_sources() {
 	if [ -d "${generated_dir}/generated" ]; then
-		return
-	fi
-
-	if fetch_generated_sources; then
 		return
 	fi
 
@@ -242,29 +232,6 @@ generate_sources() {
 	mkdir -p "${generated_dir}"
 	"${vm}" --headless "${image}" --no-default-preferences \
 		perform PharoVMMaker generate:outputDirectory: "${flavour}" "${generated_dir}"
-}
-
-# Named for what it was made from, so a build takes the sources that go with the
-# revision it is building rather than whatever was published last.
-generated_archive_name() {
-	echo "slang-${flavour}-$(git -C "${checkout_dir}" rev-parse --short HEAD).tar.gz"
-}
-
-fetch_generated_sources() {
-	local url="${GENERATED_SOURCES_URL:-${GENERATED_SOURCES_BASE_URL}/$(generated_archive_name)}"
-
-	if [ "${GENERATE_SOURCES_LOCALLY:-no}" = "yes" ]; then
-		return 1
-	fi
-
-	mkdir -p "${generated_dir}"
-	if ! curl -fsSL "${url}" -o "${generated_dir}/slang.tar.gz"; then
-		rm -f "${generated_dir}/slang.tar.gz"
-		return 1
-	fi
-
-	tar -xzf "${generated_dir}/slang.tar.gz" -C "${generated_dir}"
-	rm -f "${generated_dir}/slang.tar.gz"
 }
 
 # One headless VM per host, named the way files.pharo.org publishes them.
@@ -631,14 +598,6 @@ if [ -n "${sysroot}" ]; then
 	build_libffi
 fi
 generate_sources
-# Publishing the output is a job of its own, and it needs nothing built.
-if [ "${ONLY_GENERATE_SOURCES:-no}" = "yes" ]; then
-	archive="${output_dir}/$(generated_archive_name)"
-	mkdir -p "${output_dir}"
-	tar -czf "${archive}" -C "${generated_dir}" generated
-	echo "slang:    ${archive}"
-	exit 0
-fi
 tolerate_relocated_regions
 build_and_stage
 if [ "${staging}" = "framework" ]; then
