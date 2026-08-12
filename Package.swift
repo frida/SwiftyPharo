@@ -45,7 +45,11 @@ let package = Package(
 
         .target(
             name: "CPharoVM",
-            dependencies: ["PharoVM"]
+            dependencies: ["PharoVM"],
+            // SwiftPM reads a pkg-config search path the way a unix shell writes
+            // one, which no path with a drive letter in it survives, so nothing
+            // the .pc names reaches the linker here.
+            linkerSettings: [.linkedLibrary("PharoVMCore", .when(platforms: [.windows]))]
         ),
 
         .target(
