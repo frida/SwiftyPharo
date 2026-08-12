@@ -233,3 +233,16 @@ index f6dc4c2..6bed286 100644
  
  typedef VMErrorCode (*vm_parameter_process_function)(const char *argument, VMParameters* params);
  
+diff --git a/src/utils.c b/src/utils.c
+index 4290336..49dcb2f 100644
+--- a/src/utils.c
++++ b/src/utils.c
+@@ -461,7 +461,7 @@ static int stackPageHeadroom;
+  * be lazy.  The reportheadroom switch can be used to check empirically that
+  * there is sufficient headroom.
+  */
+-int
++EXPORT(int)
+ osCogStackPageHeadroom()
+ {
+ 	if (!stackPageHeadroom){
