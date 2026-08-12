@@ -29,6 +29,28 @@ work_dir="${script_dir}/../.build/vm"
 checkout_dir="${work_dir}/pharo-vm"
 output_dir="${script_dir}/../artifacts"
 
+# Windows tells an emulated process what it wants to hear, and everything a
+# build runs there is emulated: uname, the environment and even a PowerShell
+# started from it all answer x86_64 on an ARM machine. What the machine booted
+# as is in its registry, which is nobody's idea of a process.
+windows_architecture() {
+	reg.exe query \
+		'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment' \
+		//v PROCESSOR_ARCHITECTURE 2>/dev/null \
+		| grep -oE 'ARM64|AMD64' | head -1
+}
+
+# Meson asks the compiler and gets this right on its own; the name is what the
+# staged tree and the build directory are called, and a slice labelled by an
+# emulated uname says x86_64 over an ARM64 build.
+windows_architecture_name() {
+	if [ "$(windows_architecture)" = "ARM64" ]; then
+		echo "aarch64"
+	else
+		echo "x86_64"
+	fi
+}
+
 # iOS withholds writable-executable memory, so no JIT there.
 case "${PLATFORM}" in
 	macos)
@@ -56,7 +78,7 @@ case "${PLATFORM}" in
 		staging="prefix"
 		;;
 	windows)
-		architectures="$(uname -m)"
+		architectures="$(windows_architecture_name)"
 		flavour="${FLAVOUR:-CoInterpreter}"
 		sysroot=""
 		staging="prefix"
@@ -237,17 +259,6 @@ generate_sources() {
 }
 
 # One headless VM per host, named the way files.pharo.org publishes them.
-# Windows tells an emulated process what it wants to hear, and everything a
-# build runs there is emulated: uname, the environment and even a PowerShell
-# started from it all answer x86_64 on an ARM machine. What the machine booted
-# as is in its registry, which is nobody's idea of a process.
-windows_architecture() {
-	reg.exe query \
-		'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment' \
-		//v PROCESSOR_ARCHITECTURE 2>/dev/null \
-		| grep -oE 'ARM64|AMD64' | head -1
-}
-
 fetch_generation_vm() {
 	local vmmaker_dir="$1"
 	local machine="$(uname -s)-$(uname -m)"
