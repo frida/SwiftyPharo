@@ -258,6 +258,11 @@ common_args += cc.get_supported_arguments(
   '-Wno-unknown-pragmas',
   '-Wno-deprecated-declarations',
   '-Wno-compare-distinct-pointer-types',
+  '-Wno-format',
+  '-Wno-macro-redefined',
+  '-Wno-parentheses',
+  '-Wno-unused-value',
+  '-Wno-non-literal-null-conversion',
 )
 
 # Upstream keeps these to the core alone. They decide how memory is reached and
