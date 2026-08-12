@@ -311,6 +311,17 @@ tolerate_relocated_regions() {
 	done
 }
 
+# Slang gives every JIT backend the pthread header, and the only thing any of
+# them asks of it is Apple's write-protect toggle, which already sits behind
+# __APPLE__. Windows ships no such header; a build that finds one has found a
+# mingw toolchain's, which is not what clang-cl should be reading.
+confine_pthread_to_apple() {
+	local generated
+	for generated in "${generated_dir}"/generated/64/vm/src/cogit*.c; do
+		perl -0pi -e 's/(?:#if __APPLE__\n)?#include <pthread\.h>\n(?:#endif\n)?/#if __APPLE__\n#include <pthread.h>\n#endif\n/' "${generated}"
+	done
+}
+
 # Slang aside, every platform builds the same way; only the machine file and the
 # plugin set differ, and Meson takes both as arguments.
 configure_and_build() {
@@ -622,6 +633,7 @@ if [ -n "${sysroot}" ]; then
 fi
 generate_sources
 tolerate_relocated_regions
+confine_pthread_to_apple
 build_and_stage
 if [ "${staging}" = "framework" ]; then
 	stage_framework
