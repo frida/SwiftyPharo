@@ -3,8 +3,14 @@
 
 #include <stdbool.h>
 
+#ifdef _WIN32
+#   define SWIFTY_PHARO_RESOLVED_BY_NAME __declspec(dllexport)
+#else
+#   define SWIFTY_PHARO_RESOLVED_BY_NAME
+#endif
+
 /// Called by the image once its request thunk exists.
-void swifty_pharo_thunk_ready(void *thunk);
+SWIFTY_PHARO_RESOLVED_BY_NAME void swifty_pharo_thunk_ready(void *thunk);
 
 #define SWIFTY_PHARO_BRIDGE_UNAVAILABLE (-1)
 
