@@ -34,8 +34,6 @@ public final class PharoRuntime: @unchecked Sendable {
             image.path,
             CommandLine.argc,
             UnsafeMutableRawPointer(CommandLine.unsafeArgv)
-                .assumingMemoryBound(to: UnsafePointer<CChar>?.self),
-            UnsafeMutableRawPointer(environ)
                 .assumingMemoryBound(to: UnsafePointer<CChar>?.self))
     }
 

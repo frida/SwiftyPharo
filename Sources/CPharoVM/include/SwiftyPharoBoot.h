@@ -14,7 +14,7 @@ typedef enum {
 ///
 /// The plugins the VM loads as the image asks for them are found beside
 /// libPharoVMCore, so ship the two in one directory.
-SwiftyPharoState swifty_pharo_boot(const char *imagePath, int argc, const char **argv, const char **environment);
+SwiftyPharoState swifty_pharo_boot(const char *imagePath, int argc, const char **argv);
 
 SwiftyPharoState swifty_pharo_state(void);
 

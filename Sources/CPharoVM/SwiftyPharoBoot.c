@@ -18,6 +18,16 @@
 #include <pharovm/pharoClient.h>
 #endif
 
+// The C library keeps the process environment; the caller should not have to
+// hand it back. Windows spells it with an underscore.
+#ifdef _WIN32
+extern char **_environ;
+#   define process_environment ((const char **)_environ)
+#else
+extern char **environ;
+#   define process_environment ((const char **)environ)
+#endif
+
 extern int vmRunOnWorkerThread;
 extern void setProcessArguments(int argc, const char **argv);
 extern void setProcessEnvironmentVector(const char **environment);
@@ -39,8 +49,10 @@ static bool booted = false;
 
 // vm_main_with_parameters() would install its own SIGSEGV/SIGBUS handlers.
 SwiftyPharoState
-swifty_pharo_boot(const char *imagePath, int argc, const char **argv, const char **environment)
+swifty_pharo_boot(const char *imagePath, int argc, const char **argv)
 {
+    const char **environment = process_environment;
+
     // The VM keeps its state in globals, so a second vm_init() would run over
     // the interpreter already using them and leave it jumping through null.
     if (booted)
