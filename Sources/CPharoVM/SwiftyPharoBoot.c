@@ -28,8 +28,6 @@ extern char **environ;
 #   define process_environment ((const char **)environ)
 #endif
 
-// Windows reaches an imported function through a thunk it writes itself, but
-// imported data has to say which library it lives in.
 #ifdef _WIN32
 #   define VM_IMPORT __declspec(dllimport)
 #else

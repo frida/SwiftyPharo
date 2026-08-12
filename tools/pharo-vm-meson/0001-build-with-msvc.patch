@@ -187,10 +187,13 @@ index f4a667d..f0e6150 100644
  	value = __rdtsc();
  #else
 diff --git a/src/ffi/worker/worker.c b/src/ffi/worker/worker.c
-index 74860d6..8295994 100644
+index 74860d6..f560d86 100644
 --- a/src/ffi/worker/worker.c
 +++ b/src/ffi/worker/worker.c
-@@ -3,7 +3,11 @@
+@@ -1,9 +1,14 @@
+ #include "pThreadedFFI.h"
+ #include "worker.h"
++#include "pharovm/exportDefinition.h"
  
  #include <stdio.h>
  #include <ffi.h>
@@ -203,6 +206,15 @@ index 74860d6..8295994 100644
  #include <errno.h>
  #include <stdlib.h>
  #include <string.h>
+@@ -82,7 +87,7 @@ void worker_callback_prepare(Runner* worker, CallbackInvocation *invocation){
+ static void executeWorkerTask(Worker *worker, WorkerTask *task);
+ 
+ 
+-Worker *worker_newSpawning(int spawn) {
++EXPORT(Worker *) worker_newSpawning(int spawn) {
+     Worker *worker = (Worker *)malloc(sizeof(Worker));
+     
+     worker->hasToQuit = false;
 diff --git a/src/parameters/parameters.c b/src/parameters/parameters.c
 index f6dc4c2..6bed286 100644
 --- a/src/parameters/parameters.c
