@@ -28,14 +28,22 @@ extern char **environ;
 #   define process_environment ((const char **)environ)
 #endif
 
-extern int vmRunOnWorkerThread;
+// Windows reaches an imported function through a thunk it writes itself, but
+// imported data has to say which library it lives in.
+#ifdef _WIN32
+#   define VM_IMPORT __declspec(dllimport)
+#else
+#   define VM_IMPORT
+#endif
+
+extern VM_IMPORT int vmRunOnWorkerThread;
 extern void setProcessArguments(int argc, const char **argv);
 extern void setProcessEnvironmentVector(const char **environment);
 extern void registerCurrentThreadToHandleExceptions(void);
 
 typedef struct Worker Worker;
 extern Worker *worker_newSpawning(int spawn);
-extern Worker *mainThreadWorker;
+extern VM_IMPORT Worker *mainThreadWorker;
 
 static VMParameters *newInterpreterParameters(const char *imagePath, int argc, const char **argv,
                                               const char **environment);
