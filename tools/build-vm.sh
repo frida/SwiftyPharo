@@ -206,6 +206,8 @@ write_libffi_cross_file() {
 # Upstream drives this from CMake; these are the same downloads it pins, and
 # doing it here is what lets the rest of the build be Meson alone.
 VMMAKER_VM_VERSION="${VMMAKER_VM_VERSION:-PharoVM-10.3.2-b8793dd2}"
+# Windows on ARM has its own build, and the newest one published for it.
+VMMAKER_ARM64_VM_VERSION="${VMMAKER_ARM64_VM_VERSION:-PharoVM-10.0.9-de76067}"
 VMMAKER_IMAGE_URL="${VMMAKER_IMAGE_URL:-https://files.pharo.org/image/130/Pharo13.0-SNAPSHOT.build.732.sha.e84a2d15c7.arch.64bit.zip}"
 # installVMMaker.st reads the last two arguments: where the sources are, and
 # whether Iceberg reaches GitHub over SSH or HTTPS.
@@ -239,16 +241,29 @@ fetch_generation_vm() {
 	local vmmaker_dir="$1"
 	local machine="$(uname -s)-$(uname -m)"
 	local binary="${vmmaker_dir}/vm/pharo"
+	local url="https://files.pharo.org/vm/pharo-spur64-headless/${machine}/${VMMAKER_VM_VERSION}-${machine}-bin.zip"
 
 	case "${machine}" in
-		Darwin-*) binary="${vmmaker_dir}/vm/Pharo.app/Contents/MacOS/Pharo" ;;
-		MINGW*|MSYS*) machine="Windows-x86_64"; binary="${vmmaker_dir}/vm/PharoConsole.exe" ;;
+		Darwin-*)
+			binary="${vmmaker_dir}/vm/Pharo.app/Contents/MacOS/Pharo"
+			;;
+		MINGW*|MSYS*)
+			binary="${vmmaker_dir}/vm/PharoConsole.exe"
+			# Git for Windows is an x86_64 build whatever it runs on, so uname
+			# answers for itself rather than for the machine.
+			if [ "${PROCESSOR_ARCHITECTURE:-}" = "ARM64" ] \
+					|| [ "${PROCESSOR_ARCHITEW6432:-}" = "ARM64" ]; then
+				# Only the stock replacement is built for this one, and only the
+				# headless tree carries the rest.
+				url="https://files.pharo.org/vm/pharo-spur64/Windows-ARM64/${VMMAKER_ARM64_VM_VERSION}-Windows-ARM64-stockReplacement-bin.zip"
+			else
+				url="https://files.pharo.org/vm/pharo-spur64-headless/Windows-x86_64/${VMMAKER_VM_VERSION}-Windows-x86_64-bin.zip"
+			fi
+			;;
 	esac
 
 	if [ ! -x "${binary}" ]; then
-		fetch_and_unzip \
-			"https://files.pharo.org/vm/pharo-spur64-headless/${machine}/${VMMAKER_VM_VERSION}-${machine}-bin.zip" \
-			"${vmmaker_dir}/vm" >&2
+		fetch_and_unzip "${url}" "${vmmaker_dir}/vm" >&2
 	fi
 
 	echo "${binary}"
