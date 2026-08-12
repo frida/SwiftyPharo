@@ -13,9 +13,7 @@ let pharoVMTarget: Target
 if let localVMRoot {
     pharoVMTarget = .binaryTarget(name: "PharoVM", path: localVMRoot)
 } else {
-    #if os(Windows)
-    pharoVMTarget = .systemLibrary(name: "PharoVM", path: "Sources/PharoVM")
-    #elseif canImport(Darwin)
+    #if canImport(Darwin)
     pharoVMTarget = .binaryTarget(
         name: "PharoVM",
         url: "https://github.com/frida/SwiftyPharo/releases/download/vm-\(vmVersion)/PharoVM.xcframework.zip",
