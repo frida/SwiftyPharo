@@ -237,6 +237,16 @@ generate_sources() {
 }
 
 # One headless VM per host, named the way files.pharo.org publishes them.
+# Git for Windows is an x86_64 build whatever machine it runs on, and Windows
+# tells an emulated process what it wants to hear: uname and the environment
+# both answer for the shell rather than for the machine. PowerShell is native
+# there, so it is the one that knows.
+windows_architecture() {
+	powershell.exe -NoProfile -Command \
+		'[System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture' \
+		2>/dev/null | tr -d '\r'
+}
+
 fetch_generation_vm() {
 	local vmmaker_dir="$1"
 	local machine="$(uname -s)-$(uname -m)"
@@ -249,10 +259,7 @@ fetch_generation_vm() {
 			;;
 		MINGW*|MSYS*)
 			binary="${vmmaker_dir}/vm/PharoConsole.exe"
-			# Git for Windows is an x86_64 build whatever it runs on, so uname
-			# answers for itself rather than for the machine.
-			if [ "${PROCESSOR_ARCHITECTURE:-}" = "ARM64" ] \
-					|| [ "${PROCESSOR_ARCHITEW6432:-}" = "ARM64" ]; then
+			if [ "$(windows_architecture)" = "Arm64" ]; then
 				# Only the stock replacement is built for this one, and only the
 				# headless tree carries the rest.
 				url="https://files.pharo.org/vm/pharo-spur64/Windows-ARM64/${VMMAKER_ARM64_VM_VERSION}-Windows-ARM64-stockReplacement-bin.zip"
