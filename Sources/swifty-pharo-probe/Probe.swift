@@ -19,7 +19,7 @@ struct Probe {
         runtime.boot(image: URL(fileURLWithPath: arguments[1]))
 
         for _ in 0..<200 where !swifty_pharo_bridge_is_ready() {
-            usleep(50000)
+            Thread.sleep(forTimeInterval: 0.05)
         }
         print("state: \(runtime.state), bridge: \(swifty_pharo_bridge_is_ready())")
 
