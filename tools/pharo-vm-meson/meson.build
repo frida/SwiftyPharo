@@ -286,8 +286,25 @@ endif
 # ioLoadModule() falls back to dlopen()ing a plugin by leaf name, which dyld
 # resolves through the rpaths of whoever called it -- the core. Naming itself
 # lets it find the plugins sitting beside it wherever the two are put.
+# The CRT's setjmp unwinds the stack, which is the one thing it must not do
+# around frames the JIT wrote. Upstream keeps a wrapper per architecture, in the
+# assembler Microsoft's own tools speak.
+setjmp_wrapper = []
+if is_windows and host_machine.cpu_family() == 'aarch64'
+  preprocessed = custom_target('setjmp-wrapper-preprocessed',
+    input: 'src/utils/setjmp-Windows-wrapper-ARM64.S',
+    output: 'setjmp-wrapper.asm',
+    command: [cc.cmd_array(), '/nologo', '/P', '/EP', '/I' + meson.current_source_dir(),
+              '@INPUT@', '/Fi@OUTPUT@'])
+  setjmp_wrapper = custom_target('setjmp-wrapper',
+    input: preprocessed,
+    output: 'setjmp-wrapper.obj',
+    command: [find_program('armasm64'), '/nologo', '/Fo', '@OUTPUT@', '@INPUT@'])
+endif
+
 core = shared_library('PharoVMCore',
   support_sources, ffi_sources, platform_sources, interpreter_sources, config_h,
+  setjmp_wrapper,
   include_directories: core_includes,
   c_args: core_args,
   dependencies: [ffi_dep, thread_dep, dl_dep, m_dep] + platform_deps,

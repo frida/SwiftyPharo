@@ -1,3 +1,18 @@
+diff --git a/include/pharovm/sigjmp_support.h b/include/pharovm/sigjmp_support.h
+index 36fe2c0..25fb4ba 100644
+--- a/include/pharovm/sigjmp_support.h
++++ b/include/pharovm/sigjmp_support.h
+@@ -14,7 +14,9 @@
+ #undef setjmp
+ #undef sigsetjmp
+ #undef siglongjmp
+-#if _MSC_VER && !__clang__
++// clang-cl builds against the same CRT, so it needs the same wrapper. On ARM64
++// it has no choice: the setjmp it would emit is one the CRT does not carry.
++#if _MSC_VER && (!__clang__ || defined(_M_ARM64))
+ // MSVC versions of setjmp and longjmp use the exception mechanism and do unwind the stack
+ // However, unwinding the stack does not work in the precense of native code generated dynamically by the JIT
+ // Use instead two definitions of setjmp and longjmp defined by ourselves for the current platform
 diff --git a/include/pharovm/win/pthreadCompat.h b/include/pharovm/win/pthreadCompat.h
 new file mode 100644
 index 0000000..c397573
@@ -146,6 +161,31 @@ index c7fdfd8..607cbe0 100644
  #include "pharovm/pharoClient.h"
  #include "pharovm/fileDialog.h"
  #include "pharovm/pathUtilities.h"
+diff --git a/src/common/heartbeat.c b/src/common/heartbeat.c
+index f4a667d..f0e6150 100644
+--- a/src/common/heartbeat.c
++++ b/src/common/heartbeat.c
+@@ -34,6 +34,9 @@
+ #include "aio.h"
+ 
+ #include "pharovm/debug.h"
++#ifdef _WIN32
++#   include <intrin.h>
++#endif
+ 
+ #define SecondsFrom1901To1970      2177452800LL
+ #define MicrosecondsFrom1901To1970 2177452800000000LL
+@@ -241,6 +244,10 @@ ioHighResClock(void)
+ 	/* On RISC-V, the time control status register is read through the rdtime instruction */
+ 	/* If the performance counter needs to be used, use rdcycle instead */
+ 	__asm__ __volatile__("rdtime %0" : "=r"(value));
++#elif defined(_WIN32) && defined(_M_ARM64)
++	/* The counter-timer is what an ARM machine keeps instead of the cycle count
++	 * an x86 lets a program read. */
++	value = _ReadStatusReg(ARM64_CNTVCT);
+ #elif defined(_WIN32)
+ 	value = __rdtsc();
+ #else
 diff --git a/src/ffi/worker/worker.c b/src/ffi/worker/worker.c
 index 74860d6..8295994 100644
 --- a/src/ffi/worker/worker.c
