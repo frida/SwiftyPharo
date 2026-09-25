@@ -14,7 +14,7 @@
 
 set -euo pipefail
 
-PHARO_VM_REPO="${PHARO_VM_REPO:-https://github.com/pharo-project/pharo-vm.git}"
+PHARO_VM_REPO="${PHARO_VM_REPO:-https://github.com/frida/pharo-vm.git}"
 PHARO_VM_REF="${PHARO_VM_REF:-pharo-12}"
 LIBFFI_REPO="${LIBFFI_REPO:-https://github.com/frida/libffi.git}"
 PLATFORM="${PLATFORM:-macos}"
@@ -90,7 +90,6 @@ case "${PLATFORM}" in
 esac
 
 arch="${architectures//;/_}"
-generated_dir="${checkout_dir}/generate-${flavour}"
 slice_dir="${output_dir}/slices/${PLATFORM}-${arch}"
 libffi_dir="${work_dir}/libffi"
 libffi_prefix="${work_dir}/libffi-${PLATFORM}"
@@ -135,34 +134,12 @@ cpu_count() {
 
 sync_checkout() {
 	if [ -d "${checkout_dir}/.git" ]; then
-		git -C "${checkout_dir}" fetch --depth 1 origin "${PHARO_VM_REF}"
+		git -C "${checkout_dir}" fetch --depth 1 "${PHARO_VM_REPO}" "${PHARO_VM_REF}"
 		git -C "${checkout_dir}" checkout -q --force FETCH_HEAD
-		# What the patch adds is untracked, and a checkout leaves it behind for
-		# the next apply to trip over. Slang's output is expensive and stays.
-		git -C "${checkout_dir}" clean -qfd -e 'generate-*' -e 'build-*'
 	else
 		mkdir -p "$(dirname "${checkout_dir}")"
 		git clone -q --depth 1 --branch "${PHARO_VM_REF}" "${PHARO_VM_REPO}" "${checkout_dir}"
 	fi
-}
-
-# The Meson build lives here rather than upstream, and wants to sit beside the
-# sources it names.
-add_meson_build() {
-	cp "${script_dir}/pharo-vm-meson/meson.build" \
-	   "${script_dir}/pharo-vm-meson/meson.options" "${checkout_dir}/"
-	cp "${script_dir}/pharo-vm-meson/config.h.in" "${checkout_dir}/swifty-config.h.in"
-}
-
-# Upstream's Windows support is written for the toolchain it builds with there,
-# which is MinGW's; the one that goes with Swift is MSVC's.
-add_msvc_support() {
-	git -C "${checkout_dir}" apply "${script_dir}/pharo-vm-meson/0001-build-with-msvc.patch"
-}
-
-add_ios_support() {
-	# Unused — NSBundle is Foundation — and absent on iOS.
-	perl -ni -e 'print unless m{#import <Cocoa/Cocoa\.h>}' "${checkout_dir}/src/osx/utilsMac.mm"
 }
 
 # iPhoneOS ships no libffi, and pharo's does not cross-compile.
@@ -224,117 +201,8 @@ write_libffi_cross_file() {
 	EOF
 }
 
-# Slang runs a Pharo image to write the interpreter and the plugin primitives.
-# Upstream drives this from CMake; these are the same downloads it pins, and
-# doing it here is what lets the rest of the build be Meson alone.
-VMMAKER_VM_VERSION="${VMMAKER_VM_VERSION:-PharoVM-10.3.2-b8793dd2}"
-# Windows on ARM has its own build, and the newest one published for it.
-VMMAKER_ARM64_VM_VERSION="${VMMAKER_ARM64_VM_VERSION:-PharoVM-10.0.9-de76067}"
-VMMAKER_IMAGE_URL="${VMMAKER_IMAGE_URL:-https://files.pharo.org/image/130/Pharo13.0-SNAPSHOT.build.732.sha.e84a2d15c7.arch.64bit.zip}"
-# installVMMaker.st reads the last two arguments: where the sources are, and
-# whether Iceberg reaches GitHub over SSH or HTTPS.
-ICEBERG_REMOTE="${ICEBERG_REMOTE:-httpsUrl}"
-
-generate_sources() {
-	if [ -d "${generated_dir}/generated" ]; then
-		return
-	fi
-
-	local vmmaker_dir="${work_dir}/vmmaker"
-	local vm="$(fetch_generation_vm "${vmmaker_dir}")"
-	local image="${vmmaker_dir}/image/VMMaker.image"
-
-	if [ ! -f "${image}" ]; then
-		fetch_and_unzip "${VMMAKER_IMAGE_URL}" "${vmmaker_dir}/image"
-		"${vm}" --headless "${vmmaker_dir}/image"/Pharo*.image \
-			--no-default-preferences save VMMaker
-		"${vm}" --headless "${image}" --no-default-preferences --save --quit \
-			"${checkout_dir}/scripts/installVMMaker.st" \
-			"${checkout_dir}" "${ICEBERG_REMOTE}"
-	fi
-
-	mkdir -p "${generated_dir}"
-	"${vm}" --headless "${image}" --no-default-preferences \
-		perform PharoVMMaker generate:outputDirectory: "${flavour}" "${generated_dir}"
-}
-
-# One headless VM per host, named the way files.pharo.org publishes them.
-fetch_generation_vm() {
-	local vmmaker_dir="$1"
-	local machine="$(uname -s)-$(uname -m)"
-	local binary="${vmmaker_dir}/vm/pharo"
-	local url="https://files.pharo.org/vm/pharo-spur64-headless/${machine}/${VMMAKER_VM_VERSION}-${machine}-bin.zip"
-
-	case "${machine}" in
-		Darwin-*)
-			binary="${vmmaker_dir}/vm/Pharo.app/Contents/MacOS/Pharo"
-			;;
-		MINGW*|MSYS*)
-			binary="${vmmaker_dir}/vm/PharoConsole.exe"
-			if [ "$(windows_architecture)" = "ARM64" ]; then
-				# Only the stock replacement is built for this one, and only the
-				# headless tree carries the rest.
-				url="https://files.pharo.org/vm/pharo-spur64/Windows-ARM64/${VMMAKER_ARM64_VM_VERSION}-Windows-ARM64-stockReplacement-bin.zip"
-			else
-				url="https://files.pharo.org/vm/pharo-spur64-headless/Windows-x86_64/${VMMAKER_VM_VERSION}-Windows-x86_64-bin.zip"
-			fi
-			;;
-	esac
-
-	if [ ! -x "${binary}" ]; then
-		fetch_and_unzip "${url}" "${vmmaker_dir}/vm" >&2
-	fi
-
-	echo "${binary}"
-}
-
-fetch_and_unzip() {
-	local url="$1"
-	local destination="$2"
-	local archive="${destination}.zip"
-
-	mkdir -p "${destination}"
-	curl -sSL "${url}" -o "${archive}"
-	# Git for Windows is the bash a Windows build has, and it ships no unzip.
-	if command -v unzip >/dev/null 2>&1; then
-		unzip -qo "${archive}" -d "${destination}"
-	else
-		python -c "import sys, zipfile; zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])" \
-			"${archive}" "${destination}"
-	fi
-	rm -f "${archive}"
-}
-
-# The VM asks for its code zone and stack pages at fixed addresses and gives up
-# when something already holds them -- in Luma that is JavaScriptCore, whose own
-# JIT claims the same range. Neither address is read as a constant anywhere, so
-# let them settle wherever mmap put them; not getting a preferred address is not
-# an error. The object memory spaces are left alone: their addresses *are* baked
-# into the young/old masks and the pointer classification.
-relocatable_regions=(codeZone stack)
-
-tolerate_relocated_regions() {
-	local generated region
-	for generated in "${generated_dir}"/generated/64/vm/src/*interp.c; do
-		for region in "${relocatable_regions[@]}"; do
-			perl -0pi -e "s/logError\\(\"Could not allocate ${region} in the expected place([^\\n]*)\\n\\s*error\\(\"Error allocating\"\\);\\n/logDebug(\"Could not allocate ${region} in the expected place\$1\\n/" "${generated}"
-		done
-	done
-}
-
-# Slang gives every JIT backend the pthread header, and the only thing any of
-# them asks of it is Apple's write-protect toggle, which already sits behind
-# __APPLE__. Windows ships no such header; a build that finds one has found a
-# mingw toolchain's, which is not what clang-cl should be reading.
-confine_pthread_to_apple() {
-	local generated
-	for generated in "${generated_dir}"/generated/64/vm/src/cogit*.c; do
-		perl -0pi -e 's/(?:#if __APPLE__\n)?#include <pthread\.h>\n(?:#endif\n)?/#if __APPLE__\n#include <pthread.h>\n#endif\n/' "${generated}"
-	done
-}
-
-# Slang aside, every platform builds the same way; only the machine file and the
-# plugin set differ, and Meson takes both as arguments.
+# Every platform builds the same way; only the machine file and the plugin set
+# differ, and Meson takes both as arguments.
 configure_and_build() {
 	local architecture="$1"
 	local build_dir="${meson_build_dir}-${architecture}"
@@ -343,7 +211,6 @@ configure_and_build() {
 		--libdir "${LIBDIR#"${PREFIX}"/}"
 		--includedir "${INCLUDEDIR#"${PREFIX}"/}"
 		--buildtype release
-		-Dgenerated_dir="$(basename "${generated_dir}")/generated/64"
 		-Dflavour="${flavour}"
 	)
 
@@ -353,7 +220,6 @@ configure_and_build() {
 		if [ -n "${sysroot}" ]; then
 			options+=(
 				--cross-file "${machine_file}"
-				-Dios=true
 				--pkg-config-path "${libffi_prefix}/lib/pkgconfig"
 			)
 		else
@@ -636,15 +502,9 @@ report() {
 }
 
 sync_checkout
-add_meson_build
-add_msvc_support
-add_ios_support
 if [ -n "${sysroot}" ]; then
 	build_libffi
 fi
-generate_sources
-tolerate_relocated_regions
-confine_pthread_to_apple
 build_and_stage
 if [ "${staging}" = "framework" ]; then
 	stage_framework

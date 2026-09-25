@@ -99,11 +99,11 @@ tools/make-xcframework.sh
 ```
 
 macOS gets the Cog JIT; iOS gets the plain interpreter, since the JIT wants
-writable-executable memory that iOS withholds. pharo-vm has no iOS platform file
-and links AppKit for its image-picker dialog, so `tools/pharo-vm-ios/iOS.cmake`
-supplies one and swaps in the Unix no-op dialog. libffi comes from
-[frida/libffi](https://github.com/frida/libffi): the iPhoneOS SDK ships none,
-and pharo's own copy does not cross-compile.
+writable-executable memory that iOS withholds. The VM comes from
+[frida/pharo-vm](https://github.com/frida/pharo-vm), whose Meson build runs Slang
+itself, builds with MSVC, and gives iOS the Unix no-op dialog in place of the
+AppKit one. libffi comes from [frida/libffi](https://github.com/frida/libffi):
+the iPhoneOS SDK ships none, and pharo's own copy does not cross-compile.
 
 macOS builds arm64 and x86_64 in one pass, so the slice is already universal.
 The `VM` workflow builds all three on CI, and pushing a `vm-*` tag publishes the
