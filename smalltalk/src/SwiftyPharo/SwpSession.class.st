@@ -35,6 +35,11 @@ SwpSession >> objectAt: aHandle [
 ]
 
 { #category : 'handles' }
+SwpSession >> handlesOf: anObject [
+	^ objectsByHandle keys select: [ :handle | (objectsByHandle at: handle) == anObject ]
+]
+
+{ #category : 'handles' }
 SwpSession >> release: aHandle [
 	objectsByHandle removeKey: aHandle ifAbsent: [ nil ]
 ]

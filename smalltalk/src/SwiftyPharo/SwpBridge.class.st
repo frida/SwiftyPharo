@@ -25,6 +25,16 @@ SwpBridge class >> install [
 	^ Installed ifNil: [ Installed := self new install ]
 ]
 
+{ #category : 'accessing' }
+SwpBridge class >> current [
+	^ Installed
+]
+
+{ #category : 'accessing' }
+SwpBridge >> session [
+	^ session
+]
+
 { #category : 'installing' }
 SwpBridge >> install [
 	session := SwpSession new.
