@@ -17,6 +17,7 @@ set -euo pipefail
 PHARO_VM_REPO="${PHARO_VM_REPO:-https://github.com/frida/pharo-vm.git}"
 PHARO_VM_REF="${PHARO_VM_REF:-pharo-12}"
 LIBFFI_REPO="${LIBFFI_REPO:-https://github.com/frida/libffi.git}"
+LIBFFI_REF="${LIBFFI_REF:-3fe3257235cc9ffd192e1cd567f1bdfff751fa3e}"
 PLATFORM="${PLATFORM:-macos}"
 # pharo-vm hardcodes this; a newer libffi warns on every object.
 IOS_MINIMUM_VERSION="${IOS_MINIMUM_VERSION:-11.0}"
@@ -149,7 +150,9 @@ build_libffi() {
 	fi
 
 	if [ ! -d "${libffi_dir}/.git" ]; then
-		git clone -q --depth 1 "${LIBFFI_REPO}" "${libffi_dir}"
+		git init -q "${libffi_dir}"
+		git -C "${libffi_dir}" fetch -q --depth 1 "${LIBFFI_REPO}" "${LIBFFI_REF}"
+		git -C "${libffi_dir}" checkout -q FETCH_HEAD
 	fi
 
 	local cross_file="${work_dir}/libffi-${PLATFORM}.cross"
@@ -160,6 +163,7 @@ build_libffi() {
 		--prefix "${libffi_prefix}" \
 		--default-library static \
 		--buildtype release \
+		-Dtests=false \
 		--wipe
 	meson install -C "${work_dir}/libffi-build-${PLATFORM}"
 }
