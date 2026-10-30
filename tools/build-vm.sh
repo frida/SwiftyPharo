@@ -14,9 +14,9 @@
 
 set -euo pipefail
 
-PHARO_VM_REPO="${PHARO_VM_REPO:-https://github.com/frida/pharo-vm.git}"
+PHARO_VM_REPO="${PHARO_VM_REPO:-https://github.com/frida-forks/pharo-vm.git}"
 PHARO_VM_REF="${PHARO_VM_REF:-pharo-12}"
-LIBFFI_REPO="${LIBFFI_REPO:-https://github.com/frida/libffi.git}"
+LIBFFI_REPO="${LIBFFI_REPO:-https://github.com/frida-forks/libffi.git}"
 LIBFFI_REF="${LIBFFI_REF:-3fe3257235cc9ffd192e1cd567f1bdfff751fa3e}"
 PLATFORM="${PLATFORM:-macos}"
 # pharo-vm hardcodes this; a newer libffi warns on every object.
