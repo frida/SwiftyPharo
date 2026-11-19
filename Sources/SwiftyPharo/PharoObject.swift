@@ -170,6 +170,11 @@ struct PharoFailure: Decodable {
     let error: String
     let message: String?
     let position: Int?
+
+    var description: String {
+        guard let message, !message.isEmpty else { return error }
+        return message
+    }
 }
 
 struct PharoViewList: Decodable {
