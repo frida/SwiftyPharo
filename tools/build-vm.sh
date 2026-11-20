@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Builds a trimmed Pharo VM, plus the plugins the VM dlopens at runtime.
+# Builds a trimmed Pharo VM, with its plugins linked into the core.
 #
 # Apple platforms get one xcframework slice each; combine them with
 # make-xcframework.sh. Elsewhere the manifest resolves a system library, so the
@@ -106,25 +106,6 @@ LIBDIR="${LIBDIR:-${PREFIX}/lib}"
 INCLUDEDIR="${INCLUDEDIR:-${PREFIX}/include}"
 destdir="${DESTDIR-${output_dir}/destdir/${PLATFORM}-${arch}}"
 
-# A desktop build makes every plugin by default; a cross build makes only what
-# it is asked for. These are the ones the image reaches for -- without them it
-# starts without files, without locales and without large integers, which is far
-# enough short of an image that the bridge never installs. SqueakSSL is not
-# among them: its Mac sources reach for keychain search keys iOS withholds.
-ios_plugins=(
-	FilePlugin
-	NewFilePlugin
-	FileAttributesPlugin
-	SocketPlugin
-	UUIDPlugin
-	LocalePlugin
-	LargeIntegers
-	MiscPrimitivePlugin
-	BitBltPlugin
-	SurfacePlugin
-	FloatArrayPlugin
-)
-
 cpu_count() {
 	if command -v nproc >/dev/null 2>&1; then
 		nproc
@@ -205,8 +186,8 @@ write_libffi_cross_file() {
 	EOF
 }
 
-# Every platform builds the same way; only the machine file and the plugin set
-# differ, and Meson takes both as arguments.
+# Every platform builds the same way; only the machine file differs, and Meson
+# takes it as an argument.
 configure_and_build() {
 	local architecture="$1"
 	local build_dir="${meson_build_dir}-${architecture}"
@@ -216,6 +197,7 @@ configure_and_build() {
 		--includedir "${INCLUDEDIR#"${PREFIX}"/}"
 		--buildtype release
 		-Dflavour="${flavour}"
+		-Dstatic_plugins=all
 	)
 
 	if [ "${staging}" = "framework" ]; then
@@ -291,7 +273,7 @@ built_libraries_dir() {
 	echo "${staged_prefix}${LIBDIR}"
 }
 
-# A framework keeps the core and its plugins together as one embeddable piece.
+# A framework keeps the core and its headers together as one embeddable piece.
 stage_framework() {
 	rm -rf "${slice_dir}"
 
@@ -310,7 +292,6 @@ stage_framework() {
 
 	sign_adhoc "${contents}/PharoVM"
 
-	stage_plugins_into "${contents}" "${install_name}"
 	stage_headers_into "${contents}/Headers"
 	write_framework_plist "${contents}"
 
@@ -322,30 +303,6 @@ stage_framework() {
 	fi
 
 	sign_adhoc "${framework}"
-}
-
-# Inside a framework the core is the framework's own binary rather than a dylib
-# beside the plugins, so that one reference is rewritten. Everything else was
-# named by rpath when it was built: a plugin that keeps pointing at the install
-# prefix fails to load, and the VM then answers a request for its primitives out
-# of whichever plugin did load.
-stage_plugins_into() {
-	local destination="$1"
-	local install_name="$2"
-	local plugin name staged
-
-	for plugin in "$(built_libraries_dir)"/*.dylib; do
-		name="$(basename "${plugin}")"
-		case "${name}" in
-			libPharoVMCore.dylib) continue ;;
-		esac
-
-		staged="${destination}/${name}"
-		cp "${plugin}" "${staged}"
-		install_name_tool -change "@rpath/libPharoVMCore.dylib" \
-			"${install_name}" "${staged}"
-		sign_adhoc "${staged}"
-	done
 }
 
 # Rewriting load commands invalidates a signature, and a framework will not sign
@@ -395,9 +352,7 @@ build_and_stage() {
 # Meson stamps every library with where it was installed, and an Apple build is
 # run from anywhere but there: from the staged tree while the image is built,
 # from inside the app once the framework is dropped in. Naming them by rpath
-# lets both work -- one that keeps pointing at the install prefix fails to load,
-# and the VM then answers a request for its primitives out of whichever plugin
-# did load.
+# lets both work -- one that keeps pointing at the install prefix fails to load.
 name_staged_libraries_by_rpath() {
 	local library name recorded
 
