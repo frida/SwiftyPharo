@@ -423,10 +423,13 @@ stage_headers_into() {
 write_framework_plist() {
 	local destination="$1"
 	local plist="${destination}/Info.plist"
+	local minimum_version=""
 
 	if [ -z "${sysroot}" ]; then
 		mkdir -p "${destination}/Resources"
 		plist="${destination}/Resources/Info.plist"
+	else
+		minimum_version="<key>MinimumOSVersion</key><string>${IOS_MINIMUM_VERSION}</string>"
 	fi
 
 	cat > "${plist}" <<-EOF
@@ -440,6 +443,7 @@ write_framework_plist() {
 			<key>CFBundlePackageType</key><string>FMWK</string>
 			<key>CFBundleVersion</key><string>1</string>
 			<key>CFBundleShortVersionString</key><string>1.0</string>
+			${minimum_version}
 		</dict>
 		</plist>
 	EOF
