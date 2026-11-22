@@ -29,8 +29,7 @@ SwpMondrianView >> capturedMondrian: aMondrian [
 SwpMondrianView >> capture [
 	| mondrian |
 	mondrian := SwpMondrian new.
-	paintingBlock ifNotNil: [
-		[ paintingBlock value: mondrian ] on: Error do: [ :error | nil ] ].
+	paintingBlock ifNotNil: [ paintingBlock value: mondrian ].
 	^ mondrian
 ]
 

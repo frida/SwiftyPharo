@@ -68,14 +68,10 @@ SwpMondrian >> nodeLimit [
 
 { #category : 'building' }
 SwpMondrian >> labelFor: aModel with: aLabelBlock stencil: aStencilBlock [
-	aLabelBlock ifNotNil: [
-		^ self truncate:
-			  ([ (aLabelBlock value: aModel) asString ]
-				   on: Error
-				   do: [ :error | self displayFor: aModel ]) ].
+	aLabelBlock ifNotNil: [ ^ self truncate: (aLabelBlock value: aModel) asString ].
 	aStencilBlock ifNotNil: [
 		SwpVisualStub resetCapture.
-		[ aStencilBlock value: aModel ] on: Error do: [ :error | nil ].
+		aStencilBlock value: aModel.
 		SwpVisualStub capturedLabel ifNotNil: [ :text |
 			^ self truncate: text ] ].
 	^ self truncate: (self displayFor: aModel)
@@ -90,7 +86,7 @@ SwpMondrian >> truncate: aString [
 
 { #category : 'building' }
 SwpMondrian >> displayFor: aModel [
-	^ [ aModel displayString ] on: Error do: [ :error | aModel printString ]
+	^ aModel displayString
 ]
 
 { #category : 'building' }

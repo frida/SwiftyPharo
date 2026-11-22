@@ -27,10 +27,38 @@ SwpViewCollectorTest >> testAViewAnsweringNilSaysSo [
 ]
 
 { #category : 'tests' }
+SwpViewCollectorTest >> testAFailingStencilShowsItsError [
+	| declaration |
+	declaration := self declarationOf: #gtFailingChartFor:.
+	self assert: (declaration at: #title) equals: 'Chart (Error)'.
+	self assert: (declaration at: #text) equals: 'gtFailingChartFor: raised ' , ZeroDivide new description
+]
+
+{ #category : 'tests' }
+SwpViewCollectorTest >> testAStencilAnsweringNoChartSaysSo [
+	self
+		assert: ((self declarationOf: #gtNotAChartFor:) at: #text)
+		equals: 'gtNotAChartFor: raised Error: the stencil answered 42, which is not a chart'
+]
+
+{ #category : 'tests' }
 SwpViewCollectorTest >> testAForwardNamesTheViewItReached [
 	self
 		assert: ((self declarationOf: #gtForwardFor:) at: #text)
 		equals: 'gtForwardFor: raised Error: gtRaisingFor: raised ' , self frobnicateDescription
+]
+
+{ #category : 'tests' }
+SwpViewCollectorTest >> testAPaintingThatRaisesShowsItsError [
+	| declaration |
+	declaration := self declarationOf: #gtPaintingFor:.
+	self assert: (declaration at: #title) equals: 'Painting (Error)'.
+	self assert: (declaration at: #text) equals: 'gtPaintingFor: raised ' , ZeroDivide new description
+]
+
+{ #category : 'tests' }
+SwpViewCollectorTest >> testAViewMethodStillRaisesWhenSentDirectly [
+	self should: [ (SwpBrokenProbe new gtFailingChartFor: SwpEmptyView new) declaration ] raise: ZeroDivide
 ]
 
 { #category : 'accessing' }

@@ -3,8 +3,7 @@ Class {
 	#superclass : 'SwpView',
 	#instVars : [
 		'stencilBlock',
-		'chart',
-		'captured'
+		'chart'
 	],
 	#category : 'SwiftyPharo',
 	#package : 'SwiftyPharo'
@@ -17,25 +16,22 @@ SwpExplicitView >> stencil: aBlock [
 
 { #category : 'accessing' }
 SwpExplicitView >> chart [
-	captured ifNil: [
-		chart := self runStencil.
-		captured := true ].
-	^ chart
+	^ chart ifNil: [ chart := self runStencil ]
 ]
 
 { #category : 'accessing' }
 SwpExplicitView >> runStencil [
 	| result |
-	stencilBlock ifNil: [ ^ nil ].
-	result := [ stencilBlock valueWithEnoughArguments: #() ]
-		          on: Error
-		          do: [ :error | nil ].
-	^ (result isKindOf: SwpChart) ifTrue: [ result ] ifFalse: [ nil ]
+	stencilBlock ifNil: [ self error: 'the view was given no stencil' ].
+	result := stencilBlock valueWithEnoughArguments: #().
+	(result isKindOf: SwpChart) ifFalse: [
+		self error: 'the stencil answered ' , result printString , ', which is not a chart' ].
+	^ result
 ]
 
 { #category : 'testing' }
 SwpExplicitView >> isEmpty [
-	^ self chart isNil or: [ self chart isEmpty ]
+	^ self chart isEmpty
 ]
 
 { #category : 'accessing' }

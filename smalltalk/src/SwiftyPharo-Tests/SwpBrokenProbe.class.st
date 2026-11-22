@@ -34,10 +34,34 @@ SwpBrokenProbe >> gtNilFor: aView [
 ]
 
 { #category : 'views' }
+SwpBrokenProbe >> gtFailingChartFor: aView [
+	<gtView>
+	^ aView explicit
+		title: 'Chart';
+		stencil: [ 1 / 0 ]
+]
+
+{ #category : 'views' }
+SwpBrokenProbe >> gtNotAChartFor: aView [
+	<gtView>
+	^ aView explicit
+		title: 'Not a chart';
+		stencil: [ 42 ]
+]
+
+{ #category : 'views' }
 SwpBrokenProbe >> gtForwardFor: aView [
 	<gtView>
 	^ aView forward
 		title: 'Forward';
 		object: [ self ];
 		view: #gtRaisingFor:
+]
+
+{ #category : 'views' }
+SwpBrokenProbe >> gtPaintingFor: aView [
+	<gtView>
+	^ aView mondrian
+		title: 'Painting';
+		painting: [ :mondrian | 1 / 0 ]
 ]

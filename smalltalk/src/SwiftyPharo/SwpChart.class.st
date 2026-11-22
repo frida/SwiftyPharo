@@ -107,9 +107,8 @@ SwpChart >> pointLabel: aLabel x: anX y: aY [
 { #category : 'converting' }
 SwpChart >> numberFrom: aValue [
 	aValue isNumber ifTrue: [ ^ aValue asFloat ].
-	^ [ aValue asSeconds asFloat ]
-		  on: Error
-		  do: [ :error | [ aValue asFloat ] on: Error do: [ :inner | 0.0 ] ]
+	(aValue respondsTo: #asSeconds) ifTrue: [ ^ aValue asSeconds asFloat ].
+	^ aValue asFloat
 ]
 
 { #category : 'converting' }
