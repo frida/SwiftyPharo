@@ -28,12 +28,14 @@ SwpForwardView >> resolvedView [
 
 { #category : 'resolving' }
 SwpForwardView >> resolveView [
-	| target |
+	| target view |
 	viewSelector ifNil: [ ^ nil ].
 	target := objectSource isBlock
 		          ifTrue: [ objectSource value ]
 		          ifFalse: [ objectSource ].
-	^ SwpViewCollector viewOf: target bySending: viewSelector
+	view := SwpViewCollector viewOf: target bySending: viewSelector.
+	(view isKindOf: SwpErrorView) ifTrue: [ self error: view text ].
+	^ view
 ]
 
 { #category : 'testing' }

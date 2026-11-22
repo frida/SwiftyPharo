@@ -17,11 +17,7 @@ SwpViewCollector class >> declarationsFor: anObject [
 	message the shim does not answer -- costs only itself, not the object's
 	other views."
 
-	^ Array streamContents: [ :stream |
-		  (self viewsFor: anObject) do: [ :each |
-			  [ stream nextPut: each declaration ]
-				  on: Error
-				  do: [ :error | nil ] ] ]
+	^ (self viewsFor: anObject) collect: [ :each | self declarationOf: each ] as: Array
 ]
 
 { #category : 'collecting' }
@@ -37,10 +33,15 @@ SwpViewCollector class >> viewsFor: anObject [
 ]
 
 { #category : 'collecting' }
+SwpViewCollector class >> declarationOf: aView [
+	^ [ aView declaration ]
+		  on: Error
+		  do: [ :error | (SwpErrorView replacing: aView saying: 'raised ' , error description) declaration ]
+]
+
+{ #category : 'collecting' }
 SwpViewCollector class >> gtViewsFor: anObject [
-	^ (self gtViewSelectorsFor: anObject)
-		  collect: [ :selector | self viewOf: anObject bySending: selector ]
-		  thenSelect: [ :view | view notNil ]
+	^ (self gtViewSelectorsFor: anObject) collect: [ :selector | self viewOf: anObject bySending: selector ]
 ]
 
 { #category : 'collecting' }
@@ -57,14 +58,17 @@ SwpViewCollector class >> gtViewSelectorsFor: anObject [
 
 { #category : 'collecting' }
 SwpViewCollector class >> viewOf: anObject bySending: aSelector [
-	"A <gtView> that reaches past the shim -- a Bloc canvas, an action the shim
-	does not model -- drops out here rather than failing the whole collection."
-
-	^ [
-	  | view |
-	  view := anObject perform: aSelector with: SwpEmptyView new.
-	  view methodSelector: aSelector.
-	  view ] on: Error do: [ :error | nil ]
+	| view |
+	view := [ anObject perform: aSelector with: SwpEmptyView new ]
+		        on: Error
+		        do: [ :error | ^ SwpErrorView of: aSelector saying: 'raised ' , error description ].
+	(view isKindOf: SwpView) ifFalse: [
+		^ SwpErrorView of: aSelector saying: 'answered ' , view printString , ', which is not a view' ].
+	view priority isNumber ifFalse: [
+		^ SwpErrorView of: aSelector saying: 'gave the priority ' , view priority printString , ', which is not a number' ].
+	^ view
+		  methodSelector: aSelector;
+		  yourself
 ]
 
 { #category : 'collecting' }
@@ -105,8 +109,11 @@ SwpViewCollector class >> viewOf: anObject byBuilding: aPragma [
 		             perform: aPragma methodSelector
 		             with: self presenterBuilder ]
 		             on: Error
-		             do: [ :error | nil ].
-	presenter ifNil: [ ^ nil ].
+		             do: [ :error |
+			             ^ (SwpErrorView of: aPragma methodSelector saying: 'raised ' , error description)
+				               title: aPragma arguments second , ' (Error)';
+				               priority: aPragma arguments first;
+				               yourself ].
 
 	view := self viewOfPresenter: presenter.
 	view ifNil: [ ^ nil ].
