@@ -29,7 +29,7 @@ SwpViewCollector class >> viewsFor: anObject [
 	| views |
 	views := (self gtViewsFor: anObject) , (self inspectorViewsFor: anObject).
 	views := views reject: [ :each | each isKindOf: SwpEmptyView ].
-	^ views asSortedCollection: [ :a :b | a priority <= b priority ]
+	^ views asSortedCollection: #priority ascending , #methodSelector ascending
 ]
 
 { #category : 'collecting' }
@@ -64,7 +64,7 @@ SwpViewCollector class >> viewOf: anObject bySending: aSelector [
 		        do: [ :error | ^ SwpErrorView of: aSelector saying: 'raised ' , error description ].
 	(view isKindOf: SwpView) ifFalse: [
 		^ SwpErrorView of: aSelector saying: 'answered ' , view printString , ', which is not a view' ].
-	view priority isNumber ifFalse: [
+	(view priority isNumber and: [ view priority isNaN not ]) ifFalse: [
 		^ SwpErrorView of: aSelector saying: 'gave the priority ' , view priority printString , ', which is not a number' ].
 	^ view
 		  methodSelector: aSelector;

@@ -55,7 +55,7 @@ SwpForwardView >> declaration [
 	^ inner declaration
 		at: #methodSelector put: self methodSelector;
 		at: #title put: (title ifNil: [ inner title ]);
-		at: #priority put: (priority ifNil: [ inner priority ]);
+		at: #priority put: (self finite: (priority ifNil: [ inner priority ]));
 		yourself
 ]
 

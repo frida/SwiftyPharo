@@ -23,7 +23,7 @@ public struct PharoObject: Sendable, Decodable {
 public struct PharoViewDeclaration: Sendable, Decodable {
     public let viewName: String
     public let title: String
-    public let priority: Int
+    public let priority: Double
     public let methodSelector: String
     public let columns: [String]?
     public let text: String?
@@ -34,7 +34,7 @@ public struct PharoViewDeclaration: Sendable, Decodable {
     public init(
         viewName: String,
         title: String,
-        priority: Int,
+        priority: Double,
         methodSelector: String,
         columns: [String]? = nil,
         text: String? = nil,
@@ -51,6 +51,54 @@ public struct PharoViewDeclaration: Sendable, Decodable {
         self.graph = graph
         self.chart = chart
         self.canvas = canvas
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let methodSelector = try container.decode(String.self, forKey: .methodSelector)
+        do {
+            self.init(
+                viewName: try container.decode(String.self, forKey: .viewName),
+                title: try container.decode(String.self, forKey: .title),
+                priority: try container.decode(Double.self, forKey: .priority),
+                methodSelector: methodSelector,
+                columns: try container.decodeIfPresent([String].self, forKey: .columns),
+                text: try container.decodeIfPresent(String.self, forKey: .text),
+                graph: try container.decodeIfPresent(PharoGraph.self, forKey: .graph),
+                chart: try container.decodeIfPresent(PharoChart.self, forKey: .chart),
+                canvas: try container.decodeIfPresent(PharoCanvasReference.self, forKey: .canvas))
+        } catch let error as DecodingError {
+            self.init(
+                viewName: "text",
+                title: (try? container.decode(String.self, forKey: .title)).map { "\($0) (Error)" } ?? "Error",
+                priority: (try? container.decode(Double.self, forKey: .priority)) ?? 75,
+                methodSelector: methodSelector,
+                text: "\(methodSelector) \(Self.reason(for: error, below: decoder.codingPath))")
+        }
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case viewName
+        case title
+        case priority
+        case methodSelector
+        case columns
+        case text
+        case graph
+        case chart
+        case canvas
+    }
+
+    private static func reason(for error: DecodingError, below path: [any CodingKey]) -> String {
+        switch error {
+        case .keyNotFound(let key, _):
+            return "declared no \(key.stringValue)"
+        case .typeMismatch(_, let context), .valueNotFound(_, let context), .dataCorrupted(let context):
+            let field = context.codingPath.dropFirst(path.count).map(\.stringValue).joined(separator: ".")
+            return "declared a \(field) that cannot be shown: \(context.debugDescription)"
+        @unknown default:
+            return "declared what cannot be shown: \(error)"
+        }
     }
 }
 

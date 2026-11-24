@@ -113,7 +113,7 @@ SwpView >> declaration [
 	^ Dictionary new
 		at: #viewName put: self typeName;
 		at: #title put: self title;
-		at: #priority put: self priority;
+		at: #priority put: (self finite: self priority);
 		at: #methodSelector put: self methodSelector;
 		yourself
 ]
@@ -121,4 +121,9 @@ SwpView >> declaration [
 { #category : 'accessing' }
 SwpView >> typeName [
 	^ self subclassResponsibility
+]
+
+{ #category : 'converting' }
+SwpView >> finite: aNumber [
+	^ (aNumber max: Float fmax negated) min: Float fmax
 ]
