@@ -26,6 +26,7 @@ SwpSession >> initialize [
 SwpSession >> handleFor: anObject [
 	nextHandle := nextHandle + 1.
 	objectsByHandle at: nextHandle put: anObject.
+	SwpRequestHandles value ifNotNil: [ :handles | handles add: nextHandle ].
 	^ nextHandle
 ]
 

@@ -17,6 +17,8 @@ SWIFTY_PHARO_RESOLVED_BY_NAME char *swifty_pharo_next_message(void);
 
 SWIFTY_PHARO_RESOLVED_BY_NAME void swifty_pharo_reply(int64_t request, const char *reply);
 
+SWIFTY_PHARO_RESOLVED_BY_NAME void swifty_pharo_interrupted(int64_t request);
+
 #define SWIFTY_PHARO_BRIDGE_UNAVAILABLE (-1)
 
 typedef void (*SwiftyPharoReplyHandler)(int64_t request, const char *reply);

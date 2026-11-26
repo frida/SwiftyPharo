@@ -101,6 +101,12 @@ swifty_pharo_reply(int64_t request, const char *reply)
     replyHandler(request, reply);
 }
 
+void
+swifty_pharo_interrupted(int64_t request)
+{
+    replyHandler(request, NULL);
+}
+
 static void
 enqueueMessage(const char *text)
 {

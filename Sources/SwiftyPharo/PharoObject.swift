@@ -243,6 +243,7 @@ extension PharoCell: CustomStringConvertible {
 public enum PharoRequestError: Error, Sendable {
     case imageFailed(String, position: Int? = nil)
     case bridgeUnavailable
+    case interrupted
 
     /// Where in the evaluated source a compile error sits, 1-based, when the
     /// image knew; nothing for a runtime error, which has no source spot.
@@ -259,6 +260,8 @@ extension PharoRequestError: LocalizedError {
             message
         case .bridgeUnavailable:
             "The image stopped answering"
+        case .interrupted:
+            "The request was interrupted"
         }
     }
 }

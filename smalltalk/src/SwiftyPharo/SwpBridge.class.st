@@ -74,7 +74,18 @@ SwpBridge >> nextMessage [
 
 { #category : 'serving' }
 SwpBridge >> accept: aMessage [
+	aMessage at: #interrupt ifPresent: [ :id | ^ self interrupt: id ].
 	queue addLast: (SwpRequest id: (aMessage at: #id) request: (aMessage at: #request))
+]
+
+{ #category : 'serving' }
+SwpBridge >> interrupt: anID [
+	(current notNil and: [ current id = anID ]) ifTrue: [ ^ current interruptIn: self ].
+	queue
+		detect: [ :each | each id = anID ]
+		ifFound: [ :each |
+			queue remove: each.
+			self interrupted: each ]
 ]
 
 { #category : 'serving' }
@@ -89,11 +100,22 @@ SwpBridge >> advance [
 
 { #category : 'serving' }
 SwpBridge >> deliver: aRequest [
+	aRequest answer ifNil: [ ^ self interrupted: aRequest ].
 	self
 		call: 'swifty_pharo_reply'
 		parameters: { TFBasicType sint64. TFBasicType pointer }
 		return: TFBasicType void
 		with: { aRequest id. aRequest answer }
+]
+
+{ #category : 'serving' }
+SwpBridge >> interrupted: aRequest [
+	aRequest releaseHandlesIn: session.
+	self
+		call: 'swifty_pharo_interrupted'
+		parameters: { TFBasicType sint64 }
+		return: TFBasicType void
+		with: { aRequest id }
 ]
 
 { #category : 'serving' }

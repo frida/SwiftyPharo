@@ -87,6 +87,24 @@ the image, but silently hangs any call arriving on a foreign thread. Retain the
 callback too — the callback queue holds it weakly, and a collected closure
 crashes later calls.
 
+## Requests
+
+The image runs requests one at a time, in the order they were asked for, each
+in a process of its own at user priority. The process serving the bridge runs
+above them at `lowIOPriority`, so it is reached while one of them runs.
+
+Cancelling the task that awaits a request interrupts it. One still waiting its
+turn is dropped unrun; one running is terminated, so its `ensure:` and
+`ifCurtailed:` blocks run before the request throws
+`PharoRequestError.interrupted` and before the next one starts. A request that
+finished first answers as usual, and one asked for from a task already
+cancelled is never sent. Whatever the request forked is not its to stop.
+
+An interrupt cannot reach into a primitive, a call on the interpreter thread or
+the collector, and lands once they return. An unwind block still running two
+seconds after the interrupt is abandoned where it stands, so the next request
+can start.
+
 ## Building the VM
 
 Building happens in two steps, so slices from several machines can be combined:

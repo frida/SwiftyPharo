@@ -11,18 +11,29 @@ final class PharoRequests: @unchecked Sendable {
 
     private init() {
         swifty_pharo_receive_replies { request, reply in
-            PharoRequests.shared.settle(request, with: .success(String(cString: reply!)))
+            PharoRequests.shared.settle(request, with: reply.map { .success(String(cString: $0)) } ?? .failure(PharoRequestError.interrupted))
         }
     }
 
     func reply(to request: [String: Any]) async throws -> String {
         let id = nextID()
         let message = try Self.encode(["id": id, "request": request])
-        return try await withCheckedThrowingContinuation { continuation in
+        let interrupt = try Self.encode(["interrupt": id])
+        return try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { continuation in
+                lock.lock()
+                defer { lock.unlock() }
+                guard !Task.isCancelled else {
+                    return continuation.resume(throwing: PharoRequestError.interrupted)
+                }
+                awaiting[id] = continuation
+                post(message, failing: id)
+            }
+        } onCancel: {
             lock.lock()
             defer { lock.unlock() }
-            awaiting[id] = continuation
-            post(message, failing: id)
+            guard awaiting[id] != nil else { return }
+            post(interrupt, failing: nil)
         }
     }
 
@@ -33,9 +44,9 @@ final class PharoRequests: @unchecked Sendable {
         return lastID
     }
 
-    private func post(_ message: String, failing id: Int64) {
+    private func post(_ message: String, failing id: Int64?) {
         postQueue.async {
-            guard swifty_pharo_post(message) == SWIFTY_PHARO_BRIDGE_UNAVAILABLE else { return }
+            guard swifty_pharo_post(message) == SWIFTY_PHARO_BRIDGE_UNAVAILABLE, let id else { return }
             self.settle(id, with: .failure(PharoRequestError.bridgeUnavailable))
         }
     }
