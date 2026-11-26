@@ -21,8 +21,6 @@ struct Message {
     char *text;
 };
 
-extern intptr_t signalSemaphoreWithIndex(intptr_t index);
-
 static int semaphoreIndex = 0;
 static Message *oldestMessage = NULL;
 static Message *newestMessage = NULL;
@@ -34,6 +32,7 @@ static void lockMailbox(void);
 static void unlockMailbox(void);
 static void announceBridge(void);
 static void awaitBridge(void);
+static void signalBridge(int index);
 
 void
 swifty_pharo_bridge_ready(int index)
@@ -71,7 +70,7 @@ swifty_pharo_post(const char *message)
     if (index == 0)
         return SWIFTY_PHARO_BRIDGE_UNAVAILABLE;
 
-    signalSemaphoreWithIndex(index);
+    signalBridge(index);
 
     return 0;
 }
@@ -176,7 +175,20 @@ awaitBridge(void)
     }
 }
 
+typedef intptr_t (*SignalSemaphore)(intptr_t index);
+
+static void
+signalBridge(int index)
+{
+    SignalSemaphore signalSemaphoreWithIndex =
+        (SignalSemaphore)GetProcAddress(GetModuleHandleA("PharoVMCore.dll"), "signalSemaphoreWithIndex");
+
+    signalSemaphoreWithIndex(index);
+}
+
 #else
+
+extern intptr_t signalSemaphoreWithIndex(intptr_t index);
 
 static pthread_mutex_t mailboxMutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t bridgeArrived = PTHREAD_COND_INITIALIZER;
@@ -213,6 +225,12 @@ awaitBridge(void)
         if (pthread_cond_timedwait(&bridgeArrived, &mailboxMutex, &deadline) != 0)
             break;
     }
+}
+
+static void
+signalBridge(int index)
+{
+    signalSemaphoreWithIndex(index);
 }
 
 #endif
