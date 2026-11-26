@@ -189,8 +189,15 @@ SwpViewCollector class >> cellBlockOf: aColumn [
 		^ [ :item :index | self imageCellOf: (aColumn evaluateObject: item) ] ].
 	^ [ :item :index |
 	  Dictionary new
-		  at: 'text' put: (aColumn evaluateObject: item) asString;
+		  at: 'text' put: (self textOf: aColumn for: item);
 		  yourself ]
+]
+
+{ #category : 'collecting' }
+SwpViewCollector class >> textOf: aColumn for: anItem [
+	aColumn isComposite ifFalse: [ ^ (aColumn evaluateObject: anItem) asString ].
+	^ ' ' join: ((aColumn columns reject: [ :each | each isKindOf: SpImageTableColumn ]) collect: [ :each |
+			   self textOf: each for: anItem ])
 ]
 
 { #category : 'collecting' }
