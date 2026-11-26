@@ -7,9 +7,19 @@ Behavior >> swpMethodsFor: aView [
 		title: 'Methods';
 		priority: 1;
 		items: [ self swpMethods ];
-		column: 'Method' text: [ :each | each selector ];
-		column: 'Side' text: [ :each | each methodClass isMeta ifTrue: [ 'class' ] ifFalse: [ 'instance' ] ];
-		column: 'Category' text: [ :each | each protocol name ]
+		column: 'Method' do: [ :column |
+			column
+				text: [ :each | each selector ];
+				priority: 1 ];
+		column: 'Side' do: [ :column |
+			column
+				text: [ :each | each methodClass isMeta ifTrue: [ 'class' ] ifFalse: [ 'instance' ] ];
+				fitContent;
+				priority: 3 ];
+		column: 'Category' do: [ :column |
+			column
+				text: [ :each | each protocol name ];
+				priority: 2 ]
 ]
 
 { #category : '*SwiftyPharo' }
