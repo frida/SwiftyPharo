@@ -11,7 +11,7 @@ Class {
 		'sendBlock',
 		'computedItems',
 		'cellBlocks',
-		'columnTitles',
+		'columnDeclarations',
 		'filter',
 		'filteredItems'
 	],
@@ -154,20 +154,27 @@ SwpItemsView >> cellBlocks: anArray [
 	cellBlocks := anArray
 ]
 
-{ #category : 'accessing' }
-SwpItemsView >> columnTitles [
-	^ columnTitles ifNil: [ #( 'Item' ) ]
-]
-
-{ #category : 'building' }
-SwpItemsView >> columnTitles: anArray [
-	columnTitles := anArray
-]
-
 { #category : 'converting' }
 SwpItemsView >> declaration [
 	^ super declaration
-		  at: #columns put: ({ 'Index' } , self columnTitles) asArray;
+		  at: #columns put: ({ self columnNamed: 'Index' } , self columnDeclarations) asArray;
+		  yourself
+]
+
+{ #category : 'converting' }
+SwpItemsView >> columnDeclarations [
+	^ columnDeclarations ifNil: [ { self columnNamed: 'Item' } ]
+]
+
+{ #category : 'building' }
+SwpItemsView >> columnDeclarations: anArray [
+	columnDeclarations := anArray
+]
+
+{ #category : 'converting' }
+SwpItemsView >> columnNamed: aTitle [
+	^ Dictionary new
+		  at: #title put: aTitle;
 		  yourself
 ]
 

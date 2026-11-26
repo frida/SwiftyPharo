@@ -169,8 +169,19 @@ SwpViewCollector class >> listViewOf: aCollection in: aPresenter [
 	columns := columns reject: [ :each | each isKindOf: SpIndexTableColumn ].
 	columns ifNotEmpty: [
 		view cellBlocks: (columns collect: [ :each | self cellBlockOf: each ]).
-		view columnTitles: (columns collect: [ :each | self titleOf: each ]) ].
+		view columnDeclarations: (columns collect: [ :each | self declarationOfColumn: each ]) ].
 	^ view
+]
+
+{ #category : 'collecting' }
+SwpViewCollector class >> declarationOfColumn: aColumn [
+	| declaration |
+	declaration := Dictionary new
+		               at: #title put: (self titleOf: aColumn);
+		               yourself.
+	(aColumn width notNil or: [ aColumn isExpandable not ]) ifTrue: [
+		declaration at: #fitContent put: true ].
+	^ declaration
 ]
 
 { #category : 'collecting' }

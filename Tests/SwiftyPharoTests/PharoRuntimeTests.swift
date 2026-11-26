@@ -24,6 +24,9 @@ final class PharoRuntimeTests: XCTestCase {
         let views = try await runtime.views(of: probe)
         XCTAssertEqual(views.prefix(2).map(\.viewName), ["list", "text"])
         XCTAssertEqual(views.first?.title, "Numbers")
+        XCTAssertEqual(
+            views.first { $0.title == "Raw" }?.columns,
+            [PharoColumn(title: "Index"), PharoColumn(title: "Variable", width: .fitContent), PharoColumn(title: "Value")])
 
         let page = try await runtime.items(of: probe, view: "gtNumbersFor:", from: 2, count: 2)
         XCTAssertEqual(page.total, 5)

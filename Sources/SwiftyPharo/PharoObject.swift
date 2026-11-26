@@ -25,7 +25,7 @@ public struct PharoViewDeclaration: Sendable, Decodable {
     public let title: String
     public let priority: Double
     public let methodSelector: String
-    public let columns: [String]?
+    public let columns: [PharoColumn]?
     public let text: String?
     public let graph: PharoGraph?
     public let chart: PharoChart?
@@ -36,7 +36,7 @@ public struct PharoViewDeclaration: Sendable, Decodable {
         title: String,
         priority: Double,
         methodSelector: String,
-        columns: [String]? = nil,
+        columns: [PharoColumn]? = nil,
         text: String? = nil,
         graph: PharoGraph? = nil,
         chart: PharoChart? = nil,
@@ -62,7 +62,7 @@ public struct PharoViewDeclaration: Sendable, Decodable {
                 title: try container.decode(String.self, forKey: .title),
                 priority: try container.decode(Double.self, forKey: .priority),
                 methodSelector: methodSelector,
-                columns: try container.decodeIfPresent([String].self, forKey: .columns),
+                columns: try container.decodeIfPresent([PharoColumn].self, forKey: .columns),
                 text: try container.decodeIfPresent(String.self, forKey: .text),
                 graph: try container.decodeIfPresent(PharoGraph.self, forKey: .graph),
                 chart: try container.decodeIfPresent(PharoChart.self, forKey: .chart),
@@ -100,6 +100,55 @@ public struct PharoViewDeclaration: Sendable, Decodable {
             return "declared what cannot be shown: \(error)"
         }
     }
+}
+
+public struct PharoColumn: Sendable, Decodable, Equatable {
+    public let title: String
+    public let width: PharoColumnWidth?
+    public let minimumCharacters: Int?
+    public let priority: Double?
+
+    public init(title: String, width: PharoColumnWidth? = nil, minimumCharacters: Int? = nil, priority: Double? = nil) {
+        self.title = title
+        self.width = width
+        self.minimumCharacters = minimumCharacters
+        self.priority = priority
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            title: try container.decode(String.self, forKey: .title),
+            width: try Self.width(in: container),
+            minimumCharacters: try container.decodeIfPresent(Int.self, forKey: .minimumCharacters),
+            priority: try container.decodeIfPresent(Double.self, forKey: .priority))
+    }
+
+    public var isDeclared: Bool {
+        width != nil || minimumCharacters != nil || priority != nil
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case title
+        case fitContent
+        case weight
+        case width
+        case minimumCharacters
+        case priority
+    }
+
+    private static func width(in container: KeyedDecodingContainer<CodingKeys>) throws -> PharoColumnWidth? {
+        if try container.decodeIfPresent(Bool.self, forKey: .fitContent) == true { return .fitContent }
+        if let weight = try container.decodeIfPresent(Double.self, forKey: .weight) { return .weight(weight) }
+        if let points = try container.decodeIfPresent(Double.self, forKey: .width) { return .points(points) }
+        return nil
+    }
+}
+
+public enum PharoColumnWidth: Sendable, Equatable {
+    case fitContent
+    case weight(Double)
+    case points(Double)
 }
 
 /// A view the host draws itself, from a scene it already holds. Only which

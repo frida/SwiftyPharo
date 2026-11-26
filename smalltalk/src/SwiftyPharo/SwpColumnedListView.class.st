@@ -19,6 +19,11 @@ SwpColumnedListView >> column: aTitle text: aBlock width: aWidth [
 ]
 
 { #category : 'building' }
+SwpColumnedListView >> column: aTitle text: aBlock weight: aWeight [
+	(self addColumn: aTitle kind: #text block: aBlock) at: #weight put: aWeight
+]
+
+{ #category : 'building' }
 SwpColumnedListView >> column: aTitle item: aBlock [
 	self addColumn: aTitle kind: #text block: aBlock
 ]
@@ -39,6 +44,16 @@ SwpColumnedListView >> column: aTitle icon: aBlock [
 { #category : 'building' }
 SwpColumnedListView >> column: aTitle icon: aBlock width: aWidth [
 	(self addColumn: aTitle kind: #icon block: aBlock) at: #width put: aWidth
+]
+
+{ #category : 'building' }
+SwpColumnedListView >> column: aTitle icon: aBlock weight: aWeight [
+	(self addColumn: aTitle kind: #icon block: aBlock) at: #weight put: aWeight
+]
+
+{ #category : 'building' }
+SwpColumnedListView >> column: aTitle do: aBlock [
+	aBlock value: (self column: aTitle)
 ]
 
 { #category : 'building' }
@@ -85,9 +100,17 @@ SwpColumnedListView >> cellOf: aColumn for: anItem at: anIndex [
 		  yourself
 ]
 
-{ #category : 'accessing' }
-SwpColumnedListView >> columnTitles [
-	^ (columns ifNil: [ #() ]) collect: [ :each | each at: #title ]
+{ #category : 'converting' }
+SwpColumnedListView >> columnDeclarations [
+	^ (columns ifNil: [ #() ]) collect: [ :each | self declarationOf: each ]
+]
+
+{ #category : 'converting' }
+SwpColumnedListView >> declarationOf: aColumn [
+	^ aColumn copy
+		  removeKey: #kind;
+		  removeKey: #block;
+		  yourself
 ]
 
 { #category : 'accessing' }
