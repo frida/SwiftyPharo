@@ -167,39 +167,11 @@ extension PharoRuntime {
     }
 
     private func send<Answer: Decodable>(_ request: [String: Any]) async throws -> Answer {
-        let reply = try await requestJSON(String(
-            data: try JSONSerialization.data(withJSONObject: request),
-            encoding: .utf8)!)
-
-        let payload = Data(reply.utf8)
+        let payload = Data(try await PharoRequests.shared.reply(to: request).utf8)
         if let failure = try? JSONDecoder().decode(PharoFailure.self, from: payload) {
             throw PharoRequestError.imageFailed(failure.description, position: failure.position)
         }
         return try JSONDecoder().decode(Answer.self, from: payload)
-    }
-
-    /// The image serves one request at a time, and each blocks until it answers.
-    private func requestJSON(_ request: String) async throws -> String {
-        try await withCheckedThrowingContinuation { continuation in
-            PharoRuntime.requestQueue.async {
-                continuation.resume(with: Result { try PharoRuntime.callImage(request) })
-            }
-        }
-    }
-
-    private static func callImage(_ request: String) throws -> String {
-        var capacity = 64 * 1024
-        while true {
-            var response = [CChar](repeating: 0, count: capacity)
-            let length = Int(swifty_pharo_request(request, &response, Int32(capacity)))
-            if length == Int(SWIFTY_PHARO_BRIDGE_UNAVAILABLE) {
-                throw PharoRequestError.bridgeUnavailable
-            }
-            if length < capacity {
-                return String(cString: response)
-            }
-            capacity = length + 1
-        }
     }
 }
 

@@ -1,17 +1,15 @@
 "
-Hands the embedding host a C function pointer it can call to run a request.
-The host boots the image with an argument that installs this once startup has
-finished; building the callback from a startup handler is not dependable.
-The runner is bound when the callback is built: assigning it afterwards leaves
-calls arriving on a foreign thread hanging.
+Takes the requests the embedding host posts to it. The host boots the image
+with an argument that installs this once startup has finished.
 "
 Class {
 	#name : 'SwpBridge',
 	#superclass : 'Object',
 	#instVars : [
-		'callback',
 		'session',
-		'worker'
+		'semaphore',
+		'queue',
+		'current'
 	],
 	#classVars : [
 		'Installed'
@@ -38,46 +36,92 @@ SwpBridge >> session [
 { #category : 'installing' }
 SwpBridge >> install [
 	session := SwpSession new.
-	worker := TFWorker named: 'swiftypharo'.
-	worker ensureInitialized.
-	callback := TFCallback
-		forCallback: [ :request :response :capacity |
-			self respondTo: request into: response capacity: capacity ]
-		parameters: { TFBasicType pointer. TFBasicType pointer. TFBasicType sint32 }
-		returnType: TFBasicType sint32
-		runner: worker.
-	self registerThunk.
+	semaphore := Semaphore new.
+	queue := OrderedCollection new.
+	[ [ self serve ] repeat ] forkAt: Processor lowIOPriority named: 'SwiftyPharo bridge'.
+	self
+		call: 'swifty_pharo_bridge_ready'
+		parameters: { TFBasicType sint32 }
+		return: TFBasicType void
+		with: { Smalltalk registerExternalObject: semaphore }.
 	^ self
 ]
 
-{ #category : 'installing' }
-SwpBridge >> registerThunk [
-	| address definition function |
-	address := ExternalAddress loadSymbol: 'swifty_pharo_thunk_ready' module: nil.
-	definition := TFFunctionDefinition
-		parameterTypes: { TFBasicType pointer }
-		returnType: TFBasicType void.
-	function := TFExternalFunction fromAddress: address definition: definition.
-	TFSameThreadRunner uniqueInstance invokeFunction: function withArguments: { callback thunk }
+{ #category : 'serving' }
+SwpBridge >> serve [
+	semaphore wait.
+	self acceptMessages.
+	self advance
 ]
 
-{ #category : 'requests' }
-SwpBridge >> respondTo: aRequestAddress into: aResponseAddress capacity: aCapacity [
-	| answer |
-	answer := [ session handleRequestJson: aRequestAddress readString utf8Decoded ]
-		on: Error
-		do: [ :e | '{"error":"', e class name, '"}' ].
-	^ self write: answer to: aResponseAddress capacity: aCapacity
+{ #category : 'serving' }
+SwpBridge >> acceptMessages [
+	| message |
+	[ (message := self nextMessage) notNil ] whileTrue: [ self accept: message ]
 ]
 
-{ #category : 'requests' }
-SwpBridge >> write: aString to: anAddress capacity: aCapacity [
-	"Answers the length the host needs, so a short buffer can be retried."
+{ #category : 'serving' }
+SwpBridge >> nextMessage [
+	| address |
+	address := self
+		call: 'swifty_pharo_next_message'
+		parameters: #()
+		return: TFBasicType pointer
+		with: #().
+	address isNull ifTrue: [ ^ nil ].
+	^ [ STONJSON fromString: address readString utf8Decoded ] ensure: [ address free ]
+]
 
-	| bytes count |
+{ #category : 'serving' }
+SwpBridge >> accept: aMessage [
+	queue addLast: (SwpRequest id: (aMessage at: #id) request: (aMessage at: #request))
+]
+
+{ #category : 'serving' }
+SwpBridge >> advance [
+	(current notNil and: [ current isFinished ]) ifTrue: [
+		self deliver: current.
+		current := nil ].
+	(current isNil and: [ queue notEmpty ]) ifTrue: [
+		current := queue removeFirst.
+		current runIn: self ]
+]
+
+{ #category : 'serving' }
+SwpBridge >> deliver: aRequest [
+	self
+		call: 'swifty_pharo_reply'
+		parameters: { TFBasicType sint64. TFBasicType pointer }
+		return: TFBasicType void
+		with: { aRequest id. aRequest answer }
+]
+
+{ #category : 'serving' }
+SwpBridge >> wake [
+	semaphore signal
+]
+
+{ #category : 'calling' }
+SwpBridge >> call: aName parameters: aParameterTypes return: aReturnType with: aCollection [
+	| function lent arguments |
+	function := TFExternalFunction
+		fromAddress: (ExternalAddress loadSymbol: aName module: nil)
+		definition: (TFFunctionDefinition parameterTypes: aParameterTypes returnType: aReturnType).
+	lent := OrderedCollection new.
+	arguments := aCollection collect: [ :each |
+		each isString
+			ifTrue: [ lent add: (self cString: each) ]
+			ifFalse: [ each ] ].
+	^ [ TFSameThreadRunner uniqueInstance invokeFunction: function withArguments: arguments ]
+		ensure: [ lent do: [ :each | each free ] ]
+]
+
+{ #category : 'calling' }
+SwpBridge >> cString: aString [
+	| bytes address |
 	bytes := aString utf8Encoded.
-	count := bytes size min: aCapacity - 1.
-	1 to: count do: [ :i | anAddress unsignedByteAt: i put: (bytes at: i) ].
-	anAddress unsignedByteAt: count + 1 put: 0.
-	^ bytes size
+	address := ExternalAddress allocate: bytes size + 1.
+	1 to: bytes size do: [ :index | address unsignedByteAt: index put: (bytes at: index) ].
+	address unsignedByteAt: bytes size + 1 put: 0.
+	^ address
 ]

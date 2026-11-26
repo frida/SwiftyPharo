@@ -39,9 +39,9 @@ SwpViewPriorityTest >> testANaNPriorityShowsItsError [
 SwpViewPriorityTest >> testEveryPriorityCrossesTheBridge [
 	| session reply |
 	session := SwpSession new.
-	reply := STONJSON fromString: (session handleRequestJson: (STONJSON toString: {
+	reply := STONJSON fromString: (session answer: (STONJSON fromString: (STONJSON toString: {
 					   (#op -> 'views').
-					   (#handle -> (session handleFor: SwpPriorityProbe new)) } asDictionary)).
+					   (#handle -> (session handleFor: SwpPriorityProbe new)) } asDictionary))).
 	self
 		assert: (((reply at: 'views') select: [ :each | self isProbed: (each at: 'methodSelector') ]) collect: [ :each |
 				 each at: 'priority' ])

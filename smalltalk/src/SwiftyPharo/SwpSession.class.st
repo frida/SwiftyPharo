@@ -45,8 +45,8 @@ SwpSession >> release: aHandle [
 ]
 
 { #category : 'requests' }
-SwpSession >> handleRequestJson: aString [
-	^ STONJSON toString: ([ self handleRequest: (STONJSON fromString: aString) ]
+SwpSession >> answer: aDictionary [
+	^ STONJSON toString: ([ self handleRequest: aDictionary ]
 		on: Error
 		do: [ :e |
 			| failure |

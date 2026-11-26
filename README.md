@@ -63,8 +63,13 @@ fn := TFExternalFunction fromAddress: addr definition: defn.
 TFSameThreadRunner uniqueInstance invokeFunction: fn withArguments: #(21)
 ```
 
-The host calls into the image through a callback thunk. The runner **must** be
-bound when the callback is created:
+SwiftyPharo's own requests need no callback. The host posts each one to a
+mailbox and signals a semaphore the image registered for it; a process in the
+image takes it from there and hands the reply back through
+`swifty_pharo_reply`, both plain calls on the interpreter thread, so no thread
+of the host waits on the image. A host that wants to call into the image
+through a callback thunk of its own can; the runner **must** be bound when the
+callback is created:
 
 ```smalltalk
 worker := TFWorker named: 'host'.

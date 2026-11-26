@@ -48,9 +48,9 @@ SwpColumnsTest >> testRawNamesEachVariable [
 SwpColumnsTest >> columnsOf: aSelector [
 	| session reply |
 	session := SwpSession new.
-	reply := STONJSON fromString: (session handleRequestJson: (STONJSON toString: {
+	reply := STONJSON fromString: (session answer: (STONJSON fromString: (STONJSON toString: {
 					   (#op -> 'views').
-					   (#handle -> (session handleFor: SwpColumnsProbe new)) } asDictionary)).
+					   (#handle -> (session handleFor: SwpColumnsProbe new)) } asDictionary))).
 	^ ((reply at: 'views') detect: [ :each | (each at: 'methodSelector') = aSelector ]) at: 'columns'
 ]
 
